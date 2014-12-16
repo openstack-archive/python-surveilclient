@@ -1,0 +1,5 @@
+*.pyc
+
+# documentation
+doc/build
+doc/source/_build

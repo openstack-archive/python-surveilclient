@@ -1,0 +1,2 @@
+oslo.serialization
+prettytable

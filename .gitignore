@@ -3,3 +3,10 @@
 # documentation
 doc/build
 doc/source/_build
+
+.testrepository
+dist
+env
+.tox
+*.egg-info
+*.egg

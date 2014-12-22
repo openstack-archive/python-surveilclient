@@ -13,16 +13,21 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+from six.moves import http_client as httplib
+
+from surveilclient.openstack.common.py3kcompat import urlutils
+
 import copy
-import httplib
 import json
-import urlparse
+
+
+USER_AGENT = 'python-surveilclient'
 
 
 class HTTPClient(object):
 
     def __init__(self, endpoint):
-        endpoint_parts = urlparse.urlparse(endpoint)
+        endpoint_parts = urlutils.urlparse(endpoint)
         self.endpoint_hostname = endpoint_parts.hostname
         self.endpoint_port = endpoint_parts.port
         self.endpoint_path = endpoint_parts.path
@@ -36,20 +41,24 @@ class HTTPClient(object):
 
         return con
 
+    def _http_request(self, url, method, **kwargs):
+        """Send an http request with the specified characteristics.
+
+        Wrapper around httplib.HTTP(S)Connection.request to handle tasks such
+        as setting headers and error handling.
+        """
+        kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
+        kwargs['headers'].setdefault('User-Agent', USER_AGENT)
+        conn = self.get_connection()
+        conn.request(method, self.endpoint_path + url, **kwargs)
+        resp = conn.getresponse()
+        return resp
+
     def json_request(self, url, method, **kwargs):
         """Send an http request with the specified characteristics.
 
         """
-        conn = self.get_connection()
-
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
         kwargs['headers'].setdefault('Content-Type', 'application/json')
-
-        conn.request(
-            method,
-            self.endpoint_path + url,
-            headers=kwargs['headers']
-        )
-
-        resp = conn.getresponse()
-        return json.loads(resp.read())
+        resp = self._http_request(url, method, **kwargs)
+        return resp, json.loads(resp.read().decode())

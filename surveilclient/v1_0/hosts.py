@@ -20,5 +20,7 @@ class HostsManager(surveil_manager.SurveilManager):
 
     def list(self):
         """Get a list of hosts."""
-        hosts = self.http_client.json_request(HostsManager.base_url, 'GET')
-        return hosts
+        resp, body = self.http_client.json_request(
+            HostsManager.base_url, 'GET'
+        )
+        return body

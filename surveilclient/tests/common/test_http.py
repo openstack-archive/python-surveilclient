@@ -33,9 +33,9 @@ class TestHttp(unittest.TestCase):
                                self.surveil_url + "/test",
                                body=json.dumps(example_result))
 
-        result = self.client.json_request('/test', 'GET')
+        resp, body = self.client.json_request('/test', 'GET')
         self.assertEqual(httpretty.last_request().method, 'GET')
-        self.assertEqual(result, example_result)
+        self.assertEqual(body, example_result)
 
         self.assertEqual(
             httpretty.last_request().headers['Content-Type'],

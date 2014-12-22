@@ -2,7 +2,6 @@
 hacking>=0.9.2,<0.10
 sphinx
 oslosphinx
-six
 testrepository
 mox3>=0.7.0
 httpretty

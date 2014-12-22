@@ -42,8 +42,8 @@ def do_service_list(sc, args):
         print(utils.json_formatter(services))
     else:
         cols = [
-            'service_description',
             'host_name',
+            'service_description',
             'check_period',
             'contact_groups',
         ]

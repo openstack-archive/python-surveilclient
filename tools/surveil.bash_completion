@@ -1,0 +1,27 @@
+# bash completion for openstack surveil
+
+_surveil_opts="" # lazy init
+_surveil_flags="" # lazy init
+_surveil_opts_exp="" # lazy init
+_surveil()
+{
+    local cur prev kbc
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+    if [ "x$_surveil_opts" == "x" ] ; then
+        kbc="`surveil bash-completion | sed -e "s/ -h / /"`"
+        _surveil_opts="`echo "$kbc" | sed -e "s/--[a-z0-9_-]*//g" -e "s/[ ][ ]*/ /g"`"
+        _surveil_flags="`echo " $kbc" | sed -e "s/ [^-][^-][a-z0-9_-]*//g" -e "s/[ ][ ]*/ /g"`"
+        _surveil_opts_exp="`echo $_surveil_opts | sed -e "s/[ ]/|/g"`"
+    fi
+
+    if [[ " ${COMP_WORDS[@]} " =~ " "($_surveil_opts_exp)" " && "$prev" != "help" ]] ; then
+        COMPREPLY=($(compgen -W "${_surveil_flags}" -- ${cur}))
+    else
+        COMPREPLY=($(compgen -W "${_surveil_opts}" -- ${cur}))
+    fi
+    return 0
+}
+complete -o default -F _surveil surveil

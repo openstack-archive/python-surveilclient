@@ -4,3 +4,4 @@ sphinx
 oslosphinx
 six
 testrepository
+mox3>=0.7.0

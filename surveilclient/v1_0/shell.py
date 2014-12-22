@@ -32,3 +32,26 @@ def do_host_list(sc, args):
             'address': lambda x: x['address'],
         }
         utils.print_list(hosts, cols, formatters=formatters)
+
+
+def do_service_list(sc, args):
+    """List all services."""
+    services = sc.services.list()
+
+    if args.json:
+        print(utils.json_formatter(services))
+    else:
+        cols = [
+            'service_description',
+            'host_name',
+            'check_period',
+            'contact_groups',
+        ]
+
+        formatters = {
+            'service_description': lambda x: x['service_description'],
+            'host_name': lambda x: x['host_name'],
+            'check_period': lambda x: x['check_period'],
+            'contact_groups': lambda x: x['contact_groups'],
+        }
+        utils.print_list(services, cols, formatters=formatters)

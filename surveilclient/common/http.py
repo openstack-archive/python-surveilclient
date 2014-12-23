@@ -15,6 +15,7 @@
 
 from six.moves import http_client as httplib
 
+from surveilclient import exc
 from surveilclient.openstack.common.py3kcompat import urlutils
 
 import copy
@@ -52,7 +53,17 @@ class HTTPClient(object):
         conn = self.get_connection()
         conn.request(method, self.endpoint_path + url, **kwargs)
         resp = conn.getresponse()
-        return resp
+
+        body_str = resp.read()
+
+        if 400 <= resp.status < 600:
+            raise exc.from_response(
+                response=resp, body=body_str, method=method, url=url)
+        elif resp.status == 300:
+            raise exc.from_response(
+                response=resp, body=body_str, method=method, url=url)
+
+        return resp, body_str
 
     def json_request(self, url, method, **kwargs):
         """Send an http request with the specified characteristics.
@@ -60,5 +71,9 @@ class HTTPClient(object):
         """
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
         kwargs['headers'].setdefault('Content-Type', 'application/json')
-        resp = self._http_request(url, method, **kwargs)
-        return resp, json.loads(resp.read().decode())
+
+        if 'body' in kwargs:
+            kwargs['body'] = json.dumps(kwargs['body'])
+
+        resp, body = self._http_request(url, method, **kwargs)
+        return resp, json.loads(body)

@@ -137,7 +137,7 @@ class SurveilShell(object):
 
         # Handle top-level --help/-h before attempting to parse
         # a command off the command line
-        if not args and options.help or not argv:
+        if not argv or ('-h' in args or '--help' in args):
             self.do_help(options)
             return 0
 

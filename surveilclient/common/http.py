@@ -76,4 +76,4 @@ class HTTPClient(object):
             kwargs['body'] = json.dumps(kwargs['body'])
 
         resp, body = self._http_request(url, method, **kwargs)
-        return resp, json.loads(body)
+        return resp, json.loads(body.decode())

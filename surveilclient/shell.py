@@ -159,7 +159,7 @@ class SurveilShell(object):
 
         endpoint = args.surveil_api_url
 
-        client = surveil_client.Client(api_version, endpoint)
+        client = surveil_client.Client(endpoint, version=api_version)
 
         args.func(client, args)
 

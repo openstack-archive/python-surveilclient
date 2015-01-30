@@ -28,3 +28,10 @@ class Client(object):
         self.http_client = http.HTTPClient(endpoint)
         self.hosts = hosts.HostsManager(self.http_client)
         self.services = services.ServicesManager(self.http_client)
+
+    def reload_config(self):
+        resp, body = self.http_client.json_request(
+            '/reload_config',
+            'POST'
+        )
+        return body

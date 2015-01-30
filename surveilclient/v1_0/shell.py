@@ -55,3 +55,8 @@ def do_service_list(sc, args):
             'contact_groups': lambda x: x['contact_groups'],
         }
         utils.print_list(services, cols, formatters=formatters)
+
+
+def do_reload_config(sc, args):
+    """Trigger a config reload."""
+    print (sc.reload_config()['message'])

@@ -29,6 +29,11 @@ import sys
 
 class SurveilShell(object):
 
+    default_api_version = '1_0'
+
+    def __init__(self):
+        self.parser = self.get_base_parser()
+
     def get_base_parser(self):
         parser = argparse.ArgumentParser(
             prog='surveil',
@@ -39,6 +44,8 @@ class SurveilShell(object):
             formatter_class=HelpFormatter,
         )
 
+        parser.add_argument('-h', '--help', action='store_true')
+
         parser.add_argument('--surveil-api-url',
                             default=utils.env('SURVEIL_API_URL'),
                             help='Defaults to env[SURVEIL_API_URL].')
@@ -46,8 +53,9 @@ class SurveilShell(object):
         parser.add_argument('--surveil-api-version',
                             default=utils.env(
                                 'SURVEIL_API_VERSION',
-                                default='1_0'),
-                            help='Defaults to env[SURVEIL_API_VERSION] or 1_0')
+                                default=self.default_api_version),
+                            help='Defaults to env[SURVEIL_API_VERSION] or %s' %
+                                 self.default_api_version)
 
         parser.add_argument('-j', '--json',
                             action='store_true',
@@ -55,14 +63,16 @@ class SurveilShell(object):
 
         return parser
 
-    def get_subcommand_parser(self, version):
+    def get_subcommand_parser(self, version=default_api_version):
         parser = self.get_base_parser()
         self.subcommands = {}
-        subparsers = parser.add_subparsers(metavar='<subcommand>')
+        subparsers = parser.add_subparsers(metavar='<subcommand>',
+                                           dest='subcommand')
         submodule = utils.import_versioned_module(version, 'shell')
         self._find_actions(subparsers, submodule)
         self._find_actions(subparsers, self)
         self._add_bash_completion_subparser(subparsers)
+        self.parser = parser
         return parser
 
     def _add_bash_completion_subparser(self, subparsers):
@@ -86,11 +96,7 @@ class SurveilShell(object):
             subparser = subparsers.add_parser(command,
                                               help=help,
                                               description=desc,
-                                              add_help=False,
                                               formatter_class=HelpFormatter)
-            subparser.add_argument('-h', '--help',
-                                   action='help',
-                                   help=argparse.SUPPRESS)
             self.subcommands[command] = subparser
             for (args, kwargs) in arguments:
                 subparser.add_argument(*args, **kwargs)
@@ -98,7 +104,7 @@ class SurveilShell(object):
 
     @utils.arg('command', metavar='<subcommand>', nargs='?',
                help='Display help for <subcommand>.')
-    def do_help(self, args):
+    def do_help(self, args=None):
         """Display help about this program or one of its subcommands."""
         if getattr(args, 'command', None):
             if args.command in self.subcommands:
@@ -126,42 +132,31 @@ class SurveilShell(object):
         print(' '.join(commands | options))
 
     def main(self, argv):
-        # Parse args once to find version
-        parser = self.get_base_parser()
-        (options, args) = parser.parse_known_args(argv)
 
-        # build available subcommands based on version
-        api_version = options.surveil_api_version
-        subcommand_parser = self.get_subcommand_parser(api_version)
-        self.parser = subcommand_parser
+        cfg, args = self.parser.parse_known_args(argv)
 
-        # Handle top-level --help/-h before attempting to parse
-        # a command off the command line
-        if not args and options.help or not argv:
-            self.do_help(options)
+        parser = self.get_subcommand_parser(cfg.surveil_api_version)
+        if not argv or (cfg.help and not args):
+            self.do_help()
             return 0
 
-        # Parse args again and call whatever callback was selected
-        args = subcommand_parser.parse_args(argv)
-
-        # Short-circuit and deal with help command right away.
-        if args.func == self.do_help:
-            self.do_help(args)
-            return 0
-        elif args.func == self.do_bash_completion:
-            self.do_bash_completion(args)
+        cfg = parser.parse_args(argv)
+        if cfg.help or cfg.func == self.do_help:
+            self.do_help(cfg)
             return 0
 
-        if not args.surveil_api_url:
+        if cfg.func == self.do_bash_completion:
+            self.do_bash_completion(cfg)
+            return 0
+
+        endpoint = cfg.surveil_api_url
+        if not endpoint:
             raise exc.CommandError("you must specify a Surveil API URL"
                                    " via either --surveil-api-url or"
                                    " env[SURVEIL_API_URL]")
-
-        endpoint = args.surveil_api_url
-
-        client = surveil_client.Client(endpoint, version=api_version)
-
-        args.func(client, args)
+        client = surveil_client.Client(endpoint,
+                                       version=cfg.surveil_api_version)
+        return cfg.func(client, cfg)
 
 
 class HelpFormatter(argparse.HelpFormatter):
@@ -174,11 +169,16 @@ class HelpFormatter(argparse.HelpFormatter):
 def main():
     try:
         SurveilShell().main(sys.argv[1:])
+    except exc.CommandError as err:
+        print(err, file=sys.stderr)
+        sys.exit(1)
     except KeyboardInterrupt:
         print("... terminating surveil client", file=sys.stderr)
         sys.exit(130)
     except Exception as e:
+        import traceback
         print(str(e), file=sys.stderr)
+        print(traceback.format_exc())
         sys.exit(1)
 
 if __name__ == "__main__":

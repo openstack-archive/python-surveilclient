@@ -72,11 +72,11 @@ class ShellTest(ShellBase):
 
     def test_help_on_subcommand(self):
         required = [
-            '^usage: surveil host-list',
-            "(?m)^List all hosts.",
+            '^usage: surveil config-host-list',
+            "(?m)^List all config hosts.",
         ]
         argstrings = [
-            'help host-list',
+            'help config-host-list',
         ]
         for argstr in argstrings:
             help_text = self.shell(argstr)

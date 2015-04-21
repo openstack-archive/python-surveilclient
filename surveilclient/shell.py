@@ -29,7 +29,7 @@ import sys
 
 class SurveilShell(object):
 
-    default_api_version = '1_0'
+    default_api_version = '2_0'
 
     def __init__(self):
         self.parser = self.get_base_parser()

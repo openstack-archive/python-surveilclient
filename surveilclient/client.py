@@ -17,6 +17,6 @@ from surveilclient.common import utils
 
 
 def Client(*args, **kwargs):
-    version = kwargs.pop('version', '1_0')
+    version = kwargs.pop('version', '2_0')
     module = utils.import_versioned_module(version, 'client')
     return module.Client(*args, **kwargs)

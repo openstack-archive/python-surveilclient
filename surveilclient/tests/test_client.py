@@ -16,10 +16,19 @@ import unittest
 
 from surveilclient import client
 from surveilclient.v1_0 import client as v1_0_client
+from surveilclient.v2_0 import client as v2_0_client
 
 
 class TestClient(unittest.TestCase):
 
-    def test_client_init(self):
+    def test_client_default_version(self):
+        sc = client.Client('http://localhost:8080/sdf')
+        self.assertTrue(isinstance(sc, v2_0_client.Client))
+
+    def test_client_init_v1(self):
         sc = client.Client('http://localhost:8080/v1', version='1_0')
         self.assertTrue(isinstance(sc, v1_0_client.Client))
+
+    def test_client_init_v2(self):
+        sc = client.Client('http://localhost:8080/v2', version='2_0')
+        self.assertTrue(isinstance(sc, v2_0_client.Client))

@@ -1,0 +1,8 @@
+Verified+2: Jenkins
+Code-Review+2: Alexandre Viau <alexandre@alexandreviau.net>
+Workflow+1: Alexandre Viau <alexandre@alexandreviau.net>
+Submitted-by: Jenkins
+Submitted-at: Mon, 27 Apr 2015 20:43:54 +0000
+Reviewed-on: https://review.openstack.org/177953
+Project: stackforge/python-surveilclient
+Branch: refs/heads/master

@@ -32,3 +32,13 @@ class ServicesManager(surveil_manager.SurveilManager):
             body=kwargs
         )
         return body
+
+    def delete(self, host_name, service_description):
+        """Delete a service."""
+        resp, body = self.http_client.request(
+            '/config/hosts' + '/'
+            + host_name + '/services/' + service_description,
+            'DELETE',
+            body=''
+        )
+        return body

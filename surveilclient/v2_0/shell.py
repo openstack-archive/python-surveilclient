@@ -98,6 +98,43 @@ def do_config_service_list(sc, args):
         utils.print_list(services, cols, formatters=formatters)
 
 
+@cliutils.arg("--host_name")
+@cliutils.arg("--service_description")
+@cliutils.arg("--check_command")
+@cliutils.arg("--max_check_attempts")
+@cliutils.arg("--check_interval")
+@cliutils.arg("--retry_interval")
+@cliutils.arg("--check_period")
+@cliutils.arg("--notification_interval")
+@cliutils.arg("--notification_period")
+@cliutils.arg("--contacts")
+@cliutils.arg("--contact_groups")
+def do_config_service_create(sc, args):
+    """Create a config service."""
+    arg_names = ['host_name',
+                 'service_description',
+                 'check_command',
+                 'max_check_attempts',
+                 'check_interval',
+                 'retry_interval',
+                 'check_period',
+                 'notification_interval',
+                 'notification_period',
+                 'contacts',
+                 'contact_groups',
+                 'use']
+    service = _dict_from_args(args, arg_names)
+    sc.config.services.create(**service)
+
+
+@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("--service_description")
+def do_config_service_delete(sc, args):
+    """Create a config host."""
+    sc.config.services.delete(args.host_name,
+                              args.service_description)
+
+
 def do_config_reload(sc, args):
     """Trigger a config reload."""
     print(sc.config.reload_config()['message'])

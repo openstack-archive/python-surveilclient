@@ -22,7 +22,7 @@ Bash completion
 
 Basic command tab completion can be enabled by sourcing the bash completion script::
 
-    source /usr/local/share/monasca.bash_completion
+    source /usr/local/share/surveil.bash_completion
 
 Python API
 ----------

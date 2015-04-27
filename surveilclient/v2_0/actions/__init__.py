@@ -12,21 +12,16 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from surveilclient.common import http
-from surveilclient.v2_0 import actions
-from surveilclient.v2_0 import config
-from surveilclient.v2_0 import status
+from surveilclient.common import surveil_manager
 
 
-class Client(object):
+class ActionsManager(surveil_manager.SurveilManager):
+    base_url = '/actions'
 
-    """Client for the Surveil v2_0 API.
-
-    :param string endpoint: The url of the surveil API
-    """
-
-    def __init__(self, endpoint):
-        self.http_client = http.HTTPClient(endpoint)
-        self.config = config.ConfigManager(self.http_client)
-        self.status = status.StatusManager(self.http_client)
-        self.actions = actions.ActionsManager(self.http_client)
+    def acknowledge(self, **kwargs):
+        resp, body = self.http_client.json_request(
+            self.base_url + '/acknowledge',
+            'POST',
+            body=kwargs,
+        )
+        return body

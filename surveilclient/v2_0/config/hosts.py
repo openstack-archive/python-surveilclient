@@ -32,3 +32,11 @@ class HostsManager(surveil_manager.SurveilManager):
             body=kwargs
         )
         return body
+
+    def delete(self, host_name):
+        """Create a new host."""
+        resp, body = self.http_client.request(
+            HostsManager.base_url + '/' + host_name, 'DELETE',
+            body=''
+        )
+        return body

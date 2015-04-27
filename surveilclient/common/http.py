@@ -75,5 +75,14 @@ class HTTPClient(object):
         if 'body' in kwargs:
             kwargs['body'] = json.dumps(kwargs['body'])
 
+        resp, body = self.request(url, method, **kwargs)
+        return resp, json.loads(body)
+
+    def request(self, url, method, **kwargs):
+        """Send an http request with the specified characteristics.
+
+        """
+        kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
+
         resp, body = self._http_request(url, method, **kwargs)
-        return resp, json.loads(body.decode())
+        return resp, body.decode()

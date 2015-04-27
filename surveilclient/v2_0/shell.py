@@ -13,6 +13,17 @@
 # under the License.
 
 from surveilclient.common import utils
+from surveilclient.openstack.common import cliutils
+
+
+def _dict_from_args(args, arg_names):
+    result = {}
+    for arg in arg_names:
+        value = getattr(args, arg, None)
+        if value is not None:
+            result[arg] = value
+
+    return result
 
 
 def do_config_host_list(sc, args):
@@ -32,6 +43,36 @@ def do_config_host_list(sc, args):
             'address': lambda x: x['address'],
         }
         utils.print_list(hosts, cols, formatters=formatters)
+
+
+@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("--address", help="Address of the host")
+@cliutils.arg("--max_check_attempts")
+@cliutils.arg("--check_period")
+@cliutils.arg("--contacts")
+@cliutils.arg("--contact_groups")
+@cliutils.arg("--notification_interval")
+@cliutils.arg("--notification_period")
+@cliutils.arg("--use")
+def do_config_host_create(sc, args):
+    """Create a config host."""
+    arg_names = ['host_name',
+                 'address',
+                 'max_check_attempts',
+                 'check_period',
+                 'contacts',
+                 'contact_groups',
+                 'notification_interval',
+                 'notification_period',
+                 'use']
+    host = _dict_from_args(args, arg_names)
+    sc.config.hosts.create(**host)
+
+
+@cliutils.arg("--host_name", help="Name of the host")
+def do_config_host_delete(sc, args):
+    """Create a config host."""
+    sc.config.hosts.delete(args.host_name)
 
 
 def do_config_service_list(sc, args):
@@ -59,7 +100,7 @@ def do_config_service_list(sc, args):
 
 def do_config_reload(sc, args):
     """Trigger a config reload."""
-    print (sc.config.reload_config()['message'])
+    print(sc.config.reload_config()['message'])
 
 
 def do_status_host_list(sc, args):

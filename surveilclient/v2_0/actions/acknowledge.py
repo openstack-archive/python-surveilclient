@@ -13,14 +13,15 @@
 # under the License.
 
 from surveilclient.common import surveil_manager
-from surveilclient.v2_0.actions import acknowledge
-from surveilclient.v2_0.actions import downtime
 
 
-class ActionsManager(surveil_manager.SurveilManager):
-    base_url = '/actions'
+class AcknowledgeManager(surveil_manager.SurveilManager):
+    base_url = '/actions/acknowledge'
 
-    def __init__(self, http_client):
-        super(ActionsManager, self).__init__(http_client)
-        self.downtime = downtime.DowntimeManager(self.http_client)
-        self.acknowledge = acknowledge.AcknowledgeManager(self.http_client)
+    def create(self, **kwargs):
+        resp, body = self.http_client.json_request(
+            self.base_url,
+            'POST',
+            body=kwargs,
+        )
+        return body

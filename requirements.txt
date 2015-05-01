@@ -2,3 +2,4 @@ oslo.serialization
 prettytable
 pbr==0.10.4
 six
+requests

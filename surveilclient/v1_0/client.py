@@ -25,7 +25,7 @@ class Client(object):
     """
 
     def __init__(self, endpoint):
-        self.http_client = http.HTTPClient(endpoint)
+        self.http_client = http.HTTPClient(endpoint, authenticated=False)
         self.hosts = hosts.HostsManager(self.http_client)
         self.services = services.ServicesManager(self.http_client)
 

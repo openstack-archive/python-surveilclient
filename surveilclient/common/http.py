@@ -13,6 +13,7 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import requests
 from six.moves import http_client as httplib
 
 from surveilclient import exc
@@ -27,11 +28,41 @@ USER_AGENT = 'python-surveilclient'
 
 class HTTPClient(object):
 
-    def __init__(self, endpoint):
+    def __init__(self,
+                 endpoint,
+                 username,
+                 password,
+                 tenant_name,
+                 auth_url):
         endpoint_parts = urlutils.urlparse(endpoint)
         self.endpoint_hostname = endpoint_parts.hostname
         self.endpoint_port = endpoint_parts.port
         self.endpoint_path = endpoint_parts.path
+
+        self.auth_username = username
+        self.auth_password = password
+        self.tenant_name = tenant_name
+        self.auth_url = auth_url
+
+        self.auth_token = None
+
+    def _token_valid(self):
+        #  TODO(aviau): Check expiration date on token.
+        if self.auth_token is None:
+            return False
+        return True
+
+    def _get_auth_token(self):
+        """Returns an auth token."""
+
+        if self._token_valid():
+            return self.auth_token
+
+        auth_url = self.auth_url + '/tokens'
+        credentials = {}
+        resp = requests.post(auth_url, data=json.dumps(credentials))
+        access = resp.json()
+        return access['access']['token']['id']
 
     def get_connection(self):
         # TODO(aviau): https
@@ -39,7 +70,6 @@ class HTTPClient(object):
             self.endpoint_hostname,
             self.endpoint_port
         )
-
         return con
 
     def _http_request(self, url, method, **kwargs):
@@ -50,6 +80,8 @@ class HTTPClient(object):
         """
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
         kwargs['headers'].setdefault('User-Agent', USER_AGENT)
+        kwargs['headers'].setdefault('X-Auth-Token', self._get_auth_token())
+
         conn = self.get_connection()
         conn.request(method, self.endpoint_path + url, **kwargs)
         resp = conn.getresponse()

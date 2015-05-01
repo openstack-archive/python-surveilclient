@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import os
+
 from surveilclient.common import http
 from surveilclient.v2_0 import actions
 from surveilclient.v2_0 import config
@@ -25,8 +27,29 @@ class Client(object):
     :param string endpoint: The url of the surveil API
     """
 
-    def __init__(self, endpoint):
-        self.http_client = http.HTTPClient(endpoint)
+    def __init__(self,
+                 endpoint,
+                 username=os.environ.get('OS_USERNAME', None),
+                 password=os.environ.get('OS_PASSWORD', None),
+                 tenant_name=os.environ.get('OS_TENANT_NAME', None),
+                 auth_url=None):
+
+        if auth_url is None:
+            auth_url = os.environ.get(
+                'SURVEIL_AUTH_URL',
+                os.environ.get('OS_AUTH_URL', None)
+            )
+            if auth_url is None:
+                raise Exception("Must specify auth url")
+
+        self.http_client = http.HTTPClient(
+            endpoint,
+            username=username,
+            password=password,
+            tenant_name=tenant_name,
+            auth_url=auth_url,
+        )
+
         self.config = config.ConfigManager(self.http_client)
         self.status = status.StatusManager(self.http_client)
         self.actions = actions.ActionsManager(self.http_client)

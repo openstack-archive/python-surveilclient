@@ -14,6 +14,7 @@ You'll need to provide the Surveil API URL. You can do this with the
 variable::
 
     export SURVEIL_API_URL=http://localhost:8080/v2
+    export SURVEIL_AUTH_URL=http://localhost:8080/v2/auth
 
 You'll find complete documentation on the shell by running ``surveil help``.
 
@@ -29,7 +30,8 @@ Python API
 
 To use the python API, simply create a client with the endpoint::
 
-    from surveilclient import client
-    c = client.Client('http://localhost:8080/v2', version='2_0')
-    hosts = c.config.hosts.list()
-
+      from surveilclient import client
+      c = client.Client('http://localhost:8080/v2',
+                        auth_url='http://localhost:8080/v2/auth',
+                        version='2_0')
+      hosts = c.config.hosts.list()

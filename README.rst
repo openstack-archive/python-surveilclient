@@ -14,6 +14,7 @@ You'll need to provide the Surveil API URL. You can do this with the
 variable::
 
     export SURVEIL_API_URL=http://localhost:8080/v2
+    export SURVEIL_AUTH_URL=http://localhost:8080/v2/auth
 
 You'll find complete documentation on the shell by running ``surveil help``.
 

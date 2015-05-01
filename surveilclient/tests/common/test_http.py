@@ -24,7 +24,7 @@ class TestHttp(unittest.TestCase):
 
     def setUp(self):
         self.surveil_url = 'http://surveil:8080/v1'
-        self.client = http.HTTPClient(self.surveil_url)
+        self.client = http.HTTPClient(self.surveil_url, authenticated=False)
 
     @httpretty.activate
     def test_json_request_get(self):

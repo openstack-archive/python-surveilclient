@@ -27,7 +27,7 @@ class HostsManager(surveil_manager.SurveilManager):
 
     def create(self, **kwargs):
         """Create a new host."""
-        resp, body = self.http_client.json_request(
+        resp, body = self.http_client.request(
             HostsManager.base_url, 'POST',
             body=kwargs
         )

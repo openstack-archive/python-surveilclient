@@ -58,7 +58,7 @@ class HTTPClient(object):
         """Returns an auth token."""
 
         if self._token_valid():
-            return self.auth_token
+            return self.auth_token['id']
 
         auth_url = self.auth_url + '/tokens'
         credentials = {}
@@ -85,8 +85,7 @@ class HTTPClient(object):
         kwargs['headers'].setdefault('User-Agent', USER_AGENT)
 
         if self.authenticated:
-            kwargs['headers'].setdefault('X-Auth-Token',
-                                         self._get_auth_token())
+            kwargs['headers']['X-Auth-Token'] = self._get_auth_token()
 
         conn = self.get_connection()
         conn.request(method, self.endpoint_path + url, **kwargs)

@@ -3,6 +3,8 @@
 # documentation
 doc/build
 doc/source/_build
+AUTHORS
+ChangeLog
 
 .testrepository
 dist

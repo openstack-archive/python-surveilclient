@@ -45,12 +45,38 @@ def do_config_host_list(sc, args):
         utils.print_list(hosts, cols, formatters=formatters)
 
 
+@cliutils.arg("host_name", help="Name of the host")
+@cliutils.arg("--address", help="Address of the host")
+@cliutils.arg("--max_check_attempts")
+@cliutils.arg("--check_period")
+@cliutils.arg("--contacts")
+@cliutils.arg("--contact_groups")
+@cliutils.arg("--custom_fields")
+@cliutils.arg("--notification_interval")
+@cliutils.arg("--notification_period")
+@cliutils.arg("--use")
+def do_config_host_update(sc, args):
+    """Create a config host."""
+    arg_names = ['address',
+                 'max_check_attempts',
+                 'check_period',
+                 'contacts',
+                 'contact_groups',
+                 'custom_fields',
+                 'notification_interval',
+                 'notification_period',
+                 'use']
+    host = _dict_from_args(args, arg_names)
+    sc.config.hosts.update(args.host_name, **host)
+
+
 @cliutils.arg("--host_name", help="Name of the host")
 @cliutils.arg("--address", help="Address of the host")
 @cliutils.arg("--max_check_attempts")
 @cliutils.arg("--check_period")
 @cliutils.arg("--contacts")
 @cliutils.arg("--contact_groups")
+@cliutils.arg("--custom_fields")
 @cliutils.arg("--notification_interval")
 @cliutils.arg("--notification_period")
 @cliutils.arg("--use")
@@ -62,11 +88,30 @@ def do_config_host_create(sc, args):
                  'check_period',
                  'contacts',
                  'contact_groups',
+                 'custom_fields',
                  'notification_interval',
                  'notification_period',
                  'use']
     host = _dict_from_args(args, arg_names)
     sc.config.hosts.create(**host)
+
+
+@cliutils.arg("host_name", help="Name of the host")
+def do_config_host_show(sc, args):
+    """Show a specific host."""
+    host = sc.config.hosts.get(args.host_name)
+
+    if args.json:
+        print(utils.json_formatter(host))
+    elif host:
+        """ Specify the shown order and all the properties to display """
+        hostProperties = [
+            'host_name', 'address', 'check_period', 'contact_groups',
+            'contacts', 'custom_fields', 'max_check_attempts',
+            'notification_interval', 'notification_period', 'use'
+        ]
+
+        utils.print_item(host, hostProperties)
 
 
 @cliutils.arg("--host_name", help="Name of the host")

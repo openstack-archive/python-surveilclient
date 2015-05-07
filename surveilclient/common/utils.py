@@ -53,6 +53,30 @@ def json_formatter(js):
     return jsonutils.dumps(js, indent=2, ensure_ascii=False)
 
 
+def print_item(objs, properties):
+    """ Add the missing properties to the objs """
+    for prop in properties:
+        if prop not in objs:
+            objs[prop] = ""
+
+    cols = [
+        'Property',
+        'Value'
+    ]
+
+    """ Override the properties keys pass in parameter """
+    list = []
+    for value in properties:
+        list.append({'prop': value, 'value': objs[value]})
+
+    formatters = {
+        'Property': lambda x: x['prop'],
+        'Value': lambda x: x['value']
+    }
+
+    print_list(list, cols, formatters=formatters)
+
+
 def print_list(objs, fields, field_labels=None, formatters={}, sortby=None):
     field_labels = field_labels or fields
     pt = prettytable.PrettyTable([f for f in field_labels],

@@ -113,7 +113,10 @@ class HTTPClient(object):
             kwargs['body'] = json.dumps(kwargs['body'])
 
         resp, body = self.request(url, method, **kwargs)
-        return resp, json.loads(body)
+        if body != "":
+            body = json.loads(body)
+
+        return resp, body
 
     def request(self, url, method, **kwargs):
         """Send an http request with the specified characteristics.

@@ -135,6 +135,45 @@ def do_config_service_delete(sc, args):
                               args.service_description)
 
 
+def do_config_checkmodulation_list(sc, args):
+    """List all config check modulations."""
+    checkmodulations = sc.config.checkmodulations.list()
+
+    if args.json:
+        print(utils.json_formatter(checkmodulations))
+    else:
+        cols = [
+            'check_command',
+            'check_period',
+            'checkmodulation_name'
+        ]
+
+        formatters = {
+            'check_command': lambda x: x['check_command'],
+            'check_period': lambda x: x['check_period'],
+            'checkmodulation_name': lambda x: x['checkmodulation_name']
+        }
+        utils.print_list(checkmodulations, cols, formatters=formatters)
+
+
+@cliutils.arg("--check_command")
+@cliutils.arg("--check_period")
+@cliutils.arg("--checkmodulation_name")
+def do_config_checkmodulation_create(sc, args):
+    """Create a config check modulation."""
+    arg_names = ['check_command',
+                 'check_period',
+                 'checkmodulation_name']
+    checkmodulation = _dict_from_args(args, arg_names)
+    sc.config.checkmodulations.create(**checkmodulation)
+
+
+@cliutils.arg("--checkmodulation_name", help="Name of the check modulation")
+def do_config_checkmodulation_delete(sc, args):
+    """Create a config check modulation."""
+    sc.config.checkmodulations.delete(args.checkmodulation_name)
+
+
 def do_config_reload(sc, args):
     """Trigger a config reload."""
     print(sc.config.reload_config()['message'])

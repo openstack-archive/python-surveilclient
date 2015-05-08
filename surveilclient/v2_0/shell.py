@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import json
+
 from surveilclient.common import utils
 from surveilclient.openstack.common import cliutils
 
@@ -67,6 +69,10 @@ def do_config_host_update(sc, args):
                  'notification_period',
                  'use']
     host = _dict_from_args(args, arg_names)
+
+    if "custom_fields" in host:
+        host["custom_fields"] = json.loads(host["custom_fields"])
+
     sc.config.hosts.update(args.host_name, **host)
 
 
@@ -93,6 +99,10 @@ def do_config_host_create(sc, args):
                  'notification_period',
                  'use']
     host = _dict_from_args(args, arg_names)
+
+    if "custom_fields" in host:
+        host["custom_fields"] = json.loads(host["custom_fields"])
+
     sc.config.hosts.create(**host)
 
 

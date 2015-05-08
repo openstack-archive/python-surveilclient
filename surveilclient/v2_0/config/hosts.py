@@ -11,7 +11,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import json
 
 from surveilclient.common import surveil_manager
 
@@ -28,10 +27,6 @@ class HostsManager(surveil_manager.SurveilManager):
 
     def create(self, **kwargs):
         """Create a new host."""
-
-        if "custom_fields" in kwargs:
-            kwargs["custom_fields"] = json.loads(kwargs["custom_fields"])
-
         resp, body = self.http_client.json_request(
             HostsManager.base_url, 'POST',
             body=kwargs
@@ -49,9 +44,6 @@ class HostsManager(surveil_manager.SurveilManager):
     def update(self, host_name, **kwargs):
         """Update a host."""
         kwargs["host_name"] = host_name
-
-        if "custom_fields" in kwargs:
-            kwargs["custom_fields"] = json.loads(kwargs["custom_fields"])
 
         resp, body = self.http_client.json_request(
             HostsManager.base_url + '/' + host_name, 'PUT',

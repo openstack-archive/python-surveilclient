@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import json
+
 import httpretty
 
 from surveilclient.tests.v2_0 import clienttest
@@ -37,16 +39,60 @@ class TestHosts(clienttest.ClientTest):
     def test_create(self):
         httpretty.register_uri(
             httpretty.POST, "http://localhost:8080/v2/config/hosts",
-            body='{"host_name": "new_host"}'
+            body='{"host_name": "new_host", "address": "192.168.2.1"}'
         )
 
         self.client.config.hosts.create(
-            host_name="new_host"
+            host_name="new_host",
+            address="192.168.2.1"
         )
 
         self.assertEqual(
-            httpretty.last_request().body.decode(),
-            u'{"host_name": "new_host"}'
+            json.loads(httpretty.last_request().body.decode()),
+            {
+                "host_name": "new_host",
+                "address": "192.168.2.1"
+            }
+        )
+
+    @httpretty.activate
+    def test_show(self):
+        httpretty.register_uri(
+            httpretty.GET,
+            "http://localhost:8080/v2/config/hosts/host_name_to_show",
+            body='{"host_name": "host_name_to_show"}'
+        )
+
+        host = self.client.config.hosts.get(
+            host_name="host_name_to_show"
+        )
+
+        self.assertEqual(
+            host,
+            {"host_name": "host_name_to_show"}
+        )
+
+    @httpretty.activate
+    def test_update(self):
+        httpretty.register_uri(
+            httpretty.PUT,
+            "http://localhost:8080/v2/config/hosts/host_name_to_update",
+            body='{"test": "test"}'
+        )
+
+        self.client.config.hosts.update(
+            "host_name_to_update",
+            address="192.168.0.1",
+            check_period="24x7"
+        )
+
+        self.assertEqual(
+            json.loads(httpretty.last_request().body.decode()),
+            {
+                "check_period": u"24x7",
+                "host_name": u"host_name_to_update",
+                "address": u"192.168.0.1"
+            }
         )
 
     @httpretty.activate

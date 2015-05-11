@@ -250,11 +250,11 @@ def do_status_host_list(sc, args):
         ]
 
         formatters = {
-            'host_name': lambda x: x['host_name'],
-            'address': lambda x: x['address'],
-            'state': lambda x: x['state'],
-            'last_check': lambda x: x['last_check'],
-            'plugin_output': lambda x: x['plugin_output'][0:30] + '...',
+            'host_name': lambda x: x.get('host_name', ''),
+            'address': lambda x: x.get('address', ''),
+            'state': lambda x: x.get('state', ''),
+            'last_check': lambda x: x.get('last_check', ''),
+            'plugin_output': lambda x: x.get('plugin_output', '')[0:30] + '...',
         }
         utils.print_list(services, cols, formatters=formatters)
 
@@ -275,10 +275,10 @@ def do_status_service_list(sc, args):
         ]
 
         formatters = {
-            'host_name': lambda x: x['host_name'],
-            'service_description': lambda x: x['service_description'],
-            'state': lambda x: x['state'],
-            'last_check': lambda x: x['last_check'],
-            'plugin_output': lambda x: x['plugin_output'][0:30] + '...',
+            'host_name': lambda x: x.get('host_name', ''),
+            'service_description': lambda x: x.get('service_description', ''),
+            'state': lambda x: x.get('state', ''),
+            'last_check': lambda x: x.get('last_check', ''),
+            'plugin_output': lambda x: x.get('plugin_output', '')[0:30],
         }
         utils.print_list(services, cols, formatters=formatters)

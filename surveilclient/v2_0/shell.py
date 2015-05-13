@@ -272,3 +272,16 @@ def do_status_service_list(sc, args):
             'plugin_output': lambda x: x['plugin_output'][0:30] + '...',
         }
         utils.print_list(services, cols, formatters=formatters)
+
+
+@cliutils.arg("host_name", help="Name of the host")
+@cliutils.arg("--service_description", help="Service description")
+@cliutils.arg("--time_stamp")
+def do_action_recheck(sc, args):
+    """Schedule a recheck."""
+    arg_names = ['host_name',
+                 'service_description',
+                 'time_stamp']
+
+    recheck = _dict_from_args(args, arg_names)
+    sc.actions.recheck.create(**recheck)

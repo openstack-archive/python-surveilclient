@@ -13,10 +13,15 @@
 # under the License.
 
 from surveilclient.common import surveil_manager
+from surveilclient.v2_0.status.metrics import metrics
 
 
 class HostsManager(surveil_manager.SurveilManager):
     base_url = '/status/hosts'
+
+    def __init__(self, http_client):
+        super(HostsManager, self).__init__(http_client)
+        self.metrics = metrics.MetricsManager(self.http_client)
 
     def list(self, live_query={'filters': '{}'}):
         """Get a list of hosts."""

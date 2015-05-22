@@ -286,6 +286,45 @@ def do_status_service_list(sc, args):
 
 
 @cliutils.arg("host_name", help="Name of the host")
+@cliutils.arg("metric_name", help="Name of the metric")
+@cliutils.arg("time_begin", help="begin of the metric")
+@cliutils.arg("time_end", help="end of the metric")
+@cliutils.arg("--service_description", help="Service description")
+def do_status_metrics_show(sc, args):
+
+    arg_names = ['host_name',
+                 'metric_name',
+                 'time_begin',
+                 'time_end',
+                 'service_description']
+    arg = _dict_from_args(args, arg_names)
+    """List all status metrics."""
+
+    metrics = sc.status.metrics.list(**arg)
+    if args.json:
+        print(utils.json_formatter(metrics))
+    else:
+        cols = [
+            'min',
+            'max',
+            'warning',
+            'critical',
+            'value',
+            'unit'
+        ]
+
+        formatters = {
+            'min': lambda x: x.get('min', ''),
+            'max': lambda x: x.get('max', ''),
+            'warning': lambda x: x.get('warning', ''),
+            'critical': lambda x: x.get('critical', ''),
+            'value': lambda x: x.get('value', ''),
+            'unit': lambda x: x.get('unit', ''),
+        }
+        utils.print_list(metrics, cols, formatters=formatters)
+
+
+@cliutils.arg("host_name", help="Name of the host")
 @cliutils.arg("--service_description", help="Service description")
 @cliutils.arg("--time_stamp")
 def do_action_recheck(sc, args):

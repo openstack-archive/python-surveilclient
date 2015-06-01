@@ -124,7 +124,7 @@ def do_config_host_show(sc, args):
         utils.print_item(host, hostProperties)
 
 
-@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("host_name", help="Name of the host")
 def do_config_host_delete(sc, args):
     """Create a config host."""
     sc.config.hosts.delete(args.host_name)
@@ -182,8 +182,8 @@ def do_config_service_create(sc, args):
     sc.config.services.create(**service)
 
 
-@cliutils.arg("--host_name", help="Name of the host")
-@cliutils.arg("--service_description")
+@cliutils.arg("host_name", help="Name of the host")
+@cliutils.arg("service_description", help="The service_description")
 def do_config_service_delete(sc, args):
     """Create a config host."""
     sc.config.services.delete(args.host_name,
@@ -257,6 +257,21 @@ def do_status_host_list(sc, args):
             'plugin_output': lambda x: x['plugin_output'][0:30] + '...',
         }
         utils.print_list(services, cols, formatters=formatters)
+
+
+@cliutils.arg("host_name", help="The host_name")
+def do_status_host_show(sc, args):
+    host = sc.status.hosts.get(args.host_name)
+
+    if args.json:
+        print(utils.json_formatter(host))
+    elif host:
+        hostProperties = [
+            'host_name', 'address', 'state', 'last_check',
+            'last_state_change', 'long_output', 'description', 'acknowledged',
+            'plugin_output', 'services', 'childs', 'parents',
+        ]
+        utils.print_item(host, hostProperties)
 
 
 def do_status_service_list(sc, args):

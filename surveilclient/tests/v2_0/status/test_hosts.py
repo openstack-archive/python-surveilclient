@@ -32,3 +32,17 @@ class TestHosts(clienttest.ClientTest):
             hosts,
             [{"host_name": "host1"}]
         )
+
+    @httpretty.activate
+    def test_get(self):
+        httpretty.register_uri(
+            httpretty.GET, "http://localhost:8080/v2/status/hosts/hostname",
+            body='[{"host_name": "host1"}]'
+        )
+
+        host = self.client.status.hosts.get("hostname")
+
+        self.assertEqual(
+            host,
+            [{"host_name": "host1"}]
+        )

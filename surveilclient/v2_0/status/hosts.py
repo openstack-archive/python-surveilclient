@@ -24,3 +24,10 @@ class HostsManager(surveil_manager.SurveilManager):
             HostsManager.base_url, 'POST', body=live_query
         )
         return body
+
+    def get(self, host_name):
+        """Get a specific host."""
+        resp, body = self.http_client.json_request(
+            HostsManager.base_url + "/" + host_name, 'GET'
+        )
+        return body

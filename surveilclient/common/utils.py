@@ -65,9 +65,23 @@ def print_item(objs, properties):
     ]
 
     """ Override the properties keys pass in parameter """
+
+    len_property_max=0
+    for property in properties:
+        if len(property) > len_property_max:
+            len_property_max = len(property)
+
+    # 80 char per line - 7 char (space or | )
+    len_available = 73 - len_property_max
     list = []
-    for value in properties:
-        list.append({'prop': value, 'value': objs[value].__str__()})
+
+    for property in properties:
+        val_lines = []
+        for i in range(0, len(objs[property].__str__()), len_available):
+            val_lines.append(objs[property].__str__()[i:i+len_available])
+
+        val_lines ='\n'.join(val_lines)
+        list.append({'prop': property, 'value': val_lines})
 
     formatters = {
         'Property': lambda x: x['prop'],

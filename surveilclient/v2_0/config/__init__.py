@@ -14,6 +14,7 @@
 
 from surveilclient.common import surveil_manager
 from surveilclient.v2_0.config import checkmodulations
+from surveilclient.v2_0.config import commands
 from surveilclient.v2_0.config import hosts
 from surveilclient.v2_0.config import services
 
@@ -23,10 +24,11 @@ class ConfigManager(surveil_manager.SurveilManager):
 
     def __init__(self, http_client):
         super(ConfigManager, self).__init__(http_client)
-        self.hosts = hosts.HostsManager(self.http_client)
-        self.services = services.ServicesManager(self.http_client)
         self.checkmodulations = checkmodulations.CheckModulationsManager(
             self.http_client)
+        self.commands = commands.CommandsManager(self.http_client)
+        self.hosts = hosts.HostsManager(self.http_client)
+        self.services = services.ServicesManager(self.http_client)
 
     def reload_config(self):
         resp, body = self.http_client.json_request(

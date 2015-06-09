@@ -219,6 +219,66 @@ def do_config_checkmodulation_delete(sc, args):
     sc.config.checkmodulations.delete(args.checkmodulation_name)
 
 
+def do_config_command_list(sc, args):
+    """List all config commands."""
+    commands = sc.config.commands.list()
+
+    if args.json:
+        print(utils.json_formatter(commands))
+    else:
+        cols = [
+            'command_name',
+            'command_line'
+        ]
+
+        formatters = {
+            'command_name': lambda x: x['command_name'],
+            'command_line': lambda x: x['command_line']
+        }
+        utils.print_list(commands, cols, formatters=formatters)
+
+
+@cliutils.arg("--command_name")
+@cliutils.arg("--command_line")
+def do_config_command_create(sc, args):
+    """Create a config check modulation."""
+    arg_names = ['command_name',
+                 'command_line']
+    command = _dict_from_args(args, arg_names)
+    sc.config.commands.create(**command)
+
+
+@cliutils.arg("--command_name", help="Name of the command")
+def do_config_command_delete(sc, args):
+    """Delete a config command."""
+    sc.config.commands.delete(args.command_name)
+
+
+@cliutils.arg("command_name", help="Name of the command")
+def do_config_command_show(sc, args):
+    """Show a specific command."""
+    command = sc.config.commands.get(args.command_name)
+
+    if args.json:
+        print(utils.json_formatter(command))
+    elif command:
+        """ Specify the shown order and all the properties to display """
+        commandProperties = [
+            'command_name', 'command_line'
+        ]
+
+        utils.print_item(command, commandProperties)
+
+
+@cliutils.arg("command_name", help="Name of the command")
+@cliutils.arg("--command_line", help="Address of the command")
+def do_config_command_update(sc, args):
+    """Update a config command."""
+    arg_names = ['command_line']
+    command = _dict_from_args(args, arg_names)
+    sc.config.commands.update(args.command_name, **command)
+
+
 def do_config_reload(sc, args):
     """Trigger a config reload."""
     print(sc.config.reload_config()['message'])

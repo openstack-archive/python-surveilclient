@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import json
+
 import httpretty
 
 from surveilclient.tests.v2_0 import clienttest
@@ -31,4 +33,24 @@ class TestServices(clienttest.ClientTest):
         self.assertEqual(
             services,
             [{"service_name": "service1"}]
+        )
+
+    @httpretty.activate
+    def test_submit_service_check_result(self):
+        httpretty.register_uri(
+            httpretty.POST,
+            "http://localhost:8080/v2/status/hosts/localhost"
+            "/services/testservice/results",
+            body=''
+        )
+
+        self.client.status.services.submit_check_result(
+            "localhost",
+            'testservice',
+            output="someoutputt"
+        )
+
+        self.assertEqual(
+            json.loads(httpretty.last_request().body.decode()),
+            {"output": u"someoutputt"}
         )

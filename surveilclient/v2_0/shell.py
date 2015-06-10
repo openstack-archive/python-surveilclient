@@ -145,10 +145,10 @@ def do_config_service_list(sc, args):
         ]
 
         formatters = {
-            'service_description': lambda x: x['service_description'],
-            'host_name': lambda x: x['host_name'],
-            'check_period': lambda x: x['check_period'],
-            'contact_groups': lambda x: x['contact_groups'],
+            'service_description': lambda x: x.get('service_description', ''),
+            'host_name': lambda x: x.get('host_name', ''),
+            'check_period': lambda x: x.get('check_period', ''),
+            'contact_groups': lambda x: x.get('contact_groups', ''),
         }
         utils.print_list(services, cols, formatters=formatters)
 
@@ -204,9 +204,10 @@ def do_config_checkmodulation_list(sc, args):
         ]
 
         formatters = {
-            'check_command': lambda x: x['check_command'],
-            'check_period': lambda x: x['check_period'],
-            'checkmodulation_name': lambda x: x['checkmodulation_name']
+            'check_command': lambda x: x.get('check_command', ''),
+            'check_period': lambda x: x.get('check_period', ''),
+            'checkmodulation_name': lambda x: x.get('checkmodulation_name',
+                                                    ''),
         }
         utils.print_list(checkmodulations, cols, formatters=formatters)
 
@@ -242,8 +243,8 @@ def do_config_command_list(sc, args):
         ]
 
         formatters = {
-            'command_name': lambda x: x['command_name'],
-            'command_line': lambda x: x['command_line']
+            'command_name': lambda x: x.get('command_name', ''),
+            'command_line': lambda x: x.get('command_line', ''),
         }
         utils.print_list(commands, cols, formatters=formatters)
 

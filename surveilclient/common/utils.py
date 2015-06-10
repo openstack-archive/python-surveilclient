@@ -84,8 +84,8 @@ def print_item(objs, properties):
         list.append({'prop': property, 'value': val_lines})
 
     formatters = {
-        'Property': lambda x: x['prop'],
-        'Value': lambda x: x['value']
+        'Property': lambda x: x.get('prop', ''),
+        'Value': lambda x: x.get('value', ''),
     }
 
     print_list(list, cols, formatters=formatters)

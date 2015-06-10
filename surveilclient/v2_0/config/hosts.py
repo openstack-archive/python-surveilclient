@@ -34,6 +34,7 @@ class HostsManager(surveil_manager.SurveilManager):
         return body
 
     def get(self, host_name):
+        print host_name
         """Get a new host."""
         resp, body = self.http_client.json_request(
             HostsManager.base_url + '/' + host_name, 'GET',
@@ -41,12 +42,10 @@ class HostsManager(surveil_manager.SurveilManager):
         )
         return body
 
-    def update(self, host_name, **kwargs):
+    def update(self, **kwargs):
         """Update a host."""
-        kwargs["host_name"] = host_name
-
         resp, body = self.http_client.json_request(
-            HostsManager.base_url + '/' + host_name, 'PUT',
+            HostsManager.base_url + '/' + kwargs['host_name'], 'PUT',
             body=kwargs
         )
         return body

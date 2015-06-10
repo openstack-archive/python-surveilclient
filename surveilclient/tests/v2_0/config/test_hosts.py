@@ -81,7 +81,7 @@ class TestHosts(clienttest.ClientTest):
         )
 
         self.client.config.hosts.update(
-            "host_name_to_update",
+            host_name="host_name_to_update",
             address="192.168.0.1",
             check_period="24x7"
         )

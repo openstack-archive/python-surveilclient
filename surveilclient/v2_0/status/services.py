@@ -24,3 +24,13 @@ class ServicesManager(surveil_manager.SurveilManager):
             ServicesManager.base_url, 'POST', body=live_query
         )
         return body
+
+    def submit_check_result(self, host_name, service_description, **kwargs):
+        """Submit a check result."""
+        resp, body = self.http_client.json_request(
+            '/status/hosts/%s/services/%s/results' % (host_name,
+                                                      service_description),
+            'POST',
+            body=kwargs
+        )
+        return body

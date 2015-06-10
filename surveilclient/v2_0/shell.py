@@ -75,7 +75,7 @@ def do_config_host_update(sc, args):
     if "custom_fields" in host:
         host["custom_fields"] = json.loads(host["custom_fields"])
 
-    sc.config.hosts.update(**host)
+    sc.config.hosts.update(args.host_name, **host)
 
 
 @cliutils.arg("--host_name", help="Name of the host")
@@ -166,6 +166,7 @@ def do_config_service_list(sc, args):
 @cliutils.arg("--notification_period")
 @cliutils.arg("--contacts")
 @cliutils.arg("--contact_groups")
+@cliutils.arg("--passive_checks_enabled")
 def do_config_service_create(sc, args):
     """Create a config service."""
     arg_names = ['host_name',
@@ -179,6 +180,7 @@ def do_config_service_create(sc, args):
                  'notification_period',
                  'contacts',
                  'contact_groups',
+                 'passive_checks_enabled',
                  'use']
     service = _dict_from_args(args, arg_names)
     sc.config.services.create(**service)
@@ -426,6 +428,27 @@ def do_status_metrics_show(sc, args):
         ]
 
         utils.print_item(metric, metricProperties)
+
+
+@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("--service_description", help="Service description")
+@cliutils.arg("--output", help="The output of the plugin")
+@cliutils.arg("--return_code", help="The return code of the plugin")
+def do_status_submit_check_result(sc, args):
+    """Submit a check result."""
+    if args.service_description:
+        sc.status.services.submit_check_result(
+            args.host_name,
+            args.service_description,
+            output=args.output,
+            return_code=int(args.return_code),
+        )
+    else:
+        sc.status.hosts.submit_check_result(
+            args.host_name,
+            output=args.output,
+            return_code=int(args.return_code),
+        )
 
 
 @cliutils.arg("--host_name", help="Name of the host")

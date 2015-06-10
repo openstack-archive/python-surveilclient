@@ -36,3 +36,11 @@ class HostsManager(surveil_manager.SurveilManager):
             HostsManager.base_url + "/" + host_name, 'GET'
         )
         return body
+
+    def submit_check_result(self, host_name, **kwargs):
+        """Submit a check result."""
+        resp, body = self.http_client.json_request(
+            HostsManager.base_url + '/' + host_name + '/results', 'POST',
+            body=kwargs
+        )
+        return body

@@ -42,6 +42,6 @@ How to use it
 
 Config-host-update::
 
-    surveil config-host-update [host_name] --address [ADDRESS] --custom_fields '{"_field1": "value1", "_field2": "value2"}'
+    surveil config-host-update --host_name [host_name] --address [ADDRESS] --custom_fields '{"_field1": "value1", "_field2": "value2"}'
 
 

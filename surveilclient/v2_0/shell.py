@@ -47,7 +47,7 @@ def do_config_host_list(sc, args):
         utils.print_list(hosts, cols, formatters=formatters)
 
 
-@cliutils.arg("host_name", help="Name of the host")
+@cliutils.arg("--host_name", help="Name of the host")
 @cliutils.arg("--address", help="Address of the host")
 @cliutils.arg("--max_check_attempts")
 @cliutils.arg("--check_period")
@@ -70,10 +70,12 @@ def do_config_host_update(sc, args):
                  'use']
     host = _dict_from_args(args, arg_names)
 
+    host["host_name"] = args.host_name
+
     if "custom_fields" in host:
         host["custom_fields"] = json.loads(host["custom_fields"])
 
-    sc.config.hosts.update(args.host_name, **host)
+    sc.config.hosts.update(**host)
 
 
 @cliutils.arg("--host_name", help="Name of the host")
@@ -106,7 +108,7 @@ def do_config_host_create(sc, args):
     sc.config.hosts.create(**host)
 
 
-@cliutils.arg("host_name", help="Name of the host")
+@cliutils.arg("--host_name", help="Name of the host")
 def do_config_host_show(sc, args):
     """Show a specific host."""
     host = sc.config.hosts.get(args.host_name)
@@ -124,7 +126,7 @@ def do_config_host_show(sc, args):
         utils.print_item(host, hostProperties)
 
 
-@cliutils.arg("host_name", help="Name of the host")
+@cliutils.arg("--host_name", help="Name of the host")
 def do_config_host_delete(sc, args):
     """Create a config host."""
     sc.config.hosts.delete(args.host_name)
@@ -182,8 +184,8 @@ def do_config_service_create(sc, args):
     sc.config.services.create(**service)
 
 
-@cliutils.arg("host_name", help="Name of the host")
-@cliutils.arg("service_description", help="The service_description")
+@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("--service_description", help="The service_description")
 def do_config_service_delete(sc, args):
     """Create a config host."""
     sc.config.services.delete(args.host_name,
@@ -322,7 +324,7 @@ def do_status_host_list(sc, args):
         utils.print_list(services, cols, formatters=formatters)
 
 
-@cliutils.arg("host_name", help="The host_name")
+@cliutils.arg("--host_name", help="The host_name")
 def do_status_host_show(sc, args):
     host = sc.status.hosts.get(args.host_name)
 
@@ -362,10 +364,10 @@ def do_status_service_list(sc, args):
         utils.print_list(services, cols, formatters=formatters)
 
 
-@cliutils.arg("host_name", help="Name of the host")
-@cliutils.arg("metric_name", help="Name of the metric")
-@cliutils.arg("time_begin", help="begin of the metric")
-@cliutils.arg("time_end", help="end of the metric")
+@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("--metric_name", help="Name of the metric")
+@cliutils.arg("--time_begin", help="begin of the metric")
+@cliutils.arg("--time_end", help="end of the metric")
 @cliutils.arg("--service_description", help="Service description")
 def do_status_metrics_list(sc, args):
     """List all status metrics."""
@@ -400,8 +402,8 @@ def do_status_metrics_list(sc, args):
         utils.print_list(metrics, cols, formatters=formatters)
 
 
-@cliutils.arg("host_name", help="Name of the host")
-@cliutils.arg("metric_name", help="Name of the metric")
+@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("--metric_name", help="Name of the metric")
 @cliutils.arg("--service_description", help="Service description")
 def do_status_metrics_show(sc, args):
     """Give the last status metrics."""
@@ -426,7 +428,7 @@ def do_status_metrics_show(sc, args):
         utils.print_item(metric, metricProperties)
 
 
-@cliutils.arg("host_name", help="Name of the host")
+@cliutils.arg("--host_name", help="Name of the host")
 @cliutils.arg("--service_description", help="Service description")
 @cliutils.arg("--time_stamp")
 def do_action_recheck(sc, args):

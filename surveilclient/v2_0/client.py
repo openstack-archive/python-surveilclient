@@ -37,7 +37,7 @@ class Client(object):
         if auth_url is None:
             auth_url = os.environ.get(
                 'SURVEIL_AUTH_URL',
-                os.environ.get('OS_AUTH_URL', None)
+                os.environ.get('OS_AUTH_URL', endpoint + '/auth')
             )
             if auth_url is None:
                 raise Exception("Must specify auth url")

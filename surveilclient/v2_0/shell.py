@@ -380,28 +380,38 @@ def do_status_metrics_list(sc, args):
                  'service_description']
     arg = _dict_from_args(args, arg_names)
 
-    metrics = sc.status.hosts.metrics.get(**arg)
-    if args.json:
-        print(utils.json_formatter(metrics))
+    if arg.get('metric_name', None) is None:
+        metrics = sc.status.hosts.metrics.list(**arg)
+        if args.json:
+            print(utils.json_formatter(metrics))
+        else:
+            cols = ['metric_name']
+            formatters = {
+                'metric_name': lambda x: x.get('metric_name', '')
+            }
+            utils.print_list(metrics, cols, formatters=formatters)
     else:
-        cols = [
-            'min',
-            'max',
-            'warning',
-            'critical',
-            'value',
-            'unit'
-        ]
-
-        formatters = {
-            'min': lambda x: x.get('min', ''),
-            'max': lambda x: x.get('max', ''),
-            'warning': lambda x: x.get('warning', ''),
-            'critical': lambda x: x.get('critical', ''),
-            'value': lambda x: x.get('value', ''),
-            'unit': lambda x: x.get('unit', ''),
-        }
-        utils.print_list(metrics, cols, formatters=formatters)
+        metrics = sc.status.hosts.metrics.get(**arg)
+        if args.json:
+            print(utils.json_formatter(metrics))
+        else:
+            cols = [
+                'min',
+                'max',
+                'warning',
+                'critical',
+                'value',
+                'unit'
+            ]
+            formatters = {
+                'min': lambda x: x.get('min', ''),
+                'max': lambda x: x.get('max', ''),
+                'warning': lambda x: x.get('warning', ''),
+                'critical': lambda x: x.get('critical', ''),
+                'value': lambda x: x.get('value', ''),
+                'unit': lambda x: x.get('unit', ''),
+            }
+            utils.print_list(metrics, cols, formatters=formatters)
 
 
 @cliutils.arg("--host_name", help="Name of the host")

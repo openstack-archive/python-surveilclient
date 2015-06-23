@@ -20,8 +20,8 @@ class MetricsManager(surveil_manager.SurveilManager):
 
     def get(self, host_name, metric_name, service_description=None,
             time_begin=None, time_end=None):
+        """Get a list of metrics."""
         if time_begin is not None and time_end is not None:
-            """Get a list of metrics."""
             time_delta = {'begin': time_begin,
                           'end': time_end}
             if service_description is not None:
@@ -48,3 +48,15 @@ class MetricsManager(surveil_manager.SurveilManager):
             return body
         else:
             return {}
+
+    def list(self, host_name, service_description=None):
+        """Get a list of metrics name."""
+        if service_description is None:
+            url = MetricsManager.base_url + "/" + host_name + "/metrics"
+        else:
+            url = (MetricsManager.base_url + "/" + host_name + "/services/"
+                   + service_description + "/metrics")
+
+        resp, body = self.http_client.json_request(
+            url, 'GET')
+        return body

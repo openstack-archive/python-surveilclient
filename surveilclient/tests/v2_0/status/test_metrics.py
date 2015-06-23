@@ -20,7 +20,7 @@ from surveilclient.tests.v2_0 import clienttest
 class TestMetrics(clienttest.ClientTest):
 
     @httpretty.activate
-    def test_list(self):
+    def test_list_metrics(self):
         httpretty.register_uri(
             httpretty.POST, "http://localhost:8080/v2/status/"
                             "hosts/localhost/metrics/load1",
@@ -90,4 +90,18 @@ class TestMetrics(clienttest.ClientTest):
         self.assertEqual(
             metrics,
             {"min": "2", "warning": "15", "value": "3"}
+        )
+
+    @httpretty.activate
+    def test_list_metrics_name(self):
+        httpretty.register_uri(
+            httpretty.GET, "http://localhost:8080/v2/status/metrics",
+            body='[{"metric_name": "rta"},{"metric_name": "load5"}]'
+        )
+
+        metrics = self.client.status.hosts.metrics.list()
+
+        self.assertEqual(
+            metrics,
+            [{"metric_name": "rta"}, {"metric_name": "load5"}]
         )

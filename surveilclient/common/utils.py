@@ -110,3 +110,20 @@ def print_list(objs, fields, field_labels=None, formatters={}, sortby=None):
         print(pt.get_string())
     else:
         print(pt.get_string(sortby=field_labels[sortby]))
+
+
+def get_columns(lines, ordered_columns):
+    columns_dict = {}
+
+    for line in lines:
+        for key, value in line.iteritems():
+            if value is not None:
+                columns_dict[key] = True
+
+    valid_columns = []
+    for col in ordered_columns:
+        if col in columns_dict:
+            valid_columns.append(col)
+            del columns_dict[col]
+
+    return valid_columns + sorted(columns_dict.keys())

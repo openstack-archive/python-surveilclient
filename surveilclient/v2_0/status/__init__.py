@@ -13,6 +13,7 @@
 # under the License.
 
 from surveilclient.common import surveil_manager
+from surveilclient.v2_0.status import events
 from surveilclient.v2_0.status import hosts
 from surveilclient.v2_0.status import services
 
@@ -22,5 +23,6 @@ class StatusManager(surveil_manager.SurveilManager):
 
     def __init__(self, http_client):
         super(StatusManager, self).__init__(http_client)
+        self.events = events.EventsManager(self.http_client)
         self.hosts = hosts.HostsManager(self.http_client)
         self.services = services.ServicesManager(self.http_client)

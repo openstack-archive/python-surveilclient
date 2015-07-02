@@ -11,7 +11,6 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-
 import json
 
 from surveilclient.common import utils
@@ -472,3 +471,37 @@ def do_action_recheck(sc, args):
 
     recheck = _dict_from_args(args, arg_names)
     sc.actions.recheck.create(**recheck)
+
+
+@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("--service_description", help="Service description")
+@cliutils.arg("--event_type", help="Event type")
+@cliutils.arg("--start_time", help="Start of the event to query")
+@cliutils.arg("--end_time", help="End of the event to query")
+@cliutils.arg("--live_query", help="A live query")
+def do_status_events_list(sc, args):
+    """List all events."""
+
+    arg_names = ['host_name',
+                 'service_description',
+                 'event_type',
+                 'start_time',
+                 'end_time',
+                 'live_query']
+    arg = _dict_from_args(args, arg_names)
+    events = sc.status.events.list(**arg)
+
+    if args.json:
+        print(utils.json_formatter(events))
+    else:
+        cols = utils.get_columns(events,
+                                 ['host_name',
+                                  'service_description',
+                                  'event_type'])
+
+        def create_format(init, col):
+            init[col] = lambda x: x.get(col, '')
+            return init
+        formatters = reduce(create_format, cols, {})
+
+        utils.print_list(events, cols, formatters=formatters)

@@ -420,12 +420,13 @@ def do_status_metrics_show(sc, args):
     """Give the last status metrics."""
     arg_names = ['host_name',
                  'metric_name',
-                 'service_description']
+                 'service_description',
+                 ]
     arg = _dict_from_args(args, arg_names)
 
-    metric = sc.status.hosts.metrics.get(**arg)
+    metrics = sc.status.hosts.metrics.get(**arg)
     if args.json:
-        print(utils.json_formatter(metric))
+        print(utils.json_formatter(metrics))
     else:
         metricProperties = [
             'min',
@@ -436,7 +437,16 @@ def do_status_metrics_show(sc, args):
             'unit'
         ]
 
-        utils.print_item(metric, metricProperties)
+        cols = utils.get_columns(metrics,
+                                 ['metric_name',
+                                  ])
+
+        def create_format(init, col):
+            init[col] = lambda x: x.get(col, '')
+            return init
+        formatters = reduce(create_format, cols, {})
+
+        utils.print_list(metrics, cols, formatters=formatters)
 
 
 @cliutils.arg("--host_name", help="Name of the host")

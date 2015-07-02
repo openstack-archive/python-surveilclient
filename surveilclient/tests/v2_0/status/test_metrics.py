@@ -29,9 +29,9 @@ class TestMetrics(clienttest.ClientTest):
         )
 
         metrics = self.client.status.hosts.metrics.get('localhost', 'load1',
-                                                       time_begin='2015-05-22'
+                                                       start_time='2015-05-22'
                                                                   'T13:38:08Z',
-                                                       time_end='2015-05-'
+                                                       end_time='2015-05-'
                                                                 '22T13:38:08Z')
 
         self.assertEqual(
@@ -49,10 +49,13 @@ class TestMetrics(clienttest.ClientTest):
                  '{"min": "5", "warning": "200", "value": "150"}]'
         )
 
+        live_query = ('{"time_interval": { "start_time": '
+                      '"2015-05-22T13:38:08Z",'
+                      '"end_time": "2015-05-22T13:38:08Z"}}')
+
         metrics = self.client.status.hosts.metrics.get('localhost', 'load1',
                                                        'load',
-                                                       '2015-05-22T13:38:08Z',
-                                                       '2015-05-22T13:38:08Z'
+                                                       live_query=live_query
                                                        )
 
         self.assertEqual(

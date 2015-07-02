@@ -370,13 +370,15 @@ def do_status_service_list(sc, args):
 @cliutils.arg("--time_begin", help="begin of the metric")
 @cliutils.arg("--time_end", help="end of the metric")
 @cliutils.arg("--service_description", help="Service description")
+@cliutils.arg("--live_query", help="Live query")
 def do_status_metrics_list(sc, args):
     """List all status metrics."""
     arg_names = ['host_name',
                  'metric_name',
                  'time_begin',
                  'time_end',
-                 'service_description']
+                 'service_description',
+                 'live_query']
     arg = _dict_from_args(args, arg_names)
 
     if arg.get('metric_name', None) is None:
@@ -416,11 +418,13 @@ def do_status_metrics_list(sc, args):
 @cliutils.arg("--host_name", help="Name of the host")
 @cliutils.arg("--metric_name", help="Name of the metric")
 @cliutils.arg("--service_description", help="Service description")
+@cliutils.arg("--live_query", help="Live query")
 def do_status_metrics_show(sc, args):
     """Give the last status metrics."""
     arg_names = ['host_name',
                  'metric_name',
-                 'service_description']
+                 'service_description',
+                 'live_query']
     arg = _dict_from_args(args, arg_names)
 
     metric = sc.status.hosts.metrics.get(**arg)

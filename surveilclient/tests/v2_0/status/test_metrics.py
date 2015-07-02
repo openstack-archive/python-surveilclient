@@ -20,7 +20,7 @@ from surveilclient.tests.v2_0 import clienttest
 class TestMetrics(clienttest.ClientTest):
 
     @httpretty.activate
-    def test_list_metrics(self):
+    def test_list_host_metrics(self):
         httpretty.register_uri(
             httpretty.POST, "http://localhost:5311/v2/status/"
                             "hosts/localhost/metrics/load1",
@@ -28,11 +28,12 @@ class TestMetrics(clienttest.ClientTest):
                  '{"min": "5", "warning": "200", "value": "150"}]'
         )
 
-        metrics = self.client.status.hosts.metrics.get('localhost', 'load1',
-                                                       time_begin='2015-05-22'
-                                                                  'T13:38:08Z',
-                                                       time_end='2015-05-'
-                                                                '22T13:38:08Z')
+        metrics = self.client.status.hosts.metrics.list(
+            'localhost',
+            'load1',
+            start_time='2015-05-22T13:38:08Z',
+            end_time='2015-05-22T13:38:08Z'
+        )
 
         self.assertEqual(
             metrics,
@@ -41,7 +42,7 @@ class TestMetrics(clienttest.ClientTest):
         )
 
     @httpretty.activate
-    def test_list_service(self):
+    def test_list_host_metrics_service(self):
         httpretty.register_uri(
             httpretty.POST, "http://localhost:5311/v2/status/hosts/localhost"
                             "/services/load/metrics/load1",
@@ -49,11 +50,14 @@ class TestMetrics(clienttest.ClientTest):
                  '{"min": "5", "warning": "200", "value": "150"}]'
         )
 
-        metrics = self.client.status.hosts.metrics.get('localhost', 'load1',
-                                                       'load',
-                                                       '2015-05-22T13:38:08Z',
-                                                       '2015-05-22T13:38:08Z'
-                                                       )
+        live_query = ('{"time_interval": { "start_time": '
+                      '"2015-05-22T13:38:08Z",'
+                      '"end_time": "2015-05-22T13:38:08Z"}}')
+
+        metrics = self.client.status.hosts.metrics.list('localhost', 'load1',
+                                                        'load',
+                                                        live_query=live_query
+                                                        )
 
         self.assertEqual(
             metrics,
@@ -62,7 +66,7 @@ class TestMetrics(clienttest.ClientTest):
         )
 
     @httpretty.activate
-    def test_show(self):
+    def test_show_host_metrics(self):
         httpretty.register_uri(
             httpretty.GET, "http://localhost:5311/v2/status/hosts/localhost"
                            "/metrics/load1",
@@ -77,11 +81,11 @@ class TestMetrics(clienttest.ClientTest):
         )
 
     @httpretty.activate
-    def test_show_service(self):
+    def test_show_host_service_metrics(self):
         httpretty.register_uri(
             httpretty.GET, "http://localhost:5311/v2/status/hosts/localhost"
                            "/services/load/metrics/load1",
-            body='{"min": "2", "warning": "15", "value": "3"}'
+            body='{"value": "3"}'
         )
 
         metrics = self.client.status.hosts.metrics.get('localhost', 'load1',
@@ -89,20 +93,22 @@ class TestMetrics(clienttest.ClientTest):
 
         self.assertEqual(
             metrics,
-            {"min": "2", "warning": "15", "value": "3"}
+            {"value": "3"}
         )
 
     @httpretty.activate
-    def test_list_metrics_name(self):
+    def test_show_host_service(self):
         httpretty.register_uri(
             httpretty.GET, "http://localhost:5311/v2/status/hosts/localhost"
-                           "/metrics",
-            body='[{"metric_name": "rta"},{"metric_name": "load5"}]'
+                           "/services/load/metrics",
+            body='[{"metric_name": "load1"},{"metric_name": "load5"}]'
         )
 
-        metrics = self.client.status.hosts.metrics.list('localhost')
+        metrics = self.client.status.hosts.metrics.get(
+            'localhost',
+            service_description='load')
 
         self.assertEqual(
             metrics,
-            [{"metric_name": "rta"}, {"metric_name": "load5"}]
+            [{"metric_name": "load1"}, {"metric_name": "load5"}]
         )

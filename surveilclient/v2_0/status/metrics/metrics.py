@@ -11,6 +11,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import json
 
 from surveilclient.common import surveil_manager
 
@@ -18,45 +19,47 @@ from surveilclient.common import surveil_manager
 class MetricsManager(surveil_manager.SurveilManager):
     base_url = '/status/hosts'
 
-    def get(self, host_name, metric_name, service_description=None,
-            time_begin=None, time_end=None):
-        """Get a list of metrics."""
-        if time_begin is not None and time_end is not None:
-            time_delta = {'begin': time_begin,
-                          'end': time_end}
-            if service_description is not None:
-                url = (MetricsManager.base_url + "/" + host_name + "/services/"
-                       + service_description + "/metrics/" + metric_name)
-            else:
-                url = (MetricsManager.base_url + "/" + host_name + "/metrics/"
-                       + metric_name)
-
-            resp, body = self.http_client.json_request(
-                url, 'POST', body=time_delta
-            )
-            return body
-        elif time_begin is None and time_end is None:
-
-            if service_description is not None:
-                url = (MetricsManager.base_url + "/" + host_name + "/services/"
-                       + service_description + "/metrics/" + metric_name)
-            else:
-                url = (MetricsManager.base_url + "/" + host_name + "/metrics/"
-                       + metric_name)
-
-            resp, body = self.http_client.json_request(url, 'GET')
-            return body
-        else:
-            return {}
-
-    def list(self, host_name, service_description=None):
-        """Get a list of metrics name."""
-        if service_description is None:
-            url = MetricsManager.base_url + "/" + host_name + "/metrics"
-        else:
-            url = (MetricsManager.base_url + "/" + host_name + "/services/"
-                   + service_description + "/metrics")
+    def get(self, host_name, metric_name=None, service_description=None):
+        """Get a list of last metrics."""
 
         resp, body = self.http_client.json_request(
-            url, 'GET')
+            self._create_url(host_name, service_description, metric_name),
+            'GET'
+        )
+
         return body
+
+    def list(self, host_name, metric_name, service_description=None,
+             live_query=None, start_time=None, end_time=None):
+        """Get a list of metrics name."""
+
+        if live_query is None:
+            live_query = {}
+        else:
+            live_query = json.loads(live_query)
+
+        if start_time and end_time:
+            live_query['time_interval'] = {
+                "start_time": start_time,
+                "end_time": end_time
+            }
+
+        resp, body = self.http_client.json_request(
+            self._create_url(host_name, service_description, metric_name),
+            'POST', body=live_query)
+
+        return body
+
+    def _create_url(self, host_name, service_description=None,
+                    metric_name=None):
+        url = self.base_url + '/' + host_name
+
+        if service_description:
+            url += '/services/' + service_description
+
+        url += '/metrics'
+
+        if metric_name:
+            url += '/' + metric_name
+
+        return url

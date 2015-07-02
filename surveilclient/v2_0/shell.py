@@ -367,50 +367,29 @@ def do_status_service_list(sc, args):
 
 @cliutils.arg("--host_name", help="Name of the host")
 @cliutils.arg("--metric_name", help="Name of the metric")
-@cliutils.arg("--time_begin", help="begin of the metric")
-@cliutils.arg("--time_end", help="end of the metric")
+@cliutils.arg("--start_time", help="begin of the metric")
+@cliutils.arg("--end_time", help="end of the metric")
 @cliutils.arg("--service_description", help="Service description")
+@cliutils.arg("--live_query", help="Live query")
 def do_status_metrics_list(sc, args):
     """List all status metrics."""
     arg_names = ['host_name',
                  'metric_name',
-                 'time_begin',
-                 'time_end',
-                 'service_description']
+                 'start_time',
+                 'end_time',
+                 'service_description',
+                 'live_query',
+                 ]
     arg = _dict_from_args(args, arg_names)
 
-    if arg.get('metric_name', None) is None:
-        metrics = sc.status.hosts.metrics.list(**arg)
-        if args.json:
-            print(utils.json_formatter(metrics))
-        else:
-            cols = ['metric_name']
-            formatters = {
-                'metric_name': lambda x: x.get('metric_name', '')
-            }
-            utils.print_list(metrics, cols, formatters=formatters)
+    metrics = sc.status.hosts.metrics.list(**arg)
+    if args.json:
+        print(utils.json_formatter(metrics))
     else:
-        metrics = sc.status.hosts.metrics.get(**arg)
-        if args.json:
-            print(utils.json_formatter(metrics))
-        else:
-            cols = [
-                'min',
-                'max',
-                'warning',
-                'critical',
-                'value',
-                'unit'
-            ]
-            formatters = {
-                'min': lambda x: x.get('min', ''),
-                'max': lambda x: x.get('max', ''),
-                'warning': lambda x: x.get('warning', ''),
-                'critical': lambda x: x.get('critical', ''),
-                'value': lambda x: x.get('value', ''),
-                'unit': lambda x: x.get('unit', ''),
-            }
-            utils.print_list(metrics, cols, formatters=formatters)
+        cols = utils.get_columns(metrics, [])
+        formatters = reduce(_create_format, cols, {})
+
+        utils.print_list(metrics, cols, formatters=formatters)
 
 
 @cliutils.arg("--host_name", help="Name of the host")
@@ -420,23 +399,23 @@ def do_status_metrics_show(sc, args):
     """Give the last status metrics."""
     arg_names = ['host_name',
                  'metric_name',
-                 'service_description']
+                 'service_description',
+                 ]
     arg = _dict_from_args(args, arg_names)
 
-    metric = sc.status.hosts.metrics.get(**arg)
+    metrics = sc.status.hosts.metrics.get(**arg)
     if args.json:
-        print(utils.json_formatter(metric))
+        print(utils.json_formatter(metrics))
     else:
-        metricProperties = [
-            'min',
-            'max',
-            'warning',
-            'critical',
-            'value',
-            'unit'
-        ]
+        if isinstance(metrics, dict):
+            metrics = [metrics]
 
-        utils.print_item(metric, metricProperties)
+        cols = utils.get_columns(metrics,
+                                 ['metric_name',
+                                  ])
+        formatters = reduce(_create_format, cols, {})
+
+        utils.print_list(metrics, cols, formatters=formatters)
 
 
 @cliutils.arg("--host_name", help="Name of the host")
@@ -499,9 +478,11 @@ def do_status_events_list(sc, args):
                                   'service_description',
                                   'event_type'])
 
-        def create_format(init, col):
-            init[col] = lambda x: x.get(col, '')
-            return init
-        formatters = reduce(create_format, cols, {})
+        formatters = reduce(_create_format, cols, {})
 
         utils.print_list(events, cols, formatters=formatters)
+
+
+def _create_format(init, col):
+    init[col] = lambda x: x.get(col, '')
+    return init

@@ -24,7 +24,7 @@ class TestHosts(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:8080/v2/config/hosts",
+            httpretty.GET, "http://localhost:5311/v2/config/hosts",
             body='[{"host_name": "host1"}]'
         )
 
@@ -38,7 +38,7 @@ class TestHosts(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/config/hosts",
+            httpretty.POST, "http://localhost:5311/v2/config/hosts",
             body='{"host_name": "new_host", "address": "192.168.2.1"}'
         )
 
@@ -59,7 +59,7 @@ class TestHosts(clienttest.ClientTest):
     def test_show(self):
         httpretty.register_uri(
             httpretty.GET,
-            "http://localhost:8080/v2/config/hosts/host_name_to_show",
+            "http://localhost:5311/v2/config/hosts/host_name_to_show",
             body='{"host_name": "host_name_to_show"}'
         )
 
@@ -76,7 +76,7 @@ class TestHosts(clienttest.ClientTest):
     def test_update(self):
         httpretty.register_uri(
             httpretty.PUT,
-            "http://localhost:8080/v2/config/hosts/host_name_to_update",
+            "http://localhost:5311/v2/config/hosts/host_name_to_update",
             body='{"test": "test"}'
         )
 
@@ -99,7 +99,7 @@ class TestHosts(clienttest.ClientTest):
     def test_delete(self):
         httpretty.register_uri(
             httpretty.DELETE,
-            "http://localhost:8080/v2/config/hosts/host_name_to_delete",
+            "http://localhost:5311/v2/config/hosts/host_name_to_delete",
             body="body"
         )
 

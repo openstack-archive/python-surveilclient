@@ -22,7 +22,7 @@ class TestServices(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:8080/v2/config/services",
+            httpretty.GET, "http://localhost:5311/v2/config/services",
             body='[{"service_name": "service1"}]'
         )
 
@@ -36,7 +36,7 @@ class TestServices(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/config/services",
+            httpretty.POST, "http://localhost:5311/v2/config/services",
             body='{"service_name": "new_service"}'
         )
 
@@ -53,7 +53,7 @@ class TestServices(clienttest.ClientTest):
     def test_delete(self):
         httpretty.register_uri(
             httpretty.DELETE,
-            "http://localhost:8080/v2/config/hosts/host_name/" +
+            "http://localhost:5311/v2/config/hosts/host_name/" +
             "services/service_description",
             body="body"
         )

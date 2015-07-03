@@ -22,7 +22,7 @@ class TestDowntime(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/actions/downtime",
+            httpretty.POST, "http://localhost:5311/v2/actions/downtime",
             body='{"message": "Ack received!"}')
 
         self.client.actions.downtime.create(

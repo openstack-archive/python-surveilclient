@@ -22,7 +22,7 @@ class TestMetrics(clienttest.ClientTest):
     @httpretty.activate
     def test_list_metrics(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/status/"
+            httpretty.POST, "http://localhost:5311/v2/status/"
                             "hosts/localhost/metrics/load1",
             body='[{"min": "2", "warning": "15", "value": "3"},'
                  '{"min": "5", "warning": "200", "value": "150"}]'
@@ -43,7 +43,7 @@ class TestMetrics(clienttest.ClientTest):
     @httpretty.activate
     def test_list_service(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/status/hosts/localhost"
+            httpretty.POST, "http://localhost:5311/v2/status/hosts/localhost"
                             "/services/load/metrics/load1",
             body='[{"min": "2", "warning": "15", "value": "3"},'
                  '{"min": "5", "warning": "200", "value": "150"}]'
@@ -64,7 +64,7 @@ class TestMetrics(clienttest.ClientTest):
     @httpretty.activate
     def test_show(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:8080/v2/status/hosts/localhost"
+            httpretty.GET, "http://localhost:5311/v2/status/hosts/localhost"
                            "/metrics/load1",
             body='{"min": "2", "warning": "15", "value": "3"}'
         )
@@ -79,7 +79,7 @@ class TestMetrics(clienttest.ClientTest):
     @httpretty.activate
     def test_show_service(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:8080/v2/status/hosts/localhost"
+            httpretty.GET, "http://localhost:5311/v2/status/hosts/localhost"
                            "/services/load/metrics/load1",
             body='{"min": "2", "warning": "15", "value": "3"}'
         )
@@ -95,7 +95,7 @@ class TestMetrics(clienttest.ClientTest):
     @httpretty.activate
     def test_list_metrics_name(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:8080/v2/status/hosts/localhost"
+            httpretty.GET, "http://localhost:5311/v2/status/hosts/localhost"
                            "/metrics",
             body='[{"metric_name": "rta"},{"metric_name": "load5"}]'
         )

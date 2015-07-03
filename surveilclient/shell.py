@@ -49,7 +49,7 @@ class SurveilShell(object):
         parser.add_argument('--surveil-api-url',
                             default=utils.env(
                                 'SURVEIL_API_URL',
-                                default='http://localhost:8080/v2'),
+                                default='http://localhost:5311/v2'),
                             help='Defaults to env[SURVEIL_API_URL].')
 
         parser.add_argument('--surveil-api-version',

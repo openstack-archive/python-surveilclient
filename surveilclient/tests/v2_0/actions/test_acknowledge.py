@@ -22,7 +22,7 @@ class TestAcknowledge(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/actions/acknowledge",
+            httpretty.POST, "http://localhost:5311/v2/actions/acknowledge",
             body='{"message": "Ack received!"}')
 
         self.client.actions.acknowledge.create(

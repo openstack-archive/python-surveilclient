@@ -23,7 +23,7 @@ from surveilclient.common import http
 class TestHttp(unittest.TestCase):
 
     def setUp(self):
-        self.surveil_url = 'http://surveil:8080/v1'
+        self.surveil_url = 'http://surveil:5311/v1'
         self.client = http.HTTPClient(self.surveil_url, authenticated=False)
 
     @httpretty.activate

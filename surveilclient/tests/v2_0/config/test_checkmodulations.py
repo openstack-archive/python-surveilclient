@@ -22,7 +22,7 @@ class TestCheckModulations(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/config/checkmodulations",
+            httpretty.POST, "http://localhost:5311/v2/config/checkmodulations",
             body='{"message": "Ack received!"}')
 
         self.client.config.checkmodulations.create(
@@ -41,7 +41,7 @@ class TestCheckModulations(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:8080/v2/config/checkmodulations",
+            httpretty.GET, "http://localhost:5311/v2/config/checkmodulations",
             body='[{"checkmodulation_name": "test","check_command": "test",'
                  '"check_period": "test"}]'
             )
@@ -55,7 +55,7 @@ class TestCheckModulations(clienttest.ClientTest):
     @httpretty.activate
     def test_delete(self):
         httpretty.register_uri(
-            httpretty.DELETE, "http://localhost:8080/v2/config/"
+            httpretty.DELETE, "http://localhost:5311/v2/config/"
                               "checkmodulations/checkmodulation_to_delete",
             body='body')
 

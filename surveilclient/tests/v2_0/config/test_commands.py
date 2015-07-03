@@ -25,7 +25,7 @@ class TestCommands(clienttest.ClientTest):
     def test_list(self):
         httpretty.register_uri(
             httpretty.GET,
-            "http://localhost:8080/v2/config/commands",
+            "http://localhost:5311/v2/config/commands",
             body='[{"command_name":"myCommand"}]'
             )
 
@@ -37,7 +37,7 @@ class TestCommands(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/config/commands",
+            httpretty.POST, "http://localhost:5311/v2/config/commands",
             body='{"command_name": "new_command", "command_line": "new_line"}'
         )
 
@@ -58,7 +58,7 @@ class TestCommands(clienttest.ClientTest):
     def test_show(self):
         httpretty.register_uri(
             httpretty.GET,
-            "http://localhost:8080/v2/config/commands/command_to_show",
+            "http://localhost:5311/v2/config/commands/command_to_show",
             body='{"command_name": "command_to_show", "command_line": "line"}'
         )
 
@@ -78,7 +78,7 @@ class TestCommands(clienttest.ClientTest):
     def test_update(self):
         httpretty.register_uri(
             httpretty.PUT,
-            "http://localhost:8080/v2/config/commands/command_to_update",
+            "http://localhost:5311/v2/config/commands/command_to_update",
             body='{"command_line": "updated command_line"}'
         )
 
@@ -99,7 +99,7 @@ class TestCommands(clienttest.ClientTest):
     def test_delete(self):
         httpretty.register_uri(
             httpretty.DELETE,
-            "http://localhost:8080/v2/config/commands/command_to_delete",
+            "http://localhost:5311/v2/config/commands/command_to_delete",
             body="body"
         )
 

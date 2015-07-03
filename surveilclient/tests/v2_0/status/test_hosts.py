@@ -24,7 +24,7 @@ class TestHosts(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/status/hosts",
+            httpretty.POST, "http://localhost:5311/v2/status/hosts",
             body='[{"host_name": "host1"}]'
         )
 
@@ -38,7 +38,7 @@ class TestHosts(clienttest.ClientTest):
     @httpretty.activate
     def test_get(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:8080/v2/status/hosts/hostname",
+            httpretty.GET, "http://localhost:5311/v2/status/hosts/hostname",
             body='{"host_name": "host1"}'
         )
 
@@ -52,7 +52,7 @@ class TestHosts(clienttest.ClientTest):
     @httpretty.activate
     def test_submit_host_check_result(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/status/hosts/localhost"
+            httpretty.POST, "http://localhost:5311/v2/status/hosts/localhost"
                             "/results",
             body=''
         )

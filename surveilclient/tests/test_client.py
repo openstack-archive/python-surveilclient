@@ -22,16 +22,16 @@ from surveilclient.v2_0 import client as v2_0_client
 class TestClient(unittest.TestCase):
 
     def test_client_default_version(self):
-        sc = client.Client('http://localhost:8080/sdf',
-                           auth_url='http://localhost:8080/v2/auth')
+        sc = client.Client('http://localhost:5311/sdf',
+                           auth_url='http://localhost:5311/v2/auth')
         self.assertTrue(isinstance(sc, v2_0_client.Client))
 
     def test_client_init_v1(self):
-        sc = client.Client('http://localhost:8080/v1', version='1_0')
+        sc = client.Client('http://localhost:5311/v1', version='1_0')
         self.assertTrue(isinstance(sc, v1_0_client.Client))
 
     def test_client_init_v2(self):
-        sc = client.Client('http://localhost:8080/v2',
-                           auth_url='http://localhost:8080/v2/auth',
+        sc = client.Client('http://localhost:5311/v2',
+                           auth_url='http://localhost:5311/v2/auth',
                            version='2_0')
         self.assertTrue(isinstance(sc, v2_0_client.Client))

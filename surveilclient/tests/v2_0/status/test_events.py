@@ -23,7 +23,7 @@ class TestEvents(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/status/events",
+            httpretty.POST, "http://localhost:5311/v2/status/events",
             body='[{"host_name": "sfl.com", "service_description": "cpu", '
                  '"event_type": "ALERT", "output": "Ok"},'
                  '{"host_name": "sfl.com", "service_description": "cpu", '
@@ -53,7 +53,7 @@ class TestEvents(clienttest.ClientTest):
     @httpretty.activate
     def test_list_with_live_query(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/status/events",
+            httpretty.POST, "http://localhost:5311/v2/status/events",
             body='[{"host_name": "sfl.com", "service_description": "cpu", '
                  '"event_type": "ALERT", "output": "Ok"},'
                  '{"host_name": "sfl.com", "service_description": "cpu", '

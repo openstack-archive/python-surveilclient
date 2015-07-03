@@ -23,7 +23,7 @@ class TestRecheck(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/actions/recheck",
+            httpretty.POST, "http://localhost:5311/v2/actions/recheck",
             body='{"message": "Ack received!"}')
 
         self.client.actions.recheck.create(

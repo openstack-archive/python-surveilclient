@@ -22,8 +22,8 @@ from surveilclient import client
 class ClientTest(unittest.TestCase):
 
     def setUp(self):
-        self.client = client.Client('http://localhost:8080/v2',
-                                    auth_url='http://localhost:8080/v2/auth',
+        self.client = client.Client('http://localhost:5311/v2',
+                                    auth_url='http://localhost:5311/v2/auth',
                                     version='2_0')
 
         #  Mock the _get_auth_token call

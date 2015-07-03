@@ -24,7 +24,7 @@ class TestServices(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:8080/v2/status/services",
+            httpretty.POST, "http://localhost:5311/v2/status/services",
             body='[{"service_name": "service1"}]'
         )
 
@@ -39,7 +39,7 @@ class TestServices(clienttest.ClientTest):
     def test_submit_service_check_result(self):
         httpretty.register_uri(
             httpretty.POST,
-            "http://localhost:8080/v2/status/hosts/localhost"
+            "http://localhost:5311/v2/status/hosts/localhost"
             "/services/testservice/results",
             body=''
         )

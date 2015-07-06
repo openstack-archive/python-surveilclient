@@ -47,7 +47,8 @@ def do_config_host_list(sc, args):
         utils.print_list(hosts, cols, formatters=formatters)
 
 
-@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("original_host_name", help="Original name of the host")
+@cliutils.arg("--host_name", help="New name of the host")
 @cliutils.arg("--address", help="Address of the host")
 @cliutils.arg("--max_check_attempts")
 @cliutils.arg("--check_period")
@@ -59,7 +60,8 @@ def do_config_host_list(sc, args):
 @cliutils.arg("--use")
 def do_config_host_update(sc, args):
     """Create a config host."""
-    arg_names = ['address',
+    arg_names = ['host_name',
+                 'address',
                  'max_check_attempts',
                  'check_period',
                  'contacts',
@@ -69,13 +71,7 @@ def do_config_host_update(sc, args):
                  'notification_period',
                  'use']
     host = _dict_from_args(args, arg_names)
-
-    host["host_name"] = args.host_name
-
-    if "custom_fields" in host:
-        host["custom_fields"] = json.loads(host["custom_fields"])
-
-    sc.config.hosts.update(args.host_name, **host)
+    sc.config.hosts.update(args.original_host_name, host)
 
 
 @cliutils.arg("--host_name", help="Name of the host")
@@ -285,14 +281,15 @@ def do_config_command_show(sc, args):
         utils.print_item(command, command_properties)
 
 
-@cliutils.arg("--command_name", help="Name of the command")
+@cliutils.arg("original_command_name", help="Original name of the command")
+@cliutils.arg("--command_name", help="New name of the command")
 @cliutils.arg("--command_line", help="Address of the command")
 def do_config_command_update(sc, args):
     """Update a config command."""
     arg_names = ['command_name',
                  'command_line']
     command = _dict_from_args(args, arg_names)
-    sc.config.commands.update(**command)
+    sc.config.commands.update(args.original_command_name_origin, command)
 
 
 def do_config_reload(sc, args):

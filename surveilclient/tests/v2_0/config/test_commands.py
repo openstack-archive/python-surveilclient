@@ -83,14 +83,13 @@ class TestCommands(clienttest.ClientTest):
         )
 
         self.client.config.commands.update(
-            command_name="command_to_update",
+            command_name_origin="command_to_update",
             command_line="updated command_line"
         )
 
         self.assertEqual(
             json.loads(httpretty.last_request().body.decode()),
             {
-                "command_name": "command_to_update",
                 "command_line": "updated command_line"
             }
         )

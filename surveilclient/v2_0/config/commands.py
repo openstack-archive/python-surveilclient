@@ -41,11 +41,11 @@ class CommandsManager(surveil_manager.SurveilManager):
         )
         return body
 
-    def update(self, **kwargs):
+    def update(self, command_name, command):
         """Update a command."""
         resp, body = self.http_client.json_request(
-            CommandsManager.base_url + '/' + kwargs['command_name'], 'PUT',
-            body=kwargs
+            CommandsManager.base_url + '/' + command_name, 'PUT',
+            body=command
         )
         return body
 

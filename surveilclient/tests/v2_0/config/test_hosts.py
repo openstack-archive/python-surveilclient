@@ -81,16 +81,16 @@ class TestHosts(clienttest.ClientTest):
         )
 
         self.client.config.hosts.update(
-            "host_name_to_update",
-            address="192.168.0.1",
-            check_period="24x7"
+            host_name="host_name_to_update",
+            host={'address': "192.168.0.1",
+                  'check_period': "24x7"
+                  }
         )
 
         self.assertEqual(
             json.loads(httpretty.last_request().body.decode()),
             {
                 "check_period": u"24x7",
-                "host_name": u"host_name_to_update",
                 "address": u"192.168.0.1"
             }
         )

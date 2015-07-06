@@ -41,13 +41,11 @@ class HostsManager(surveil_manager.SurveilManager):
         )
         return body
 
-    def update(self, host_name, **kwargs):
+    def update(self, host_name, host):
         """Update a host."""
-        kwargs['host_name'] = host_name
-
         resp, body = self.http_client.json_request(
             HostsManager.base_url + '/' + host_name, 'PUT',
-            body=kwargs
+            body=host
         )
         return body
 

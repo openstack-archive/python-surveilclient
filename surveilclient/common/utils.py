@@ -17,8 +17,10 @@ import os
 import prettytable
 
 from surveilclient.openstack.common import importutils
-from oslo.serialization import jsonutils
-
+try:
+    from oslo_serialization import jsonutils
+except ImportError:
+    from oslo.serialization import jsonutils
 
 # Decorator for cli-args
 def arg(*args, **kwargs):

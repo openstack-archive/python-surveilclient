@@ -12,6 +12,7 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
+import json
 
 import os
 import prettytable
@@ -127,3 +128,39 @@ def get_columns(lines, ordered_columns):
             del columns_dict[col]
 
     return valid_columns + sorted(columns_dict.keys())
+
+def create_query(query=None, filters={}, start_time=None, end_time=None,
+                 size=None, page=None):
+    if query is None:
+        query = {}
+    else:
+        query = json.loads(query)
+
+    if start_time and end_time:
+        query['time_interval'] = {
+            "start_time": start_time,
+            "end_time": end_time
+        }
+
+    if 'filters' not in query:
+        query['filters'] = {}
+
+    for filter_type in filters:
+        if 'is' not in query['filters']:
+            query['filters'][filter_type] = {}
+
+        for value in filters[filter_type]:
+            if filters[filter_type][value] is not None:
+                query['filters'][filter_type][value] = [
+                    filters[filter_type][value]
+                ]
+
+    query['filters'] = json.dumps(query['filters'])
+
+    if size and page:
+        query['paging'] = {
+            'size': size,
+            'number': page
+        }
+
+    return query

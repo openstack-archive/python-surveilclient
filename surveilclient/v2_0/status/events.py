@@ -12,48 +12,35 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import json
-
 from surveilclient.common import surveil_manager
+from surveilclient.common import utils
 
 
 class EventsManager(surveil_manager.SurveilManager):
     base_url = '/status/events'
 
     def list(self, host_name=None, service_description=None, event_type=None,
-             start_time=None, end_time=None, live_query=None):
+             start_time=None, end_time=None, live_query=None, size=None, page=None):
         """List events."""
 
-        if live_query is None:
-            live_query = {}
-        else:
-            live_query = json.loads(live_query)
-
-        if start_time and end_time:
-            live_query['time_interval'] = {
-                "start_time": start_time,
-                "end_time": end_time
+        filters = {
+            'is': {
+                'host_name': host_name,
+                'service_description': service_description,
+                'event_type': event_type
             }
+        }
 
-        if 'filters' not in live_query:
-            live_query['filters'] = {}
-
-        if 'is' not in live_query['filters']:
-            live_query['filters']['is'] = {}
-
-        if host_name:
-            live_query['filters']['is']['host_name'] = [host_name]
-
-        if service_description:
-            (live_query['filters']['is']
-                ['service_description']) = [service_description]
-
-        if event_type:
-            live_query['filters']['is']['event_type'] = [event_type]
-
-        live_query['filters'] = json.dumps(live_query['filters'])
+        query = utils.create_query(
+            query=live_query,
+            filters=filters,
+            start_time=start_time,
+            end_time=end_time,
+            size=size,
+            page=page
+        )
 
         resp, body = self.http_client.json_request(
-            EventsManager.base_url, 'POST', body=live_query
+            EventsManager.base_url, 'POST', body=query
         )
         return body

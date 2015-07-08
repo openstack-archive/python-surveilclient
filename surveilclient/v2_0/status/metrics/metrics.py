@@ -11,9 +11,9 @@
 # WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 # License for the specific language governing permissions and limitations
 # under the License.
-import json
 
 from surveilclient.common import surveil_manager
+from surveilclient.common import utils
 
 
 class MetricsManager(surveil_manager.SurveilManager):
@@ -30,23 +30,20 @@ class MetricsManager(surveil_manager.SurveilManager):
         return body
 
     def list(self, host_name, metric_name, service_description=None,
-             live_query=None, start_time=None, end_time=None):
+             live_query=None, start_time=None, end_time=None,
+             page_size=None, page=None):
         """Get a list of metrics name."""
-
-        if live_query is None:
-            live_query = {}
-        else:
-            live_query = json.loads(live_query)
-
-        if start_time and end_time:
-            live_query['time_interval'] = {
-                "start_time": start_time,
-                "end_time": end_time
-            }
+        query = utils.create_query(
+            query=live_query,
+            start_time=start_time,
+            end_time=end_time,
+            page_size=page_size,
+            page=page
+        )
 
         resp, body = self.http_client.json_request(
             self._create_url(host_name, service_description, metric_name),
-            'POST', body=live_query)
+            'POST', body=query)
 
         return body
 

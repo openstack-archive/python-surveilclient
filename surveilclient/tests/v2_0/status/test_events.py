@@ -32,7 +32,9 @@ class TestEvents(clienttest.ClientTest):
 
         events = self.client.status.events.list(host_name='sfl.com',
                                                 service_description='cpu',
-                                                event_type='ALERT')
+                                                event_type='ALERT',
+                                                page_size=50,
+                                                page=5)
 
         filters = json.loads(
             httpretty.last_request().body.decode())['filters']
@@ -40,6 +42,14 @@ class TestEvents(clienttest.ClientTest):
             json.loads(filters)['is'],
             {"service_description": ["cpu"],
              "host_name": ["sfl.com"], "event_type": ["ALERT"]}
+        )
+
+        paging = json.loads(
+            httpretty.last_request().body.decode())['paging']
+        self.assertEqual(
+            paging,
+            {u"page": 5,
+             u"size": 50}
         )
 
         self.assertEqual(

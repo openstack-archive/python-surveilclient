@@ -368,6 +368,8 @@ def do_status_service_list(sc, args):
 @cliutils.arg("--end_time", help="end of the metric")
 @cliutils.arg("--service_description", help="Service description")
 @cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_status_metrics_list(sc, args):
     """List all status metrics."""
     arg_names = ['host_name',
@@ -376,6 +378,8 @@ def do_status_metrics_list(sc, args):
                  'end_time',
                  'service_description',
                  'live_query',
+                 'page_size',
+                 'page',
                  ]
     arg = _dict_from_args(args, arg_names)
 
@@ -454,6 +458,8 @@ def do_action_recheck(sc, args):
 @cliutils.arg("--event_type", help="Event type")
 @cliutils.arg("--start_time", help="Start of the event to query")
 @cliutils.arg("--end_time", help="End of the event to query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 @cliutils.arg("--live_query", help="A live query")
 def do_status_events_list(sc, args):
     """List all events."""
@@ -463,6 +469,8 @@ def do_status_events_list(sc, args):
                  'event_type',
                  'start_time',
                  'end_time',
+                 'page_size',
+                 'page',
                  'live_query']
     arg = _dict_from_args(args, arg_names)
     events = sc.status.events.list(**arg)

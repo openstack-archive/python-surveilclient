@@ -36,6 +36,19 @@ class TestHosts(clienttest.ClientTest):
         )
 
     @httpretty.activate
+    def test_list_templates(self):
+        httpretty.register_uri(
+            httpretty.GET, "http://localhost:5311/v2/config/hosts",
+            body='[]'
+        )
+
+        self.client.config.hosts.list(templates=True)
+        self.assertEqual(
+            httpretty.last_request().path,
+            '/v2/config/hosts?templates=1'
+        )
+
+    @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
             httpretty.POST, "http://localhost:5311/v2/config/hosts",

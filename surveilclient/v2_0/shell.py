@@ -251,7 +251,7 @@ def do_config_command_list(sc, args):
 @cliutils.arg("--command_name")
 @cliutils.arg("--command_line")
 def do_config_command_create(sc, args):
-    """Create a config check modulation."""
+    """Create a config command."""
     arg_names = ['command_name',
                  'command_line']
     command = _dict_from_args(args, arg_names)

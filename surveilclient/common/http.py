@@ -88,7 +88,14 @@ class HTTPClient(object):
             kwargs['headers']['X-Auth-Token'] = self._get_auth_token()
 
         conn = self.get_connection()
-        conn.request(method, self.endpoint_path + url, **kwargs)
+
+        request_params = urlutils.urlencode(
+            kwargs.pop("params", {})
+        )
+
+        request_url = self.endpoint_path + url + '?' + request_params
+
+        conn.request(method, request_url, **kwargs)
         resp = conn.getresponse()
 
         body_str = resp.read()

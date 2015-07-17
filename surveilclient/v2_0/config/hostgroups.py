@@ -15,46 +15,44 @@
 from surveilclient.common import surveil_manager
 
 
-class CheckModulationsManager(surveil_manager.SurveilManager):
-    base_url = '/config/checkmodulations'
+class HostGroupsManager(surveil_manager.SurveilManager):
+    base_url = '/config/hostgroups'
 
     def list(self):
-        """Get a list of checkmodulations."""
+        """Get a list of hostgroups."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'GET'
+            HostGroupsManager.base_url, 'GET'
         )
         return body
 
     def create(self, **kwargs):
-        """Create a new checkmodulation."""
+        """Create a new hostgroup."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST',
+            HostGroupsManager.base_url, 'POST',
             body=kwargs
         )
         return body
 
-    def get(self, checkmodulation_name):
-        """Get a new checkmodulation."""
+    def get(self, hostgroup_name):
+        """Get a new hostgroup."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'GET',
+            HostGroupsManager.base_url + '/' + hostgroup_name, 'GET',
             body=''
         )
         return body
 
-    def update(self, checkmodulation_name, checkmodulation):
-        """Update a checkmodulation."""
+    def update(self, hostgroup_name, hostgroup):
+        """Update a hostgroup."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'PUT',
-            body=checkmodulation
+            HostGroupsManager.base_url + '/' + hostgroup_name, 'PUT',
+            body=hostgroup
         )
         return body
 
-    def delete(self, checkmodulation_name):
-        """Delete a checkmodulation."""
+    def delete(self, hostgroup_name):
+        """Delete a hostgroup."""
         resp, body = self.http_client.request(
-            CheckModulationsManager.base_url+"/" + checkmodulation_name,
+            HostGroupsManager.base_url + "/" + hostgroup_name,
             'DELETE',
             body=''
         )

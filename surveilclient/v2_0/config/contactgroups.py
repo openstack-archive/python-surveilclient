@@ -15,46 +15,44 @@
 from surveilclient.common import surveil_manager
 
 
-class CheckModulationsManager(surveil_manager.SurveilManager):
-    base_url = '/config/checkmodulations'
+class ContactGroupsManager(surveil_manager.SurveilManager):
+    base_url = '/config/contactgroups'
 
     def list(self):
-        """Get a list of checkmodulations."""
+        """Get a list of contactgroups."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'GET'
+            ContactGroupsManager.base_url, 'GET'
         )
         return body
 
     def create(self, **kwargs):
-        """Create a new checkmodulation."""
+        """Create a new contactgroup."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST',
+            ContactGroupsManager.base_url, 'POST',
             body=kwargs
         )
         return body
 
-    def get(self, checkmodulation_name):
-        """Get a new checkmodulation."""
+    def get(self, contactgroup_name):
+        """Get a new contactgroup."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'GET',
+            ContactGroupsManager.base_url + '/' + contactgroup_name, 'GET',
             body=''
         )
         return body
 
-    def update(self, checkmodulation_name, checkmodulation):
-        """Update a checkmodulation."""
+    def update(self, contactgroup_name, contactgroup):
+        """Update a contactgroup."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'PUT',
-            body=checkmodulation
+            ContactGroupsManager.base_url + '/' + contactgroup_name, 'PUT',
+            body=contactgroup
         )
         return body
 
-    def delete(self, checkmodulation_name):
-        """Delete a checkmodulation."""
+    def delete(self, contactgroup_name):
+        """Delete a contactgroup."""
         resp, body = self.http_client.request(
-            CheckModulationsManager.base_url+"/" + checkmodulation_name,
+            ContactGroupsManager.base_url + "/" + contactgroup_name,
             'DELETE',
             body=''
         )

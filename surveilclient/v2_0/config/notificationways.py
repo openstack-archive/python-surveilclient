@@ -15,46 +15,46 @@
 from surveilclient.common import surveil_manager
 
 
-class CheckModulationsManager(surveil_manager.SurveilManager):
-    base_url = '/config/checkmodulations'
+class NotificationWaysManager(surveil_manager.SurveilManager):
+    base_url = '/config/notificationways'
 
     def list(self):
-        """Get a list of checkmodulations."""
+        """Get a list of notificationways."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'GET'
+            NotificationWaysManager.base_url, 'GET'
         )
         return body
 
     def create(self, **kwargs):
-        """Create a new checkmodulation."""
+        """Create a new notificationway."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST',
+            NotificationWaysManager.base_url, 'POST',
             body=kwargs
         )
         return body
 
-    def get(self, checkmodulation_name):
-        """Get a new checkmodulation."""
+    def get(self, notificationway_name):
+        """Get a new notificationway."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'GET',
+            NotificationWaysManager.base_url + '/' +
+            notificationway_name, 'GET',
             body=''
         )
         return body
 
-    def update(self, checkmodulation_name, checkmodulation):
-        """Update a checkmodulation."""
+    def update(self, notificationway_name, notificationway):
+        """Update a notificationway."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'PUT',
-            body=checkmodulation
+            NotificationWaysManager.base_url + '/' +
+            notificationway_name, 'PUT',
+            body=notificationway
         )
         return body
 
-    def delete(self, checkmodulation_name):
-        """Delete a checkmodulation."""
+    def delete(self, notificationway_name):
+        """Delete a command."""
         resp, body = self.http_client.request(
-            CheckModulationsManager.base_url+"/" + checkmodulation_name,
+            NotificationWaysManager.base_url + "/" + notificationway_name,
             'DELETE',
             body=''
         )

@@ -19,38 +19,49 @@ import httpretty
 from surveilclient.tests.v2_0 import clienttest
 
 
-class TestCommands(clienttest.ClientTest):
-
+class TestContacts(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET,
-            "http://localhost:5311/v2/config/commands",
-            body='[{"command_name":"myCommand"}]'
-            )
+            httpretty.GET, "http://localhost:5311/v2/config/contacts",
+            body='[{"contact_name": "bobby",'
+                 '"email": "bob@bob.com"},'
+                 '{"contact_name": "marie",'
+                 '"email": "marie@marie.com"}]'
+        )
+
+        contacts = self.client.config.contacts.list()
 
         self.assertEqual(
-            self.client.config.commands.list(),
-            [{"command_name": "myCommand"}]
+            contacts,
+            [
+                {
+                    'contact_name': 'bobby',
+                    'email': 'bob@bob.com'
+                },
+                {
+                    'contact_name': 'marie',
+                    'email': 'marie@marie.com'
+                },
+            ]
+
         )
 
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/commands",
-            body='{"command_name": "new_command", "command_line": "new_line"}'
+            httpretty.POST, "http://localhost:5311/v2/config/contacts",
+            body='{"contact_name": "John"}'
         )
 
-        self.client.config.commands.create(
-            command_name="new_command",
-            command_line="new_line"
+        self.client.config.contacts.create(
+            contact_name='John'
         )
 
         self.assertEqual(
             json.loads(httpretty.last_request().body.decode()),
             {
-                "command_name": "new_command",
-                "command_line": "new_line"
+                "contact_name": "John"
             }
         )
 
@@ -58,19 +69,20 @@ class TestCommands(clienttest.ClientTest):
     def test_get(self):
         httpretty.register_uri(
             httpretty.GET,
-            "http://localhost:5311/v2/config/commands/command_to_show",
-            body='{"command_name": "command_to_show", "command_line": "line"}'
+            'http://localhost:5311/v2/config/contacts/bobby',
+            body='{"contact_name": "bobby",'
+                 '"email": "bob@bob.com"}'
         )
 
-        command = self.client.config.commands.get(
-            command_name="command_to_show"
+        contact = self.client.config.contacts.get(
+            contact_name='bobby'
         )
 
         self.assertEqual(
-            command,
+            contact,
             {
-                "command_name": "command_to_show",
-                "command_line": "line"
+                'contact_name': 'bobby',
+                'email': 'bob@bob.com'
             }
         )
 
@@ -78,19 +90,19 @@ class TestCommands(clienttest.ClientTest):
     def test_update(self):
         httpretty.register_uri(
             httpretty.PUT,
-            "http://localhost:5311/v2/config/commands/command_to_update",
-            body='{"command_line": "updated command_line"}'
+            'http://localhost:5311/v2/config/contacts/bob',
+            body='{"test": "test"}'
         )
 
-        self.client.config.commands.update(
-            command_name="command_to_update",
-            command={'command_line': "updated command_line"}
+        self.client.config.contacts.update(
+            contact_name="bob",
+            contact={"email": "updated"}
         )
 
         self.assertEqual(
             json.loads(httpretty.last_request().body.decode()),
             {
-                "command_line": "updated command_line"
+                "email": u"updated"
             }
         )
 
@@ -98,12 +110,12 @@ class TestCommands(clienttest.ClientTest):
     def test_delete(self):
         httpretty.register_uri(
             httpretty.DELETE,
-            "http://localhost:5311/v2/config/commands/command_to_delete",
+            "http://localhost:5311/v2/config/contacts/bob",
             body="body"
         )
 
-        body = self.client.config.commands.delete(
-            command_name="command_to_delete",
+        body = self.client.config.contacts.delete(
+            contact_name="bob",
         )
 
         self.assertEqual(

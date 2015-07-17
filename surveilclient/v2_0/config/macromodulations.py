@@ -15,46 +15,46 @@
 from surveilclient.common import surveil_manager
 
 
-class CheckModulationsManager(surveil_manager.SurveilManager):
-    base_url = '/config/checkmodulations'
+class MacroModulationsManager(surveil_manager.SurveilManager):
+    base_url = '/config/macromodulations'
 
     def list(self):
-        """Get a list of checkmodulations."""
+        """Get a list of macromodulations."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'GET'
+            MacroModulationsManager.base_url, 'GET'
         )
         return body
 
     def create(self, **kwargs):
-        """Create a new checkmodulation."""
+        """Create a new macromodulation."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST',
+            MacroModulationsManager.base_url, 'POST',
             body=kwargs
         )
         return body
 
-    def get(self, checkmodulation_name):
-        """Get a new checkmodulation."""
+    def get(self, macromodulation_name):
+        """Get a new macromodulation."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'GET',
+            MacroModulationsManager.base_url + '/' +
+            macromodulation_name, 'GET',
             body=''
         )
         return body
 
-    def update(self, checkmodulation_name, checkmodulation):
-        """Update a checkmodulation."""
+    def update(self, macromodulation_name, macromodulation):
+        """Update a macromodulation."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'PUT',
-            body=checkmodulation
+            MacroModulationsManager.base_url + '/' +
+            macromodulation_name, 'PUT',
+            body=macromodulation
         )
         return body
 
-    def delete(self, checkmodulation_name):
-        """Delete a checkmodulation."""
+    def delete(self, macromodulation_name):
+        """Delete a macromodulation."""
         resp, body = self.http_client.request(
-            CheckModulationsManager.base_url+"/" + checkmodulation_name,
+            MacroModulationsManager.base_url + "/" + macromodulation_name,
             'DELETE',
             body=''
         )

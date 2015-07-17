@@ -69,7 +69,7 @@ class TestHosts(clienttest.ClientTest):
         )
 
     @httpretty.activate
-    def test_show(self):
+    def test_get(self):
         httpretty.register_uri(
             httpretty.GET,
             "http://localhost:5311/v2/config/hosts/host_name_to_show",

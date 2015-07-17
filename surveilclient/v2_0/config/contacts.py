@@ -15,46 +15,44 @@
 from surveilclient.common import surveil_manager
 
 
-class CheckModulationsManager(surveil_manager.SurveilManager):
-    base_url = '/config/checkmodulations'
+class ContactsManager(surveil_manager.SurveilManager):
+    base_url = '/config/contacts'
 
     def list(self):
-        """Get a list of checkmodulations."""
+        """Get a list of contacts."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'GET'
+            ContactsManager.base_url, 'GET'
         )
         return body
 
     def create(self, **kwargs):
-        """Create a new checkmodulation."""
+        """Create a new contact."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST',
+            ContactsManager.base_url, 'POST',
             body=kwargs
         )
         return body
 
-    def get(self, checkmodulation_name):
-        """Get a new checkmodulation."""
+    def get(self, contact_name):
+        """Get a new contact."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'GET',
+            ContactsManager.base_url + '/' + contact_name, 'GET',
             body=''
         )
         return body
 
-    def update(self, checkmodulation_name, checkmodulation):
-        """Update a checkmodulation."""
+    def update(self, contact_name, contact):
+        """Update a contact."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'PUT',
-            body=checkmodulation
+            ContactsManager.base_url + '/' + contact_name, 'PUT',
+            body=contact
         )
         return body
 
-    def delete(self, checkmodulation_name):
-        """Delete a checkmodulation."""
+    def delete(self, contact_name):
+        """Delete a contact."""
         resp, body = self.http_client.request(
-            CheckModulationsManager.base_url+"/" + checkmodulation_name,
+            ContactsManager.base_url + "/" + contact_name,
             'DELETE',
             body=''
         )

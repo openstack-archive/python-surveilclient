@@ -15,46 +15,44 @@
 from surveilclient.common import surveil_manager
 
 
-class CheckModulationsManager(surveil_manager.SurveilManager):
-    base_url = '/config/checkmodulations'
+class RealmsManager(surveil_manager.SurveilManager):
+    base_url = '/config/realms'
 
     def list(self):
-        """Get a list of checkmodulations."""
+        """Get a list of realms."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'GET'
+            RealmsManager.base_url, 'GET'
         )
         return body
 
     def create(self, **kwargs):
-        """Create a new checkmodulation."""
+        """Create a new realm."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST',
+            RealmsManager.base_url, 'POST',
             body=kwargs
         )
         return body
 
-    def get(self, checkmodulation_name):
-        """Get a new checkmodulation."""
+    def get(self, realm_name):
+        """Get a new realm."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'GET',
+            RealmsManager.base_url + '/' + realm_name, 'GET',
             body=''
         )
         return body
 
-    def update(self, checkmodulation_name, checkmodulation):
-        """Update a checkmodulation."""
+    def update(self, realm_name, realm):
+        """Update a realm."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'PUT',
-            body=checkmodulation
+            RealmsManager.base_url + '/' + realm_name, 'PUT',
+            body=realm
         )
         return body
 
-    def delete(self, checkmodulation_name):
-        """Delete a checkmodulation."""
+    def delete(self, realm_name):
+        """Delete a realm."""
         resp, body = self.http_client.request(
-            CheckModulationsManager.base_url+"/" + checkmodulation_name,
+            RealmsManager.base_url + "/" + realm_name,
             'DELETE',
             body=''
         )

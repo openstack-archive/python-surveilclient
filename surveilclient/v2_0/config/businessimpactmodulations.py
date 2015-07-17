@@ -15,46 +15,47 @@
 from surveilclient.common import surveil_manager
 
 
-class CheckModulationsManager(surveil_manager.SurveilManager):
-    base_url = '/config/checkmodulations'
+class BusinessImpactModulationsManager(surveil_manager.SurveilManager):
+    base_url = '/config/businessimpactmodulations'
 
     def list(self):
-        """Get a list of checkmodulations."""
+        """Get a list of businessimpactmodulations."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'GET'
+            BusinessImpactModulationsManager.base_url, 'GET'
         )
         return body
 
     def create(self, **kwargs):
-        """Create a new checkmodulation."""
+        """Create a new businessimpactmodulation."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST',
+            BusinessImpactModulationsManager.base_url, 'POST',
             body=kwargs
         )
         return body
 
-    def get(self, checkmodulation_name):
-        """Get a new checkmodulation."""
+    def get(self, businessimpactmodulation_name):
+        """Get a new businessimpactmodulation."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'GET',
+            BusinessImpactModulationsManager.base_url + '/' +
+            businessimpactmodulation_name, 'GET',
             body=''
         )
         return body
 
-    def update(self, checkmodulation_name, checkmodulation):
-        """Update a checkmodulation."""
+    def update(self, businessimpactmodulation_name, businessimpactmodulation):
+        """Update a businessimpactmodulation."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url + '/' +
-            checkmodulation_name, 'PUT',
-            body=checkmodulation
+            BusinessImpactModulationsManager.base_url + '/' +
+            businessimpactmodulation_name, 'PUT',
+            body=businessimpactmodulation
         )
         return body
 
-    def delete(self, checkmodulation_name):
-        """Delete a checkmodulation."""
+    def delete(self, businessimpactmodulation_name):
+        """Delete a businessimpactmodulation."""
         resp, body = self.http_client.request(
-            CheckModulationsManager.base_url+"/" + checkmodulation_name,
+            BusinessImpactModulationsManager.base_url+"/" +
+            businessimpactmodulation_name,
             'DELETE',
             body=''
         )

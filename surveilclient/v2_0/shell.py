@@ -1195,9 +1195,17 @@ def do_config_reload(sc, args):
     print(sc.config.reload_config()['message'])
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_status_host_list(sc, args):
     """List all status hosts."""
-    services = sc.status.hosts.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    services = sc.status.hosts.list(**arg)
 
     if args.json:
         print(utils.json_formatter(services))
@@ -1236,9 +1244,18 @@ def do_status_host_show(sc, args):
         utils.print_item(host, hostProperties)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_status_service_list(sc, args):
     """List all status services."""
-    services = sc.status.services.list()
+
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    services = sc.status.services.list(**arg)
 
     if args.json:
         print(utils.json_formatter(services))

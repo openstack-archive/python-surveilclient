@@ -13,6 +13,7 @@
 # under the License.
 
 from surveilclient.common import surveil_manager
+from surveilclient.common import utils
 from surveilclient.v2_0.status.metrics import metrics
 
 
@@ -23,10 +24,16 @@ class HostsManager(surveil_manager.SurveilManager):
         super(HostsManager, self).__init__(http_client)
         self.metrics = metrics.MetricsManager(self.http_client)
 
-    def list(self, live_query={'filters': '{}'}):
+    def list(self, live_query=None, page_size=None, page=None):
         """Get a list of hosts."""
+
+        query = utils.create_query(
+            query=live_query,
+            page_size=page_size,
+            page=page
+        )
         resp, body = self.http_client.json_request(
-            HostsManager.base_url, 'POST', body=live_query
+            HostsManager.base_url, 'POST', body=query
         )
         return body
 

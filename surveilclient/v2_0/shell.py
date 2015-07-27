@@ -207,20 +207,24 @@ def do_config_command_list(sc, args):
 @cliutils.arg("original_command_name", help="Original name of the command")
 @cliutils.arg("--command_name", help="New name of the command")
 @cliutils.arg("--command_line", help="Address of the command")
+@cliutils.arg("--module_type")
 def do_config_command_update(sc, args):
     """Update a config command."""
     arg_names = ['command_name',
-                 'command_line']
+                 'command_line',
+                 'module_type']
     command = _dict_from_args(args, arg_names)
     sc.config.commands.update(args.original_command_name, command)
 
 
 @cliutils.arg("--command_name")
 @cliutils.arg("--command_line")
+@cliutils.arg("--module_type")
 def do_config_command_create(sc, args):
     """Create a config command."""
     arg_names = ['command_name',
-                 'command_line']
+                 'command_line',
+                 'module_type']
     command = _dict_from_args(args, arg_names)
     sc.config.commands.create(**command)
 
@@ -235,7 +239,7 @@ def do_config_command_show(sc, args):
     elif command:
         """ Specify the shown order and all the properties to display """
         command_properties = [
-            'command_name', 'command_line'
+            'command_name', 'command_line', 'module_type'
         ]
 
         utils.print_item(command, command_properties)
@@ -272,9 +276,9 @@ def do_config_contactgroup_list(sc, args):
 @cliutils.arg("original_contactgroup_name",
               help="Original name of the contact group")
 @cliutils.arg("--contactgroup_name", help="New name of the contactgroup")
-@cliutils.arg("--members")
+@cliutils.arg("--members", nargs='+')
 @cliutils.arg("--alias")
-@cliutils.arg("--contactgroup_members")
+@cliutils.arg("--contactgroup_members", nargs='+')
 def do_config_contactgroup_update(sc, args):
     """Update a config contact group."""
     arg_names = ['contactgroup_name',
@@ -288,9 +292,9 @@ def do_config_contactgroup_update(sc, args):
 
 
 @cliutils.arg("--contactgroup_name", help="New name of the contactgroup")
-@cliutils.arg("--members")
+@cliutils.arg("--members", nargs='+')
 @cliutils.arg("--alias")
-@cliutils.arg("--contactgroup_members")
+@cliutils.arg("--contactgroup_members", nargs='+')
 def do_config_contactgroup_create(sc, args):
     """Create a config contact group."""
     arg_names = ['contactgroup_name',
@@ -298,6 +302,7 @@ def do_config_contactgroup_create(sc, args):
                  'alias',
                  'contactgroup_members'
                  ]
+
     contactgroup = _dict_from_args(args, arg_names)
     sc.config.contactgroups.create(**contactgroup)
 
@@ -389,16 +394,16 @@ def do_config_contact_list(sc, args):
 @cliutils.arg("--service_notifications_enabled")
 @cliutils.arg("--host_notification_period")
 @cliutils.arg("--service_notification_period")
-@cliutils.arg("--host_notification_options")
-@cliutils.arg("--service_notification_options")
-@cliutils.arg("--host_notification_commands")
-@cliutils.arg("--service_notification_commands")
+@cliutils.arg("--host_notification_options", nargs='+')
+@cliutils.arg("--service_notification_options", nargs='+')
+@cliutils.arg("--host_notification_commands", nargs='+')
+@cliutils.arg("--service_notification_commands", nargs='+')
 @cliutils.arg("--email")
 @cliutils.arg("--pager")
 @cliutils.arg("--can_submit_commands")
 @cliutils.arg("--is_admin")
-@cliutils.arg("--retain_status_information")
-@cliutils.arg("--retain_nonstatus_information")
+@cliutils.arg("--retain_status_information", nargs='+')
+@cliutils.arg("--retain_nonstatus_information", nargs='+')
 @cliutils.arg("--min_business_impact")
 def do_config_contact_update(sc, args):
     """Update a config contact."""
@@ -430,16 +435,16 @@ def do_config_contact_update(sc, args):
 @cliutils.arg("--service_notifications_enabled")
 @cliutils.arg("--host_notification_period")
 @cliutils.arg("--service_notification_period")
-@cliutils.arg("--host_notification_options")
-@cliutils.arg("--service_notification_options")
-@cliutils.arg("--host_notification_commands")
-@cliutils.arg("--service_notification_commands")
+@cliutils.arg("--host_notification_options", nargs='+')
+@cliutils.arg("--service_notification_options", nargs='+')
+@cliutils.arg("--host_notification_commands", nargs='+')
+@cliutils.arg("--service_notification_commands", nargs='+')
 @cliutils.arg("--email")
 @cliutils.arg("--pager")
 @cliutils.arg("--can_submit_commands")
 @cliutils.arg("--is_admin")
-@cliutils.arg("--retain_status_information")
-@cliutils.arg("--retain_nonstatus_information")
+@cliutils.arg("--retain_status_information", nargs='+')
+@cliutils.arg("--retain_nonstatus_information", nargs='+')
 @cliutils.arg("--min_business_impact")
 def do_config_contact_create(sc, args):
     """Create a config contact."""
@@ -555,9 +560,9 @@ def do_config_hostgroup_update(sc, args):
 
 
 @cliutils.arg("--hostgroup_name", help="Name of the host group")
-@cliutils.arg("--members")
+@cliutils.arg("--members", nargs='+')
 @cliutils.arg("--alias")
-@cliutils.arg("--hostgroup_members")
+@cliutils.arg("--hostgroup_members", nargs='+')
 @cliutils.arg("--notes")
 @cliutils.arg("--notes_url")
 @cliutils.arg("--action_url")
@@ -627,12 +632,16 @@ def do_config_host_list(sc, args):
 @cliutils.arg("--address", help="Address of the host")
 @cliutils.arg("--max_check_attempts")
 @cliutils.arg("--check_period")
-@cliutils.arg("--contacts")
-@cliutils.arg("--contact_groups")
+@cliutils.arg("--contacts", nargs='+')
+@cliutils.arg("--contact_groups", nargs='+')
 @cliutils.arg("--custom_fields")
 @cliutils.arg("--notification_interval")
 @cliutils.arg("--notification_period")
-@cliutils.arg("--use")
+@cliutils.arg("--use", nargs='+')
+@cliutils.arg("--name")
+@cliutils.arg("--register")
+@cliutils.arg("--check_interval")
+@cliutils.arg("--retry_interval")
 def do_config_host_update(sc, args):
     """Update a config host."""
     arg_names = ['host_name',
@@ -644,7 +653,11 @@ def do_config_host_update(sc, args):
                  'custom_fields',
                  'notification_interval',
                  'notification_period',
-                 'use']
+                 'use',
+                 'name',
+                 'register',
+                 'check_interval',
+                 'retry_interval']
     host = _dict_from_args(args, arg_names)
     sc.config.hosts.update(args.original_host_name, host)
 
@@ -653,12 +666,16 @@ def do_config_host_update(sc, args):
 @cliutils.arg("--address", help="Address of the host")
 @cliutils.arg("--max_check_attempts")
 @cliutils.arg("--check_period")
-@cliutils.arg("--contacts")
-@cliutils.arg("--contact_groups")
+@cliutils.arg("--contacts", nargs='+')
+@cliutils.arg("--contact_groups", nargs='+')
 @cliutils.arg("--custom_fields")
 @cliutils.arg("--notification_interval")
 @cliutils.arg("--notification_period")
-@cliutils.arg("--use")
+@cliutils.arg("--use", nargs='+')
+@cliutils.arg("--name")
+@cliutils.arg("--register")
+@cliutils.arg("--check_interval")
+@cliutils.arg("--retry_interval")
 def do_config_host_create(sc, args):
     """Create a config host."""
     arg_names = ['host_name',
@@ -670,7 +687,11 @@ def do_config_host_create(sc, args):
                  'custom_fields',
                  'notification_interval',
                  'notification_period',
-                 'use']
+                 'use',
+                 'name',
+                 'register',
+                 'check_interval',
+                 'retry_interval']
     host = _dict_from_args(args, arg_names)
 
     if "custom_fields" in host:
@@ -691,7 +712,8 @@ def do_config_host_show(sc, args):
         hostProperties = [
             'host_name', 'address', 'check_period', 'contact_groups',
             'contacts', 'custom_fields', 'max_check_attempts',
-            'notification_interval', 'notification_period', 'use'
+            'notification_interval', 'notification_period', 'use',
+            'name', 'register', 'check_interval', 'retry_interval'
         ]
 
         utils.print_item(host, hostProperties)
@@ -820,10 +842,11 @@ def do_config_notificationway_list(sc, args):
 @cliutils.arg("--notificationway_name", help="New name of the notificationway")
 @cliutils.arg("--host_notification_period")
 @cliutils.arg("--service_notification_period")
-@cliutils.arg("--host_notification_options")
-@cliutils.arg("--service_notification_options")
-@cliutils.arg("--host_notification_commands")
-@cliutils.arg("--service_notification_commands")
+@cliutils.arg("--host_notification_options", nargs='+')
+@cliutils.arg("--service_notification_options", nargs='+')
+@cliutils.arg("--host_notification_commands", nargs='+')
+@cliutils.arg("--service_notification_commands", nargs='+')
+@cliutils.arg("--min_business_impact")
 def do_config_notificationway_update(sc, args):
     """Update a config notificationway."""
     arg_names = ['notificationway_name',
@@ -832,7 +855,8 @@ def do_config_notificationway_update(sc, args):
                  'host_notification_options',
                  'service_notification_options',
                  'service_notification_commands',
-                 'host_notification_commands']
+                 'host_notification_commands',
+                 'min_business_impact']
     notificationway = _dict_from_args(args, arg_names)
     sc.config.notificationways.update(args.original_notificationway_name,
                                       notificationway)
@@ -841,10 +865,11 @@ def do_config_notificationway_update(sc, args):
 @cliutils.arg("--notificationway_name", help="Name of the notificationway")
 @cliutils.arg("--host_notification_period")
 @cliutils.arg("--service_notification_period")
-@cliutils.arg("--host_notification_options")
-@cliutils.arg("--service_notification_options")
-@cliutils.arg("--host_notification_commands")
-@cliutils.arg("--service_notification_commands")
+@cliutils.arg("--host_notification_options", nargs='+')
+@cliutils.arg("--service_notification_options", nargs='+')
+@cliutils.arg("--host_notification_commands", nargs='+')
+@cliutils.arg("--service_notification_commands", nargs='+')
+@cliutils.arg("--min_business_impact")
 def do_config_notificationway_create(sc, args):
     """Create a config notificationway."""
     arg_names = ['notificationway_name',
@@ -853,7 +878,8 @@ def do_config_notificationway_create(sc, args):
                  'host_notification_options',
                  'service_notification_options',
                  'service_notification_commands',
-                 'host_notification_commands']
+                 'host_notification_commands',
+                 'min_business_impact']
     notificationway = _dict_from_args(args, arg_names)
 
     sc.config.notificationways.create(**notificationway)
@@ -875,7 +901,8 @@ def do_config_notificationway_show(sc, args):
             'host_notification_options',
             'service_notification_options',
             'service_notification_commands',
-            'host_notification_commands'
+            'host_notification_commands',
+            'min_business_impact'
         ]
 
         utils.print_item(notificationway, notificationwayProperties)
@@ -910,7 +937,7 @@ def do_config_realm_list(sc, args):
 
 @cliutils.arg("original_realm_name", help="Original name of the realm")
 @cliutils.arg("--realm_name", help="New name of the realm")
-@cliutils.arg("--realm_members")
+@cliutils.arg("--realm_members", nargs='+')
 @cliutils.arg("--default")
 def do_config_realm_update(sc, args):
     """Update a config realm."""
@@ -922,7 +949,7 @@ def do_config_realm_update(sc, args):
 
 
 @cliutils.arg("--realm_name", help="Name of the realm")
-@cliutils.arg("--realm_members")
+@cliutils.arg("--realm_members", nargs='+')
 @cliutils.arg("--default")
 def do_config_realm_create(sc, args):
     """Create a config realm."""
@@ -991,9 +1018,9 @@ def do_config_servicegroup_list(sc, args):
 @cliutils.arg("original_servicegroup_name",
               help="Original name of the service group")
 @cliutils.arg("--servicegroup_name", help="New name of the service group")
-@cliutils.arg("--members")
+@cliutils.arg("--members", nargs='+')
 @cliutils.arg("--alias")
-@cliutils.arg("--servicegroup_members")
+@cliutils.arg("--servicegroup_members", nargs='+')
 @cliutils.arg("--notes")
 @cliutils.arg("--notes_url")
 @cliutils.arg("--action_url")
@@ -1012,9 +1039,9 @@ def do_config_servicegroup_update(sc, args):
 
 
 @cliutils.arg("--servicegroup_name", help="Name of the service group")
-@cliutils.arg("--members")
+@cliutils.arg("--members", nargs='+')
 @cliutils.arg("--alias")
-@cliutils.arg("--servicegroup_members")
+@cliutils.arg("--servicegroup_members", nargs='+')
 @cliutils.arg("--notes")
 @cliutils.arg("--notes_url")
 @cliutils.arg("--action_url")
@@ -1081,7 +1108,7 @@ def do_config_service_list(sc, args):
         utils.print_list(services, cols, formatters=formatters)
 
 
-@cliutils.arg("--host_name")
+@cliutils.arg("--host_name", nargs='+')
 @cliutils.arg("--service_description")
 @cliutils.arg("--check_command")
 @cliutils.arg("--max_check_attempts")
@@ -1090,9 +1117,12 @@ def do_config_service_list(sc, args):
 @cliutils.arg("--check_period")
 @cliutils.arg("--notification_interval")
 @cliutils.arg("--notification_period")
-@cliutils.arg("--contacts")
-@cliutils.arg("--contact_groups")
+@cliutils.arg("--contacts", nargs='+')
+@cliutils.arg("--contact_groups", nargs='+')
 @cliutils.arg("--passive_checks_enabled")
+@cliutils.arg("--use", nargs='+')
+@cliutils.arg("--name")
+@cliutils.arg("--register")
 def do_config_service_create(sc, args):
     """Create a config service."""
     arg_names = ['host_name',
@@ -1107,7 +1137,9 @@ def do_config_service_create(sc, args):
                  'contacts',
                  'contact_groups',
                  'passive_checks_enabled',
-                 'use']
+                 'use',
+                 'name',
+                 'register']
     service = _dict_from_args(args, arg_names)
     sc.config.services.create(**service)
 
@@ -1145,24 +1177,28 @@ def do_config_timeperiod_list(sc, args):
               help="Original name of the timeperiod")
 @cliutils.arg("--timeperiod_name", help="New name of the timeperiod")
 @cliutils.arg("--exclude")
-@cliutils.arg("--periods")
+@cliutils.arg("--periods", nargs='+')
+@cliutils.arg("--alias")
 def do_config_timeperiod_update(sc, args):
     """Update a config timeperiod."""
     arg_names = ['timeperiod_name',
                  'exclude',
-                 'periods']
+                 'periods',
+                 'alias']
     timeperiod = _dict_from_args(args, arg_names)
     sc.config.timeperiods.update(args.original_timeperiod_name, timeperiod)
 
 
 @cliutils.arg("--timeperiod_name", help="Name of the timeperiod")
 @cliutils.arg("--exclude")
-@cliutils.arg("--periods")
+@cliutils.arg("--periods", nargs='+')
+@cliutils.arg("--alias")
 def do_config_timeperiod_create(sc, args):
     """Create a config timeperiod."""
     arg_names = ['timeperiod_name',
                  'exclude',
-                 'periods']
+                 'periods',
+                 'alias']
     timeperiod = _dict_from_args(args, arg_names)
 
     sc.config.timeperiods.create(**timeperiod)

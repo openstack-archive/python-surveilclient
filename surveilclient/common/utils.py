@@ -5,7 +5,7 @@
 # not use this file except in compliance with the License. You may obtain
 # a copy of the License at
 #
-#      http://www.apache.org/licenses/LICENSE-2.0
+# http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
@@ -18,6 +18,7 @@ import os
 import prettytable
 
 from surveilclient.openstack.common import importutils
+
 try:
     from oslo_serialization import jsonutils
 except ImportError:
@@ -27,9 +28,10 @@ except ImportError:
 def arg(*args, **kwargs):
     def _decorator(func):
         # Because of the semantics of decorator composition if we just append
-        #  to the options list positional options will appear to be backwards.
+        # to the options list positional options will appear to be backwards.
         func.__dict__.setdefault('arguments', []).insert(0, (args, kwargs))
         return func
+
     return _decorator
 
 
@@ -69,7 +71,7 @@ def print_item(objs, properties):
 
     """ Override the properties keys pass in parameter """
 
-    len_property_max=0
+    len_property_max = 0
     for property in properties:
         if len(property) > len_property_max:
             len_property_max = len(property)
@@ -80,16 +82,20 @@ def print_item(objs, properties):
 
     for property in properties:
         val_lines = []
-        for i in range(0, len(objs[property].__str__()), len_available):
-            val_lines.append(objs[property].__str__()[i:i+len_available])
+        if type(objs[property]) is list and objs[property]:
+            value = json.dumps(objs[property])
+        else:
+            value = objs[property].__str__()
+        for i in range(0, len(value), len_available):
+            val_lines.append(value[i:i + len_available])
 
-        val_lines ='\n'.join(val_lines)
+        val_lines = '\n'.join(val_lines)
         list.append({'prop': property, 'value': val_lines})
 
-    formatters = {
-        'Property': lambda x: x.get('prop', ''),
-        'Value': lambda x: x.get('value', ''),
-    }
+        formatters = {
+            'Property': lambda x: x.get('prop', ''),
+            'Value': lambda x: x.get('value', ''),
+        }
 
     print_list(list, cols, formatters=formatters)
 
@@ -130,6 +136,7 @@ def get_columns(lines, ordered_columns):
             del columns_dict[col]
 
     return valid_columns + sorted(columns_dict.keys())
+
 
 def create_query(query=None, filters={}, start_time=None, end_time=None,
                  page_size=None, page=None):

@@ -27,9 +27,10 @@ except ImportError:
 def arg(*args, **kwargs):
     def _decorator(func):
         # Because of the semantics of decorator composition if we just append
-        #  to the options list positional options will appear to be backwards.
+        # to the options list positional options will appear to be backwards.
         func.__dict__.setdefault('arguments', []).insert(0, (args, kwargs))
         return func
+
     return _decorator
 
 
@@ -69,7 +70,7 @@ def print_item(objs, properties):
 
     """ Override the properties keys pass in parameter """
 
-    len_property_max=0
+    len_property_max = 0
     for property in properties:
         if len(property) > len_property_max:
             len_property_max = len(property)
@@ -80,10 +81,14 @@ def print_item(objs, properties):
 
     for property in properties:
         val_lines = []
-        for i in range(0, len(objs[property].__str__()), len_available):
-            val_lines.append(objs[property].__str__()[i:i+len_available])
+        if type(objs[property]) is list and objs[property]:
+            value = json.dumps(objs[property])
+        else:
+            value = objs[property].__str__()
+        for i in range(0, len(value), len_available):
+            val_lines.append(value[i:i + len_available])
 
-        val_lines ='\n'.join(val_lines)
+        val_lines = '\n'.join(val_lines)
         list.append({'prop': property, 'value': val_lines})
 
     formatters = {

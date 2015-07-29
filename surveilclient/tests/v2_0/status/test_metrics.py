@@ -30,9 +30,7 @@ class TestMetrics(clienttest.ClientTest):
 
         metrics = self.client.status.hosts.metrics.list(
             'localhost',
-            'load1',
-            start_time='2015-05-22T13:38:08Z',
-            end_time='2015-05-22T13:38:08Z'
+            'load1'
         )
 
         self.assertEqual(
@@ -56,7 +54,7 @@ class TestMetrics(clienttest.ClientTest):
 
         metrics = self.client.status.hosts.metrics.list('localhost', 'load1',
                                                         'load',
-                                                        live_query=live_query
+                                                        query=live_query
                                                         )
 
         self.assertEqual(

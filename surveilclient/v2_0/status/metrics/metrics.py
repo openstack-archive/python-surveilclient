@@ -13,7 +13,6 @@
 # under the License.
 
 from surveilclient.common import surveil_manager
-from surveilclient.common import utils
 
 
 class MetricsManager(surveil_manager.SurveilManager):
@@ -30,17 +29,8 @@ class MetricsManager(surveil_manager.SurveilManager):
         return body
 
     def list(self, host_name, metric_name, service_description=None,
-             live_query=None, start_time=None, end_time=None,
-             page_size=None, page=None):
+             query={}):
         """Get a list of metrics name."""
-        query = utils.create_query(
-            query=live_query,
-            start_time=start_time,
-            end_time=end_time,
-            page_size=page_size,
-            page=page
-        )
-
         resp, body = self.http_client.json_request(
             self._create_url(host_name, service_description, metric_name),
             'POST', body=query)

@@ -18,17 +18,17 @@ from surveilclient.common import surveil_manager
 class ContactsManager(surveil_manager.SurveilManager):
     base_url = '/config/contacts'
 
-    def list(self):
+    def list(self, query={}):
         """Get a list of contacts."""
         resp, body = self.http_client.json_request(
-            ContactsManager.base_url, 'GET'
+            ContactsManager.base_url, 'POST', body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new contact."""
         resp, body = self.http_client.json_request(
-            ContactsManager.base_url, 'POST',
+            ContactsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

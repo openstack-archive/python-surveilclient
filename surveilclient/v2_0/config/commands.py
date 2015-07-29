@@ -18,17 +18,18 @@ from surveilclient.common import surveil_manager
 class CommandsManager(surveil_manager.SurveilManager):
     base_url = '/config/commands'
 
-    def list(self):
+    def list(self, query={}):
         """Get a list of commands."""
         resp, body = self.http_client.json_request(
-            CommandsManager.base_url, 'GET'
+            CommandsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new command."""
         resp, body = self.http_client.json_request(
-            CommandsManager.base_url, 'POST',
+            CommandsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

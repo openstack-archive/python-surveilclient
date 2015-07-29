@@ -18,17 +18,19 @@ from surveilclient.common import surveil_manager
 class BusinessImpactModulationsManager(surveil_manager.SurveilManager):
     base_url = '/config/businessimpactmodulations'
 
-    def list(self):
+    def list(self, query=None):
         """Get a list of businessimpactmodulations."""
+        query = query or {}
         resp, body = self.http_client.json_request(
-            BusinessImpactModulationsManager.base_url, 'GET'
+            BusinessImpactModulationsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new businessimpactmodulation."""
         resp, body = self.http_client.json_request(
-            BusinessImpactModulationsManager.base_url, 'POST',
+            BusinessImpactModulationsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

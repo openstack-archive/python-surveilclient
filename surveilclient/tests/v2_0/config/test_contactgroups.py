@@ -23,7 +23,7 @@ class TestContactGroups(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/config/contactgroups",
+            httpretty.POST, "http://localhost:5311/v2/config/contactgroups",
             body='[{"contactgroup_name": "novell-admins",'
                  '"members": "jdoe,rtobert,tzach"},'
                  '{"contactgroup_name": "linux-adminx",'
@@ -44,7 +44,7 @@ class TestContactGroups(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/contactgroups",
+            httpretty.PUT, "http://localhost:5311/v2/config/contactgroups",
             body='{"contactgroup_name": "John",'
                  '"members": "marie,bob,joe"}'
         )

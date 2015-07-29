@@ -18,17 +18,19 @@ from surveilclient.common import surveil_manager
 class ServiceGroupsManager(surveil_manager.SurveilManager):
     base_url = '/config/servicegroups'
 
-    def list(self):
+    def list(self, query=None):
         """Get a list of servicegroups."""
+        query = query or {}
         resp, body = self.http_client.json_request(
-            ServiceGroupsManager.base_url, 'GET'
+            ServiceGroupsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new servicegroup."""
         resp, body = self.http_client.json_request(
-            ServiceGroupsManager.base_url, 'POST',
+            ServiceGroupsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

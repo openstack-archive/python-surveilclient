@@ -18,17 +18,19 @@ from surveilclient.common import surveil_manager
 class HostGroupsManager(surveil_manager.SurveilManager):
     base_url = '/config/hostgroups'
 
-    def list(self):
+    def list(self, query=None):
         """Get a list of hostgroups."""
+        query = query or {}
         resp, body = self.http_client.json_request(
-            HostGroupsManager.base_url, 'GET'
+            HostGroupsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new hostgroup."""
         resp, body = self.http_client.json_request(
-            HostGroupsManager.base_url, 'POST',
+            HostGroupsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

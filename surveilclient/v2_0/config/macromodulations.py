@@ -18,17 +18,19 @@ from surveilclient.common import surveil_manager
 class MacroModulationsManager(surveil_manager.SurveilManager):
     base_url = '/config/macromodulations'
 
-    def list(self):
+    def list(self, query=None):
         """Get a list of macromodulations."""
+        query = query or {}
         resp, body = self.http_client.json_request(
-            MacroModulationsManager.base_url, 'GET'
+            MacroModulationsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new macromodulation."""
         resp, body = self.http_client.json_request(
-            MacroModulationsManager.base_url, 'POST',
+            MacroModulationsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

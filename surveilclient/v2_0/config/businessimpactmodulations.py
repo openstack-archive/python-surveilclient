@@ -28,7 +28,7 @@ class BusinessImpactModulationsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new businessimpactmodulation."""
         resp, body = self.http_client.json_request(
-            BusinessImpactModulationsManager.base_url, 'POST',
+            BusinessImpactModulationsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

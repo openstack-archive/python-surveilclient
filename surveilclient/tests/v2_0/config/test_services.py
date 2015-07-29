@@ -49,7 +49,7 @@ class TestServices(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/services",
+            httpretty.PUT, "http://localhost:5311/v2/config/services",
             body='{"service_name": "new_service"}'
         )
 

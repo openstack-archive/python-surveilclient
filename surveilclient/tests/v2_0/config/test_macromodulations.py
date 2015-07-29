@@ -57,7 +57,7 @@ class TestMacroModulations(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/macromodulations",
+            httpretty.PUT, "http://localhost:5311/v2/config/macromodulations",
             body='{"macromodulation_name": "TEST_CREATE_MODULATION",'
                  '"modulation_period": "night"}'
         )

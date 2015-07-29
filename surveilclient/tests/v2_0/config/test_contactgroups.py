@@ -44,7 +44,7 @@ class TestContactGroups(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/contactgroups",
+            httpretty.PUT, "http://localhost:5311/v2/config/contactgroups",
             body='{"contactgroup_name": "John",'
                  '"members": "marie,bob,joe"}'
         )

@@ -28,7 +28,7 @@ class NotificationWaysManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new notificationway."""
         resp, body = self.http_client.json_request(
-            NotificationWaysManager.base_url, 'POST',
+            NotificationWaysManager.base_url, 'PUT',
             body=kwargs
         )
         return body

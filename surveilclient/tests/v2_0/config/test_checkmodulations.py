@@ -22,7 +22,7 @@ class TestCheckModulations(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/checkmodulations",
+            httpretty.PUT, "http://localhost:5311/v2/config/checkmodulations",
             body='{"message": "Ack received!"}')
 
         self.client.config.checkmodulations.create(

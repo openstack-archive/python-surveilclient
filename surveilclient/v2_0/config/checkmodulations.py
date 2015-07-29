@@ -28,7 +28,7 @@ class CheckModulationsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new checkmodulation."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST',
+            CheckModulationsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

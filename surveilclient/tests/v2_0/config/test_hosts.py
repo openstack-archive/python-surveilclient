@@ -51,7 +51,7 @@ class TestHosts(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/hosts",
+            httpretty.PUT, "http://localhost:5311/v2/config/hosts",
             body='{"host_name": "new_host", "address": "192.168.2.1"}'
         )
 

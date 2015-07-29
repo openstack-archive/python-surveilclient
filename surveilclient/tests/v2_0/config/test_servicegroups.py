@@ -51,7 +51,7 @@ class TestServiceGroups(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/servicegroups",
+            httpretty.PUT, "http://localhost:5311/v2/config/servicegroups",
             body='{"servicegroup_name": "John",'
                  '"members": "marie,bob,joe"}'
         )

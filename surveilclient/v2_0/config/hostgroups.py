@@ -28,7 +28,7 @@ class HostGroupsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new hostgroup."""
         resp, body = self.http_client.json_request(
-            HostGroupsManager.base_url, 'POST',
+            HostGroupsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

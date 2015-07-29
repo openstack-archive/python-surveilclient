@@ -28,7 +28,7 @@ class ContactsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new contact."""
         resp, body = self.http_client.json_request(
-            ContactsManager.base_url, 'POST',
+            ContactsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

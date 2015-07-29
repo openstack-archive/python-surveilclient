@@ -28,7 +28,7 @@ class CommandsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new command."""
         resp, body = self.http_client.json_request(
-            CommandsManager.base_url, 'POST',
+            CommandsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

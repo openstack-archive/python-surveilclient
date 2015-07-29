@@ -28,7 +28,7 @@ class ServiceGroupsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new servicegroup."""
         resp, body = self.http_client.json_request(
-            ServiceGroupsManager.base_url, 'POST',
+            ServiceGroupsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

@@ -28,7 +28,7 @@ class RealmsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new realm."""
         resp, body = self.http_client.json_request(
-            RealmsManager.base_url, 'POST',
+            RealmsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

@@ -61,7 +61,7 @@ class TestTimePeriods(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/timeperiods",
+            httpretty.PUT, "http://localhost:5311/v2/config/timeperiods",
             body='{"timeperiod_name": "John"}'
         )
 

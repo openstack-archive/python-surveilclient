@@ -49,7 +49,7 @@ class TestHostGroups(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/hostgroups",
+            httpretty.PUT, "http://localhost:5311/v2/config/hostgroups",
             body='{"hostgroup_name": "John",'
                  '"members": "marie,bob,joe"}'
         )

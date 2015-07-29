@@ -28,7 +28,7 @@ class ContactGroupsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new contactgroup."""
         resp, body = self.http_client.json_request(
-            ContactGroupsManager.base_url, 'POST',
+            ContactGroupsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

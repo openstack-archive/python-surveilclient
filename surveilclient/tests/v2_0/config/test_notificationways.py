@@ -77,7 +77,7 @@ class TestNotificationWays(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/notificationways",
+            httpretty.PUT, "http://localhost:5311/v2/config/notificationways",
             body='{'
                  '"notificationway_name": "email_in_day",'
                  '"host_notification_period": "24x7",'

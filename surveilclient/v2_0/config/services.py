@@ -29,7 +29,7 @@ class ServicesManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new host."""
         resp, body = self.http_client.json_request(
-            ServicesManager.base_url, 'POST',
+            ServicesManager.base_url, 'PUT',
             body=kwargs
         )
         return body

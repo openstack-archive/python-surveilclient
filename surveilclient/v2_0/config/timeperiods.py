@@ -28,7 +28,7 @@ class TimePeriodsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new timeperiod."""
         resp, body = self.http_client.json_request(
-            TimePeriodsManager.base_url, 'POST',
+            TimePeriodsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

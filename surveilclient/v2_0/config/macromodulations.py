@@ -28,7 +28,7 @@ class MacroModulationsManager(surveil_manager.SurveilManager):
     def create(self, **kwargs):
         """Create a new macromodulation."""
         resp, body = self.http_client.json_request(
-            MacroModulationsManager.base_url, 'POST',
+            MacroModulationsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

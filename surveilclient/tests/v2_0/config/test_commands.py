@@ -37,7 +37,7 @@ class TestCommands(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/commands",
+            httpretty.PUT, "http://localhost:5311/v2/config/commands",
             body='{"command_name": "new_command", "command_line": "new_line"}'
         )
 

@@ -23,7 +23,7 @@ class TestServiceGroups(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/config/servicegroups",
+            httpretty.POST, "http://localhost:5311/v2/config/servicegroups",
             body='[{"servicegroup_name": "dbservices",'
                  '"members": "ms1,SQL Server,ms1,'
                  'SQL Serverc Agent,ms1,SQL DTC"},'
@@ -51,7 +51,7 @@ class TestServiceGroups(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/servicegroups",
+            httpretty.PUT, "http://localhost:5311/v2/config/servicegroups",
             body='{"servicegroup_name": "John",'
                  '"members": "marie,bob,joe"}'
         )

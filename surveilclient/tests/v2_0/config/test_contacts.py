@@ -23,7 +23,7 @@ class TestContacts(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/config/contacts",
+            httpretty.POST, "http://localhost:5311/v2/config/contacts",
             body='[{"contact_name": "bobby",'
                  '"email": "bob@bob.com"},'
                  '{"contact_name": "marie",'
@@ -50,7 +50,7 @@ class TestContacts(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/contacts",
+            httpretty.PUT, "http://localhost:5311/v2/config/contacts",
             body='{"contact_name": "John"}'
         )
 

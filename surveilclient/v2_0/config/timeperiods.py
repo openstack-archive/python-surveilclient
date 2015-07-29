@@ -18,17 +18,18 @@ from surveilclient.common import surveil_manager
 class TimePeriodsManager(surveil_manager.SurveilManager):
     base_url = '/config/timeperiods'
 
-    def list(self):
+    def list(self, query={}):
         """Get a list of timeperiods."""
         resp, body = self.http_client.json_request(
-            TimePeriodsManager.base_url, 'GET'
+            TimePeriodsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new timeperiod."""
         resp, body = self.http_client.json_request(
-            TimePeriodsManager.base_url, 'POST',
+            TimePeriodsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

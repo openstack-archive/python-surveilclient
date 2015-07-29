@@ -18,17 +18,17 @@ from surveilclient.common import surveil_manager
 class CheckModulationsManager(surveil_manager.SurveilManager):
     base_url = '/config/checkmodulations'
 
-    def list(self):
+    def list(self, query={}):
         """Get a list of checkmodulations."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'GET'
+            CheckModulationsManager.base_url, 'POST', body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new checkmodulation."""
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST',
+            CheckModulationsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

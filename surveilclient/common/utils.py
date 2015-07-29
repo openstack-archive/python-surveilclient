@@ -136,38 +136,40 @@ def get_columns(lines, ordered_columns):
 
     return valid_columns + sorted(columns_dict.keys())
 
-def create_query(query=None, filters={}, start_time=None, end_time=None,
-                 page_size=None, page=None):
-    if query is None:
-        query = {}
-    else:
-        query = json.loads(query)
 
-    if start_time and end_time:
-        query['time_interval'] = {
-            "start_time": start_time,
-            "end_time": end_time
-        }
+def create_query(arg_dict={}):
 
-    if 'filters' not in query:
-        query['filters'] = {}
+    query = {}
+    filters = {}
+    paging = {}
+    time = {}
 
-    for filter_type in filters:
-        if 'is' not in query['filters']:
-            query['filters'][filter_type] = {}
+    if arg_dict:
+        for arg in arg_dict:
+            if arg == 'live_query':
+                query = json.loads(arg_dict[arg])
+            elif arg == ('page_size' or 'page'):
+                paging[arg] = arg_dict[arg]
+            elif arg == ('start_time' or 'end_time'):
+                time[arg] = arg_dict[arg]
+            else:
+                filters[arg] = [arg_dict[arg]]
 
-        for value in filters[filter_type]:
-            if filters[filter_type][value] is not None:
-                query['filters'][filter_type][value] = [
-                    filters[filter_type][value]
-                ]
+    if time:
+        query["time_interval"] = time
 
-    query['filters'] = json.dumps(query['filters'])
+    if paging:
+        query["paging"] = paging
 
-    if page_size and page:
-        query['paging'] = {
-            'size': page_size,
-            'page': page
-        }
+    if filters:
+        if not 'filters' in query :
+           query["filters"] = {}
+        if not 'is' in query["filters"]:
+           query["filters"]["is"] = filters
+        else:
+           query["filters"]["is"].update(filters)
+
+    if 'filters' in query :
+        query['filters'] = json.dumps(query['filters'])
 
     return query

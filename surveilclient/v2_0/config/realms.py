@@ -18,17 +18,18 @@ from surveilclient.common import surveil_manager
 class RealmsManager(surveil_manager.SurveilManager):
     base_url = '/config/realms'
 
-    def list(self):
+    def list(self, query={}):
         """Get a list of realms."""
         resp, body = self.http_client.json_request(
-            RealmsManager.base_url, 'GET'
+            RealmsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new realm."""
         resp, body = self.http_client.json_request(
-            RealmsManager.base_url, 'POST',
+            RealmsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

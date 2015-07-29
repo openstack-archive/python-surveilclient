@@ -18,18 +18,18 @@ from surveilclient.common import surveil_manager
 class ServicesManager(surveil_manager.SurveilManager):
     base_url = '/config/services'
 
-    def list(self, templates=False):
+    def list(self, query={}):
         """Get a list of hosts."""
         resp, body = self.http_client.json_request(
-            ServicesManager.base_url, 'GET',
-            params={"templates": int(templates)}
+            ServicesManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new host."""
         resp, body = self.http_client.json_request(
-            ServicesManager.base_url, 'POST',
+            ServicesManager.base_url, 'PUT',
             body=kwargs
         )
         return body

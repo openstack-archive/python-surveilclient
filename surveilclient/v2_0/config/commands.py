@@ -13,22 +13,30 @@
 # under the License.
 
 from surveilclient.common import surveil_manager
+from surveilclient.common import utils
 
 
 class CommandsManager(surveil_manager.SurveilManager):
     base_url = '/config/commands'
 
-    def list(self):
+    def list(self, live_query=None, page_size=None, page=None):
         """Get a list of commands."""
+        query = utils.create_query(
+            query=live_query,
+            page_size=page_size,
+            page=page
+        )
+
         resp, body = self.http_client.json_request(
-            CommandsManager.base_url, 'GET'
+            CommandsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new command."""
         resp, body = self.http_client.json_request(
-            CommandsManager.base_url, 'POST',
+            CommandsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

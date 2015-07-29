@@ -13,22 +13,30 @@
 # under the License.
 
 from surveilclient.common import surveil_manager
+from surveilclient.common import utils
 
 
 class ContactGroupsManager(surveil_manager.SurveilManager):
     base_url = '/config/contactgroups'
 
-    def list(self):
+    def list(self, live_query=None, page_size=None, page=None):
         """Get a list of contactgroups."""
+
+        query = utils.create_query(
+            query=live_query,
+            page_size=page_size,
+            page=page
+        )
         resp, body = self.http_client.json_request(
-            ContactGroupsManager.base_url, 'GET'
+            ContactGroupsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new contactgroup."""
         resp, body = self.http_client.json_request(
-            ContactGroupsManager.base_url, 'POST',
+            ContactGroupsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

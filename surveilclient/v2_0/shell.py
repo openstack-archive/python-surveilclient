@@ -27,9 +27,17 @@ def _dict_from_args(args, arg_names):
     return result
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_businessimpactmodulation_list(sc, args):
     """List all config business impact modulations."""
-    businessimpactmodulations = sc.config.businessimpactmodulations.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    businessimpactmodulations = sc.config.businessimpactmodulations.list(**arg)
 
     if args.json:
         print(utils.json_formatter(businessimpactmodulations))
@@ -110,9 +118,17 @@ def do_config_businessimpactmodulation_delete(sc, args):
         args.business_impact_modulation_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_checkmodulation_list(sc, args):
     """List all config check modulations."""
-    checkmodulations = sc.config.checkmodulations.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    checkmodulations = sc.config.checkmodulations.list(**arg)
 
     if args.json:
         print(utils.json_formatter(checkmodulations))
@@ -185,9 +201,17 @@ def do_config_checkmodulation_delete(sc, args):
     sc.config.checkmodulations.delete(args.checkmodulation_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_command_list(sc, args):
     """List all config commands."""
-    commands = sc.config.commands.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    commands = sc.config.commands.list(**arg)
 
     if args.json:
         print(utils.json_formatter(commands))
@@ -251,9 +275,18 @@ def do_config_command_delete(sc, args):
     sc.config.commands.delete(args.command_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_contactgroup_list(sc, args):
     """List all contact groups."""
-    contactgroups = sc.config.contactgroups.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    contactgroups = sc.config.contactgroups.list(**arg)
+
     if args.json:
         print(utils.json_formatter(contactgroups))
     else:
@@ -331,9 +364,17 @@ def do_config_contactgroup_delete(sc, args):
     sc.config.contactgroups.delete(args.contactgroup_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_contact_list(sc, args):
     """List all contacts."""
-    contacts = sc.config.contacts.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    contacts = sc.config.contacts.list(**arg)
     if args.json:
         print(utils.json_formatter(contacts))
     else:
@@ -506,9 +547,17 @@ def do_config_contact_delete(sc, args):
     sc.config.contacts.delete(args.contact_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_hostgroup_list(sc, args):
     """List all config host groups."""
-    hostgroups = sc.config.hostgroups.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    hostgroups = sc.config.hostgroups.list(**arg)
 
     if args.json:
         print(utils.json_formatter(hostgroups))
@@ -607,9 +656,17 @@ def do_config_hostgroup_delete(sc, args):
     sc.config.hostgroups.delete(args.hostgroup_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_host_list(sc, args):
     """List all config hosts."""
-    hosts = sc.config.hosts.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    hosts = sc.config.hosts.list(**arg)
 
     if args.json:
         print(utils.json_formatter(hosts))
@@ -724,9 +781,17 @@ def do_config_host_delete(sc, args):
     sc.config.hosts.delete(args.host_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_macromodulation_list(sc, args):
     """List all config macromodulations."""
-    macromodulations = sc.config.macromodulations.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    macromodulations = sc.config.macromodulations.list(**arg)
 
     if args.json:
         print(utils.json_formatter(macromodulations))
@@ -800,9 +865,17 @@ def do_config_macromodulation_delete(sc, args):
     sc.config.macromodulations.delete(args.macromodulation_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_notificationway_list(sc, args):
     """List all config notificationways."""
-    notificationways = sc.config.notificationways.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    notificationways = sc.config.notificationways.list(**arg)
 
     if args.json:
         print(utils.json_formatter(notificationways))
@@ -913,9 +986,17 @@ def do_config_notificationway_delete(sc, args):
     sc.config.notificationways.delete(args.notificationway_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_realm_list(sc, args):
     """List all config realms."""
-    realms = sc.config.realms.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    realms = sc.config.realms.list(**arg)
 
     if args.json:
         print(utils.json_formatter(realms))
@@ -984,9 +1065,17 @@ def do_config_realm_delete(sc, args):
     sc.config.realms.delete(args.realm_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_servicegroup_list(sc, args):
     """List all config service groups."""
-    servicegroups = sc.config.servicegroups.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    servicegroups = sc.config.servicegroups.list(**arg)
 
     if args.json:
         print(utils.json_formatter(servicegroups))
@@ -1084,9 +1173,17 @@ def do_config_servicegroup_delete(sc, args):
     sc.config.servicegroups.delete(args.servicegroup_name)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_service_list(sc, args):
     """List all config services."""
-    services = sc.config.services.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    services = sc.config.services.list(**arg)
 
     if args.json:
         print(utils.json_formatter(services))
@@ -1151,9 +1248,17 @@ def do_config_service_delete(sc, args):
                               args.service_description)
 
 
+@cliutils.arg("--live_query", help="Live query")
+@cliutils.arg("--page_size", help="Number of returned data")
+@cliutils.arg("--page", help="Page number")
 def do_config_timeperiod_list(sc, args):
     """List all config timeperiods."""
-    timeperiods = sc.config.timeperiods.list()
+    arg_names = ['live_query',
+                 'page_size',
+                 'page'
+                 ]
+    arg = _dict_from_args(args, arg_names)
+    timeperiods = sc.config.timeperiods.list(**arg)
 
     if args.json:
         print(utils.json_formatter(timeperiods))

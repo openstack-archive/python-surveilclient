@@ -13,23 +13,29 @@
 # under the License.
 
 from surveilclient.common import surveil_manager
+from surveilclient.common import utils
 
 
 class HostsManager(surveil_manager.SurveilManager):
     base_url = '/config/hosts'
 
-    def list(self, templates=False):
+    def list(self, live_query=None, page_size=None, page=None):
         """Get a list of hosts."""
+        query = utils.create_query(
+            query=live_query,
+            page_size=page_size,
+            page=page
+        )
         resp, body = self.http_client.json_request(
-            HostsManager.base_url, 'GET',
-            params={"templates": int(templates)}
+            HostsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new host."""
         resp, body = self.http_client.json_request(
-            HostsManager.base_url, 'POST',
+            HostsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

@@ -24,7 +24,7 @@ class TestHosts(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/config/hosts",
+            httpretty.POST, "http://localhost:5311/v2/config/hosts",
             body='[{"host_name": "host1"}]'
         )
 
@@ -38,20 +38,21 @@ class TestHosts(clienttest.ClientTest):
     @httpretty.activate
     def test_list_templates(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/config/hosts",
+            httpretty.POST, "http://localhost:5311/v2/config/hosts",
             body='[]'
         )
 
-        self.client.config.hosts.list(templates=True)
+        self.client.config.hosts.list(
+            live_query=json.dumps({"filters": '{"is":{"register": "0"}}'}))
         self.assertEqual(
             httpretty.last_request().path,
-            '/v2/config/hosts?templates=1'
+            '/v2/config/hosts?'
         )
 
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/hosts",
+            httpretty.PUT, "http://localhost:5311/v2/config/hosts",
             body='{"host_name": "new_host", "address": "192.168.2.1"}'
         )
 

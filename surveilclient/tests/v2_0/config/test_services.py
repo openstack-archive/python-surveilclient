@@ -22,7 +22,7 @@ class TestServices(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/config/services",
+            httpretty.POST, "http://localhost:5311/v2/config/services",
             body='[{"service_name": "service1"}]'
         )
 
@@ -36,20 +36,20 @@ class TestServices(clienttest.ClientTest):
     @httpretty.activate
     def test_list_templates(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/config/services",
+            httpretty.POST, "http://localhost:5311/v2/config/services",
             body='[{"service_name": "service1"}]'
         )
 
         self.client.config.services.list(templates=True)
         self.assertEqual(
             httpretty.last_request().path,
-            '/v2/config/services?templates=1'
+            '/v2/config/services?'
         )
 
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/services",
+            httpretty.PUT, "http://localhost:5311/v2/config/services",
             body='{"service_name": "new_service"}'
         )
 

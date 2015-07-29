@@ -13,19 +13,13 @@
 # under the License.
 
 from surveilclient.common import surveil_manager
-from surveilclient.common import utils
 
 
 class ServicesManager(surveil_manager.SurveilManager):
     base_url = '/status/services'
 
-    def list(self, live_query=None, page_size=None, page=None):
+    def list(self, query={}):
         """Get a list of services."""
-        query = utils.create_query(
-            query=live_query,
-            page_size=page_size,
-            page=page
-        )
         resp, body = self.http_client.json_request(
             ServicesManager.base_url, 'POST', body=query
         )

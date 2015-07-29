@@ -23,7 +23,7 @@ class TestRealms(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/config/realms",
+            httpretty.POST, "http://localhost:5311/v2/config/realms",
             body='['
                  '{'
                  '"realm_name": "World",'
@@ -60,7 +60,7 @@ class TestRealms(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/realms",
+            httpretty.PUT, "http://localhost:5311/v2/config/realms",
             body='{"realm_name": "John",'
                  '"realm_members":"marie,bob,joe",'
                  '"default":1}'

@@ -18,17 +18,18 @@ from surveilclient.common import surveil_manager
 class ContactGroupsManager(surveil_manager.SurveilManager):
     base_url = '/config/contactgroups'
 
-    def list(self):
+    def list(self, query={}):
         """Get a list of contactgroups."""
         resp, body = self.http_client.json_request(
-            ContactGroupsManager.base_url, 'GET'
+            ContactGroupsManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new contactgroup."""
         resp, body = self.http_client.json_request(
-            ContactGroupsManager.base_url, 'POST',
+            ContactGroupsManager.base_url, 'PUT',
             body=kwargs
         )
         return body

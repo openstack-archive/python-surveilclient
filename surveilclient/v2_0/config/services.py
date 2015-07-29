@@ -12,24 +12,36 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import json
+
 from surveilclient.common import surveil_manager
 
 
 class ServicesManager(surveil_manager.SurveilManager):
     base_url = '/config/services'
 
-    def list(self, templates=False):
+    def list(self, query={}, templates=False):
         """Get a list of hosts."""
+        if templates:
+            if 'filters' not in query:
+                query["filters"] = '{}'
+            filters = json.loads(query["filters"])
+            temp_filter = {"register": ["0"]}
+            if 'is' not in filters:
+                filters["is"] = temp_filter
+            else:
+                filters["is"].update(temp_filter)
+            query['filters'] = json.dumps(query['filters'])
         resp, body = self.http_client.json_request(
-            ServicesManager.base_url, 'GET',
-            params={"templates": int(templates)}
+            ServicesManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new host."""
         resp, body = self.http_client.json_request(
-            ServicesManager.base_url, 'POST',
+            ServicesManager.base_url, 'PUT',
             body=kwargs
         )
         return body

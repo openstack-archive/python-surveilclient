@@ -18,17 +18,18 @@ from surveilclient.common import surveil_manager
 class NotificationWaysManager(surveil_manager.SurveilManager):
     base_url = '/config/notificationways'
 
-    def list(self):
+    def list(self, query={}):
         """Get a list of notificationways."""
         resp, body = self.http_client.json_request(
-            NotificationWaysManager.base_url, 'GET'
+            NotificationWaysManager.base_url, 'POST',
+            body=query
         )
         return body
 
     def create(self, **kwargs):
         """Create a new notificationway."""
         resp, body = self.http_client.json_request(
-            NotificationWaysManager.base_url, 'POST',
+            NotificationWaysManager.base_url, 'PUT',
             body=kwargs
         )
         return body

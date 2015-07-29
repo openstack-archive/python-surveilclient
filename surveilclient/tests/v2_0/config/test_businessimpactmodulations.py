@@ -23,8 +23,8 @@ class TestBusinessImpactModulations(clienttest.ClientTest):
     @httpretty.activate
     def test_list(self):
         httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/config/"
-                           "businessimpactmodulations",
+            httpretty.POST, "http://localhost:5311/v2/config/"
+                            "businessimpactmodulations",
             body='[{"business_impact": 1,'
                  '"business_impact_modulation_name": "LowImpactOnDay",'
                  '"modulation_period": "day"},'
@@ -50,8 +50,8 @@ class TestBusinessImpactModulations(clienttest.ClientTest):
     @httpretty.activate
     def test_create(self):
         httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/"
-                            "businessimpactmodulations",
+            httpretty.PUT, "http://localhost:5311/v2/config/"
+                           "businessimpactmodulations",
             body='{"business_impact": 1,'
                  '"business_impact_modulation_name": "testtt",'
                  '"modulation_period": "day"}'

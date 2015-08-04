@@ -12,6 +12,8 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
+import json
+
 import httpretty
 
 from surveilclient.tests.v2_0 import clienttest
@@ -31,6 +33,12 @@ class TestServices(clienttest.ClientTest):
         self.assertEqual(
             services,
             [{"service_name": "service1"}]
+        )
+        self.assertEqual(
+            json.loads(httpretty.last_request().body.decode()),
+            {
+                "filters": '{"isnot": {"register": ["0"]}}'
+            }
         )
 
     @httpretty.activate

@@ -23,16 +23,16 @@ class HostsManager(surveil_manager.SurveilManager):
     def list(self, query=None, templates=False):
         """Get a list of hosts."""
         query = query or {}
-        if templates:
+        if not templates:
             if 'filters' not in query:
                 query["filters"] = '{}'
             filters = json.loads(query["filters"])
             temp_filter = {"register": ["0"]}
-            if 'is' not in filters:
-                filters["is"] = temp_filter
+            if 'isnot' not in filters:
+                filters["isnot"] = temp_filter
             else:
-                filters["is"].update(temp_filter)
-            query['filters'] = json.dumps(query['filters'])
+                filters["isnot"].update(temp_filter)
+            query["filters"] = json.dumps(filters)
 
         resp, body = self.http_client.json_request(
             HostsManager.base_url, 'POST',

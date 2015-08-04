@@ -35,6 +35,13 @@ class TestHosts(clienttest.ClientTest):
             [{u"host_name": u"host1"}]
         )
 
+        self.assertEqual(
+            json.loads(httpretty.last_request().body.decode()),
+            {
+                "filters": '{"isnot": {"register": ["0"]}}'
+            }
+        )
+
     @httpretty.activate
     def test_list_templates(self):
         httpretty.register_uri(

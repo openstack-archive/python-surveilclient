@@ -14,6 +14,7 @@
 # under the License.
 
 import requests
+import requests.exceptions
 from six.moves import http_client as httplib
 
 from surveilclient import exc
@@ -21,6 +22,7 @@ from surveilclient.openstack.common.py3kcompat import urlutils
 
 import copy
 import json
+import time
 
 
 USER_AGENT = 'python-surveilclient'
@@ -62,7 +64,17 @@ class HTTPClient(object):
 
         auth_url = self.auth_url + '/tokens'
         credentials = {}
-        resp = requests.post(auth_url, data=json.dumps(credentials))
+
+        resp = None
+        for attempt in range(3):
+            try:
+                resp = requests.post(auth_url, data=json.dumps(credentials))
+                break
+            except requests.exceptions.ConnectionError as exp:
+                if attempt == 2:
+                    raise exp
+                time.sleep(1)
+
         access = resp.json()
         self.auth_token = access['access']['token']
         return self.auth_token['id']
@@ -95,7 +107,18 @@ class HTTPClient(object):
 
         request_url = self.endpoint_path + url + '?' + request_params
 
-        conn.request(method, request_url, **kwargs)
+        for attempt in range(3):
+            try:
+                conn.request(method, request_url, **kwargs)
+                break
+            except (
+                    httplib.BadStatusLine,
+                    httplib.IncompleteRead
+            ) as exp:
+                if attempt == 2:
+                    raise exp
+                time.sleep(1)
+
         resp = conn.getresponse()
 
         body_str = resp.read()

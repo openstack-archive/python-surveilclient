@@ -23,7 +23,7 @@ class CommandsManager(surveil_manager.SurveilManager):
         query = query or {}
         resp, body = self.http_client.json_request(
             CommandsManager.base_url, 'POST',
-            body=query
+            data=query
         )
         return body
 
@@ -31,7 +31,7 @@ class CommandsManager(surveil_manager.SurveilManager):
         """Create a new command."""
         resp, body = self.http_client.json_request(
             CommandsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
@@ -39,7 +39,7 @@ class CommandsManager(surveil_manager.SurveilManager):
         """Get a new command."""
         resp, body = self.http_client.json_request(
             CommandsManager.base_url + '/' + command_name, 'GET',
-            body=''
+            data=''
         )
         return body
 
@@ -47,7 +47,7 @@ class CommandsManager(surveil_manager.SurveilManager):
         """Update a command."""
         resp, body = self.http_client.json_request(
             CommandsManager.base_url + '/' + command_name, 'PUT',
-            body=command
+            data=command
         )
         return body
 
@@ -55,7 +55,6 @@ class CommandsManager(surveil_manager.SurveilManager):
         """Delete a command."""
         resp, body = self.http_client.request(
             CommandsManager.base_url + "/" + command_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

@@ -14,122 +14,114 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestBusinessImpactModulations(clienttest.ClientTest):
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/"
-                            "businessimpactmodulations",
-            body='[{"business_impact": 1,'
-                 '"business_impact_modulation_name": "LowImpactOnDay",'
-                 '"modulation_period": "day"},'
-                 '{"business_impact": 1,'
-                 '"business_impact_modulation_name": "LowImpactOnNight",'
-                 '"modulation_period": "night"}]'
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/"
+                   "businessimpactmodulations",
+                   text='[{"business_impact": 1,'
+                        '"business_impact_modulation_name": "LowImpactOnDay",'
+                        '"modulation_period": "day"},'
+                        '{"business_impact": 1,'
+                        '"business_impact_modulation_name": '
+                        '"LowImpactOnNight",'
+                        '"modulation_period": "night"}]'
+                   )
 
-        )
+            businessimpactmodulations = (self.client.config.
+                                         businessimpactmodulations.list())
 
-        businessimpactmodulations = (self.client.config.
-                                     businessimpactmodulations.list())
-
-        self.assertEqual(
-            businessimpactmodulations,
-            [{"business_impact": 1,
-              "business_impact_modulation_name": "LowImpactOnDay",
-              "modulation_period": "day"},
-             {"business_impact": 1,
-              "business_impact_modulation_name": "LowImpactOnNight",
-              "modulation_period": "night"}, ]
-        )
-
-    @httpretty.activate
-    def test_create(self):
-        httpretty.register_uri(
-            httpretty.PUT, "http://localhost:5311/v2/config/"
-                           "businessimpactmodulations",
-            body='{"business_impact": 1,'
-                 '"business_impact_modulation_name": "testtt",'
-                 '"modulation_period": "day"}'
-        )
-
-        self.client.config.businessimpactmodulations.create(
-            business_impact=1,
-            business_impact_modulation_name="testtt",
-            modulation_period="day"
-        )
-
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "business_impact": 1,
-                "business_impact_modulation_name": "testtt",
-                "modulation_period": "day"
-            }
-        )
-
-    @httpretty.activate
-    def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET,
-            'http://localhost:5311/v2/config/businessimpactmodulations/'
-            'LowImpactOnDay',
-            body='{"business_impact": 1,'
-                 '"business_impact_modulation_name": "LowImpactOnDay",'
-                 '"modulation_period": "day"}'
-        )
-
-        businessimpactmodulation = (
-            self.client.config.businessimpactmodulations.get(
-                businessimpactmodulation_name='LowImpactOnDay')
+            self.assertEqual(
+                businessimpactmodulations,
+                [{"business_impact": 1,
+                  "business_impact_modulation_name": "LowImpactOnDay",
+                  "modulation_period": "day"},
+                 {"business_impact": 1,
+                  "business_impact_modulation_name": "LowImpactOnNight",
+                  "modulation_period": "night"}, ]
             )
 
-        self.assertEqual(
-            businessimpactmodulation,
-            {"business_impact": 1,
-             "business_impact_modulation_name": "LowImpactOnDay",
-             "modulation_period": "day"}
-        )
+    def test_create(self):
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/"
+                  "businessimpactmodulations",
+                  text='{"business_impact": 1,'
+                       '"business_impact_modulation_name": "testtt",'
+                       '"modulation_period": "day"}'
+                  )
 
-    @httpretty.activate
+            self.client.config.businessimpactmodulations.create(
+                business_impact=1,
+                business_impact_modulation_name="testtt",
+                modulation_period="day"
+            )
+
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "business_impact": 1,
+                    "business_impact_modulation_name": "testtt",
+                    "modulation_period": "day"
+                }
+            )
+
+    def test_get(self):
+        with requests_mock.mock() as m:
+            m.get('http://localhost:5311/v2/config/businessimpactmodulations/'
+                  'LowImpactOnDay',
+                  text='{"business_impact": 1,'
+                       '"business_impact_modulation_name": "LowImpactOnDay",'
+                       '"modulation_period": "day"}'
+                  )
+
+            businessimpactmodulation = (
+                self.client.config.businessimpactmodulations.get(
+                    businessimpactmodulation_name='LowImpactOnDay')
+                )
+
+            self.assertEqual(
+                businessimpactmodulation,
+                {"business_impact": 1,
+                 "business_impact_modulation_name": "LowImpactOnDay",
+                 "modulation_period": "day"}
+            )
+
     def test_update(self):
-        httpretty.register_uri(
-            httpretty.PUT,
-            'http://localhost:5311/v2/config/businessimpactmodulations/'
-            'LowImpactOnNight',
-            body='{"test": "test"}'
-        )
+        with requests_mock.mock() as m:
+            m.put('http://localhost:5311/v2/config/'
+                  'businessimpactmodulations/LowImpactOnNight',
+                  text='{"test": "test"}'
+                  )
 
-        self.client.config.businessimpactmodulations.update(
-            businessimpactmodulation_name="LowImpactOnNight",
-            businessimpactmodulation={'modulation_period': 'night'}
-        )
+            self.client.config.businessimpactmodulations.update(
+                businessimpactmodulation_name="LowImpactOnNight",
+                businessimpactmodulation={'modulation_period': 'night'}
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "modulation_period": u"night"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "modulation_period": u"night"
+                }
+            )
 
-    @httpretty.activate
     def test_delete(self):
-        httpretty.register_uri(
-            httpretty.DELETE,
-            "http://localhost:5311/v2/config/businessimpactmodulations/"
-            "name_to_delete",
-            body="body"
-        )
+        with requests_mock.mock() as m:
+            m.delete("http://localhost:5311/v2/config/"
+                     "businessimpactmodulations/name_to_delete",
+                     text="body"
+                     )
 
-        body = self.client.config.businessimpactmodulations.delete(
-            businessimpactmodulation_name="name_to_delete",
-        )
+            body = self.client.config.businessimpactmodulations.delete(
+                businessimpactmodulation_name="name_to_delete",
+            )
 
-        self.assertEqual(
-            body,
-            "body"
-        )
+            self.assertEqual(
+                body,
+                "body"
+            )

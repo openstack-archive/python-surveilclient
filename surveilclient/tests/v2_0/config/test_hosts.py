@@ -14,120 +14,106 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestHosts(clienttest.ClientTest):
 
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/hosts",
-            body='[{"host_name": "host1"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/hosts",
+                   text='[{"host_name": "host1"}]')
 
-        hosts = self.client.config.hosts.list()
+            hosts = self.client.config.hosts.list()
 
-        self.assertEqual(
-            hosts,
-            [{u"host_name": u"host1"}]
-        )
+            self.assertEqual(
+                hosts,
+                [{u"host_name": u"host1"}]
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "filters": '{"isnot": {"register": ["0"]}}'
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "filters": '{"isnot": {"register": ["0"]}}'
+                }
+            )
 
-    @httpretty.activate
     def test_list_templates(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/hosts",
-            body='[]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/hosts",
+                   text='[]')
 
-        self.client.config.hosts.list(templates=True)
-        self.assertEqual(
-            httpretty.last_request().path,
-            '/v2/config/hosts?'
-        )
+            self.client.config.hosts.list(templates=True)
+            self.assertEqual(
+                m.last_request.path,
+                '/v2/config/hosts'
+            )
 
-    @httpretty.activate
     def test_create(self):
-        httpretty.register_uri(
-            httpretty.PUT, "http://localhost:5311/v2/config/hosts",
-            body='{"host_name": "new_host", "address": "192.168.2.1"}'
-        )
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/hosts",
+                  text='{"host_name": "new_host", "address": "192.168.2.1"}')
 
-        self.client.config.hosts.create(
-            host_name="new_host",
-            address="192.168.2.1"
-        )
+            self.client.config.hosts.create(
+                host_name="new_host",
+                address="192.168.2.1"
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "host_name": "new_host",
-                "address": "192.168.2.1"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "host_name": "new_host",
+                    "address": "192.168.2.1"
+                }
+            )
 
-    @httpretty.activate
     def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET,
-            "http://localhost:5311/v2/config/hosts/host_name_to_show",
-            body='{"host_name": "host_name_to_show"}'
-        )
+        with requests_mock.mock() as m:
+            m.get("http://localhost:5311/v2/config/hosts/host_name_to_show",
+                  text='{"host_name": "host_name_to_show"}')
 
-        host = self.client.config.hosts.get(
-            host_name="host_name_to_show"
-        )
+            host = self.client.config.hosts.get(
+                host_name="host_name_to_show"
+            )
 
-        self.assertEqual(
-            host,
-            {"host_name": "host_name_to_show"}
-        )
+            self.assertEqual(
+                host,
+                {"host_name": "host_name_to_show"}
+            )
 
-    @httpretty.activate
     def test_update(self):
-        httpretty.register_uri(
-            httpretty.PUT,
-            "http://localhost:5311/v2/config/hosts/host_name_to_update",
-            body='{"test": "test"}'
-        )
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/hosts/host_name_to_update",
+                  text='{"test": "test"}')
 
-        self.client.config.hosts.update(
-            host_name="host_name_to_update",
-            host={'address': "192.168.0.1",
-                  'check_period': "24x7"
-                  }
-        )
+            self.client.config.hosts.update(
+                host_name="host_name_to_update",
+                host={'address': "192.168.0.1",
+                      'check_period': "24x7"
+                      }
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "check_period": u"24x7",
-                "address": u"192.168.0.1"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "check_period": u"24x7",
+                    "address": u"192.168.0.1"
+                }
+            )
 
-    @httpretty.activate
     def test_delete(self):
-        httpretty.register_uri(
-            httpretty.DELETE,
-            "http://localhost:5311/v2/config/hosts/host_name_to_delete",
-            body="body"
-        )
+        with requests_mock.mock() as m:
+            m.delete("http://localhost:5311/v2/"
+                     "config/hosts/host_name_to_delete",
+                     text="body")
 
-        body = self.client.config.hosts.delete(
-            host_name="host_name_to_delete",
-        )
+            body = self.client.config.hosts.delete(
+                host_name="host_name_to_delete",
+            )
 
-        self.assertEqual(
-            body,
-            "body"
-        )
+            self.assertEqual(
+                body,
+                "body"
+            )

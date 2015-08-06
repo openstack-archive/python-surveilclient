@@ -14,126 +14,112 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestTimePeriods(clienttest.ClientTest):
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/timeperiods",
-            body='['
-                 '{'
-                 '"timeperiod_name": "nonworkhours",'
-                 '"sunday": "00:00-24:00",'
-                 '"monday": "00:00-09:00,17:00-24:00"'
-                 '},'
-                 '{'
-                 '"timeperiod_name": "misc-single-days",'
-                 '"1999-01-28": "00:00-24:00",'
-                 '"day 2": "00:00-24:00"'
-                 '}'
-                 ']'
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/timeperiods",
+                   text='['
+                        '{'
+                        '"timeperiod_name": "nonworkhours",'
+                        '"sunday": "00:00-24:00",'
+                        '"monday": "00:00-09:00,17:00-24:00"'
+                        '},'
+                        '{'
+                        '"timeperiod_name": "misc-single-days",'
+                        '"1999-01-28": "00:00-24:00",'
+                        '"day 2": "00:00-24:00"'
+                        '}'
+                        ']')
 
-        )
+            timeperiods = self.client.config.timeperiods.list()
 
-        timeperiods = self.client.config.timeperiods.list()
+            self.assertEqual(
+                timeperiods,
+                [
+                    {
+                        'timeperiod_name': 'nonworkhours',
+                        'sunday': '00:00-24:00',
+                        'monday': '00:00-09:00,17:00-24:00'
+                    },
+                    {
+                        'timeperiod_name': 'misc-single-days',
+                        '1999-01-28': '00:00-24:00',
+                        'day 2': '00:00-24:00',
+                    },
+                ]
 
-        self.assertEqual(
-            timeperiods,
-            [
+            )
+
+    def test_create(self):
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/timeperiods",
+                  text='{"timeperiod_name": "John"}')
+
+            self.client.config.timeperiods.create(
+                timeperiod_name='new_periods'
+            )
+
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "timeperiod_name": "new_periods"
+                }
+            )
+
+    def test_get(self):
+        with requests_mock.mock() as m:
+            m.get('http://localhost:5311/v2/config/timeperiods/nonworkhours',
+                  text='{'
+                       '"timeperiod_name": "nonworkhours",'
+                       '"sunday": "00:00-24:00",'
+                       '"monday": "00:00-09:00,17:00-24:00"'
+                       '}')
+
+            timeperiod = self.client.config.timeperiods.get(
+                timeperiod_name='nonworkhours'
+            )
+
+            self.assertEqual(
+                timeperiod,
                 {
                     'timeperiod_name': 'nonworkhours',
                     'sunday': '00:00-24:00',
                     'monday': '00:00-09:00,17:00-24:00'
-                },
-                {
-                    'timeperiod_name': 'misc-single-days',
-                    '1999-01-28': '00:00-24:00',
-                    'day 2': '00:00-24:00',
-                },
-            ]
+                }
+            )
 
-        )
-
-    @httpretty.activate
-    def test_create(self):
-        httpretty.register_uri(
-            httpretty.PUT, "http://localhost:5311/v2/config/timeperiods",
-            body='{"timeperiod_name": "John"}'
-        )
-
-        self.client.config.timeperiods.create(
-            timeperiod_name='new_periods'
-        )
-
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "timeperiod_name": "new_periods"
-            }
-        )
-
-    @httpretty.activate
-    def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET,
-            'http://localhost:5311/v2/config/timeperiods/nonworkhours',
-            body='{'
-                 '"timeperiod_name": "nonworkhours",'
-                 '"sunday": "00:00-24:00",'
-                 '"monday": "00:00-09:00,17:00-24:00"'
-                 '}'
-        )
-
-        timeperiod = self.client.config.timeperiods.get(
-            timeperiod_name='nonworkhours'
-        )
-
-        self.assertEqual(
-            timeperiod,
-            {
-                'timeperiod_name': 'nonworkhours',
-                'sunday': '00:00-24:00',
-                'monday': '00:00-09:00,17:00-24:00'
-            }
-        )
-
-    @httpretty.activate
     def test_update(self):
-        httpretty.register_uri(
-            httpretty.PUT,
-            'http://localhost:5311/v2/config/timeperiods/nonworkhours',
-            body='{"test": "test"}'
-        )
+        with requests_mock.mock() as m:
+            m.put('http://localhost:5311/v2/config/timeperiods/nonworkhours',
+                  text='{"test": "test"}')
 
-        self.client.config.timeperiods.update(
-            timeperiod_name="nonworkhours",
-            timeperiod={"timeperiod_name": "updated"}
-        )
+            self.client.config.timeperiods.update(
+                timeperiod_name="nonworkhours",
+                timeperiod={"timeperiod_name": "updated"}
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "timeperiod_name": u"updated"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "timeperiod_name": u"updated"
+                }
+            )
 
-    @httpretty.activate
     def test_delete(self):
-        httpretty.register_uri(
-            httpretty.DELETE,
-            "http://localhost:5311/v2/config/timeperiods/bob",
-            body="body"
-        )
+        with requests_mock.mock() as m:
+            m.delete("http://localhost:5311/v2/config/timeperiods/bob",
+                     text="body")
 
-        body = self.client.config.timeperiods.delete(
-            timeperiod_name="bob",
-        )
+            body = self.client.config.timeperiods.delete(
+                timeperiod_name="bob",
+            )
 
-        self.assertEqual(
-            body,
-            "body"
-        )
+            self.assertEqual(
+                body,
+                "body"
+            )

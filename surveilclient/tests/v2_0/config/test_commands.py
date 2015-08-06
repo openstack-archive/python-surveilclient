@@ -14,99 +14,93 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestCommands(clienttest.ClientTest):
 
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST,
-            "http://localhost:5311/v2/config/commands",
-            body='[{"command_name":"myCommand"}]'
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/commands",
+                   text='[{"command_name":"myCommand"}]'
+                   )
+
+            self.assertEqual(
+                self.client.config.commands.list(),
+                [{"command_name": "myCommand"}]
             )
 
-        self.assertEqual(
-            self.client.config.commands.list(),
-            [{"command_name": "myCommand"}]
-        )
-
-    @httpretty.activate
     def test_create(self):
-        httpretty.register_uri(
-            httpretty.PUT, "http://localhost:5311/v2/config/commands",
-            body='{"command_name": "new_command", "command_line": "new_line"}'
-        )
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/commands",
+                  text='{"command_name": "new_command",'
+                       ' "command_line": "new_line"}'
+                  )
 
-        self.client.config.commands.create(
-            command_name="new_command",
-            command_line="new_line"
-        )
+            self.client.config.commands.create(
+                command_name="new_command",
+                command_line="new_line"
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "command_name": "new_command",
-                "command_line": "new_line"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "command_name": "new_command",
+                    "command_line": "new_line"
+                }
+            )
 
-    @httpretty.activate
     def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET,
-            "http://localhost:5311/v2/config/commands/command_to_show",
-            body='{"command_name": "command_to_show", "command_line": "line"}'
-        )
+        with requests_mock.mock() as m:
+            m.get("http://localhost:5311/v2/config/commands/command_to_show",
+                  text='{"command_name": "command_to_show",'
+                       '"command_line": "line"}'
+                  )
 
-        command = self.client.config.commands.get(
-            command_name="command_to_show"
-        )
+            command = self.client.config.commands.get(
+                command_name="command_to_show"
+            )
 
-        self.assertEqual(
-            command,
-            {
-                "command_name": "command_to_show",
-                "command_line": "line"
-            }
-        )
+            self.assertEqual(
+                command,
+                {
+                    "command_name": "command_to_show",
+                    "command_line": "line"
+                }
+            )
 
-    @httpretty.activate
     def test_update(self):
-        httpretty.register_uri(
-            httpretty.PUT,
-            "http://localhost:5311/v2/config/commands/command_to_update",
-            body='{"command_line": "updated command_line"}'
-        )
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/commands/command_to_update",
+                  text='{"command_line": "updated command_line"}'
+                  )
 
-        self.client.config.commands.update(
-            command_name="command_to_update",
-            command={'command_line': "updated command_line"}
-        )
+            self.client.config.commands.update(
+                command_name="command_to_update",
+                command={'command_line': "updated command_line"}
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "command_line": "updated command_line"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "command_line": "updated command_line"
+                }
+            )
 
-    @httpretty.activate
     def test_delete(self):
-        httpretty.register_uri(
-            httpretty.DELETE,
-            "http://localhost:5311/v2/config/commands/command_to_delete",
-            body="body"
-        )
+        with requests_mock.mock() as m:
+            m.delete("http://localhost:5311/v2/config/commands/"
+                     "command_to_delete",
+                     text="body"
+                     )
 
-        body = self.client.config.commands.delete(
-            command_name="command_to_delete",
-        )
+            body = self.client.config.commands.delete(
+                command_name="command_to_delete",
+            )
 
-        self.assertEqual(
-            body,
-            "body"
-        )
+            self.assertEqual(
+                body,
+                "body"
+            )

@@ -22,6 +22,6 @@ class EventsManager(surveil_manager.SurveilManager):
         """List events."""
         query = query or {}
         resp, body = self.http_client.json_request(
-            EventsManager.base_url, 'POST', body=query
+            EventsManager.base_url, 'POST', data=query
         )
         return body

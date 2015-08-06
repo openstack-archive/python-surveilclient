@@ -14,52 +14,123 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestNotificationWays(clienttest.ClientTest):
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/notificationways",
-            body='[{'
-                 '"notificationway_name": "email_in_day",'
-                 '"host_notification_period": "24x7",'
-                 '"service_notification_period": "24x7",'
-                 '"host_notification_options": "d,u",'
-                 '"service_notification_options": "w,c,r",'
-                 '"host_notification_commands": "notify-service",'
-                 '"service_notification_commands": "notify-host"'
-                 '},'
-                 '{'
-                 '"notificationway_name": "email_all_time",'
-                 '"host_notification_period": "24x7",'
-                 '"service_notification_period": "24x7",'
-                 '"host_notification_options": "d,r,f,u",'
-                 '"service_notification_options": "w,f,c,r",'
-                 '"host_notification_commands": "notify-service",'
-                 '"service_notification_commands": "notify-host",'
-                 '"min_business_impact": 5'
-                 '}'
-                 ']'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/notificationways",
+                   text='[{'
+                        '"notificationway_name": "email_in_day",'
+                        '"host_notification_period": "24x7",'
+                        '"service_notification_period": "24x7",'
+                        '"host_notification_options": "d,u",'
+                        '"service_notification_options": "w,c,r",'
+                        '"host_notification_commands": "notify-service",'
+                        '"service_notification_commands": "notify-host"'
+                        '},'
+                        '{'
+                        '"notificationway_name": "email_all_time",'
+                        '"host_notification_period": "24x7",'
+                        '"service_notification_period": "24x7",'
+                        '"host_notification_options": "d,r,f,u",'
+                        '"service_notification_options": "w,f,c,r",'
+                        '"host_notification_commands": "notify-service",'
+                        '"service_notification_commands": "notify-host",'
+                        '"min_business_impact": 5'
+                        '}'
+                        ']')
 
-        notificationways = self.client.config.notificationways.list()
+            notificationways = self.client.config.notificationways.list()
 
-        self.assertEqual(
-            notificationways,
-            [
+            self.assertEqual(
+                notificationways,
+                [
+                    {
+                        'notificationway_name': 'email_in_day',
+                        'host_notification_period': '24x7',
+                        'service_notification_period': '24x7',
+                        'host_notification_options': 'd,u',
+                        'service_notification_options': 'w,c,r',
+                        'host_notification_commands': 'notify-service',
+                        'service_notification_commands': 'notify-host'
+                    },
+                    {
+                        'notificationway_name': 'email_all_time',
+                        'host_notification_period': '24x7',
+                        'service_notification_period': '24x7',
+                        'host_notification_options': 'd,r,f,u',
+                        'service_notification_options': 'w,f,c,r',
+                        'host_notification_commands': 'notify-service',
+                        'service_notification_commands': 'notify-host',
+                        'min_business_impact': 5
+                    }
+                ]
+
+            )
+
+    def test_create(self):
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/notificationways",
+                  text='{'
+                       '"notificationway_name": "email_in_day",'
+                       '"host_notification_period": "24x7",'
+                       '"service_notification_period": "24x7",'
+                       '"host_notification_options": "d,u",'
+                       '"service_notification_options": "w,c,r",'
+                       '"host_notification_commands": "notify-service",'
+                       '"service_notification_commands": "notify-host"'
+                       '}')
+
+            self.client.config.notificationways.create(
+                notificationway_name='test_create_notification',
+                host_notification_period='24x7',
+                service_notification_period='24x7',
+                host_notification_options='d,r,f,u',
+                service_notification_options='w,f,c,r',
+                host_notification_commands='notify-service',
+                service_notification_commands='notify-host',
+                min_business_impact=5
+            )
+
+            self.assertEqual(
+                json.loads(m.last_request.body),
                 {
-                    'notificationway_name': 'email_in_day',
+                    'notificationway_name': 'test_create_notification',
                     'host_notification_period': '24x7',
                     'service_notification_period': '24x7',
-                    'host_notification_options': 'd,u',
-                    'service_notification_options': 'w,c,r',
+                    'host_notification_options': 'd,r,f,u',
+                    'service_notification_options': 'w,f,c,r',
                     'host_notification_commands': 'notify-service',
-                    'service_notification_commands': 'notify-host'
-                },
+                    'service_notification_commands': 'notify-host',
+                    'min_business_impact': 5
+                }
+            )
+
+    def test_get(self):
+        with requests_mock.mock() as m:
+            m.get('http://localhost:5311/v2/config/'
+                  'notificationways/email_all_time',
+                  text='{'
+                       '"notificationway_name": "email_all_time",'
+                       '"host_notification_period": "24x7",'
+                       '"service_notification_period": "24x7",'
+                       '"host_notification_options": "d,r,f,u",'
+                       '"service_notification_options": "w,f,c,r",'
+                       '"host_notification_commands": "notify-service",'
+                       '"service_notification_commands": "notify-host",'
+                       '"min_business_impact": 5'
+                       '}')
+
+            notificationway = self.client.config.notificationways.get(
+                notificationway_name='email_all_time'
+            )
+
+            self.assertEqual(
+                notificationway,
                 {
                     'notificationway_name': 'email_all_time',
                     'host_notification_period': '24x7',
@@ -70,118 +141,36 @@ class TestNotificationWays(clienttest.ClientTest):
                     'service_notification_commands': 'notify-host',
                     'min_business_impact': 5
                 }
-            ]
+            )
 
-        )
-
-    @httpretty.activate
-    def test_create(self):
-        httpretty.register_uri(
-            httpretty.PUT, "http://localhost:5311/v2/config/notificationways",
-            body='{'
-                 '"notificationway_name": "email_in_day",'
-                 '"host_notification_period": "24x7",'
-                 '"service_notification_period": "24x7",'
-                 '"host_notification_options": "d,u",'
-                 '"service_notification_options": "w,c,r",'
-                 '"host_notification_commands": "notify-service",'
-                 '"service_notification_commands": "notify-host"'
-                 '}'
-        )
-
-        self.client.config.notificationways.create(
-            notificationway_name='test_create_notification',
-            host_notification_period='24x7',
-            service_notification_period='24x7',
-            host_notification_options='d,r,f,u',
-            service_notification_options='w,f,c,r',
-            host_notification_commands='notify-service',
-            service_notification_commands='notify-host',
-            min_business_impact=5
-        )
-
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                'notificationway_name': 'test_create_notification',
-                'host_notification_period': '24x7',
-                'service_notification_period': '24x7',
-                'host_notification_options': 'd,r,f,u',
-                'service_notification_options': 'w,f,c,r',
-                'host_notification_commands': 'notify-service',
-                'service_notification_commands': 'notify-host',
-                'min_business_impact': 5
-            }
-        )
-
-    @httpretty.activate
-    def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET,
-            'http://localhost:5311/v2/config/notificationways/email_all_time',
-            body='{'
-                 '"notificationway_name": "email_all_time",'
-                 '"host_notification_period": "24x7",'
-                 '"service_notification_period": "24x7",'
-                 '"host_notification_options": "d,r,f,u",'
-                 '"service_notification_options": "w,f,c,r",'
-                 '"host_notification_commands": "notify-service",'
-                 '"service_notification_commands": "notify-host",'
-                 '"min_business_impact": 5'
-                 '}'
-        )
-
-        notificationway = self.client.config.notificationways.get(
-            notificationway_name='email_all_time'
-        )
-
-        self.assertEqual(
-            notificationway,
-            {
-                'notificationway_name': 'email_all_time',
-                'host_notification_period': '24x7',
-                'service_notification_period': '24x7',
-                'host_notification_options': 'd,r,f,u',
-                'service_notification_options': 'w,f,c,r',
-                'host_notification_commands': 'notify-service',
-                'service_notification_commands': 'notify-host',
-                'min_business_impact': 5
-            }
-        )
-
-    @httpretty.activate
     def test_update(self):
-        httpretty.register_uri(
-            httpretty.PUT,
-            'http://localhost:5311/v2/config/notificationways/email_all_time',
-            body='{"test": "test"}'
-        )
+        with requests_mock.mock() as m:
+            m.put('http://localhost:5311/v2/'
+                  'config/notificationways/email_all_time',
+                  text='{"test": "test"}')
 
-        self.client.config.notificationways.update(
-            notificationway_name="email_all_time",
-            notificationway={"host_notification_period": "updated"}
-        )
+            self.client.config.notificationways.update(
+                notificationway_name="email_all_time",
+                notificationway={"host_notification_period": "updated"}
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "host_notification_period": u"updated"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "host_notification_period": u"updated"
+                }
+            )
 
-    @httpretty.activate
     def test_delete(self):
-        httpretty.register_uri(
-            httpretty.DELETE,
-            "http://localhost:5311/v2/config/notificationways/bob",
-            body="body"
-        )
+        with requests_mock.mock() as m:
+            m.delete("http://localhost:5311/v2/config/notificationways/bob",
+                     text="body")
 
-        body = self.client.config.notificationways.delete(
-            notificationway_name="bob",
-        )
+            body = self.client.config.notificationways.delete(
+                notificationway_name="bob",
+            )
 
-        self.assertEqual(
-            body,
-            "body"
-        )
+            self.assertEqual(
+                body,
+                "body"
+            )

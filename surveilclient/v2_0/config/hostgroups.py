@@ -23,7 +23,7 @@ class HostGroupsManager(surveil_manager.SurveilManager):
         query = query or {}
         resp, body = self.http_client.json_request(
             HostGroupsManager.base_url, 'POST',
-            body=query
+            data=query
         )
         return body
 
@@ -31,7 +31,7 @@ class HostGroupsManager(surveil_manager.SurveilManager):
         """Create a new hostgroup."""
         resp, body = self.http_client.json_request(
             HostGroupsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
@@ -39,7 +39,7 @@ class HostGroupsManager(surveil_manager.SurveilManager):
         """Get a new hostgroup."""
         resp, body = self.http_client.json_request(
             HostGroupsManager.base_url + '/' + hostgroup_name, 'GET',
-            body=''
+            data=''
         )
         return body
 
@@ -47,7 +47,7 @@ class HostGroupsManager(surveil_manager.SurveilManager):
         """Update a hostgroup."""
         resp, body = self.http_client.json_request(
             HostGroupsManager.base_url + '/' + hostgroup_name, 'PUT',
-            body=hostgroup
+            data=hostgroup
         )
         return body
 
@@ -55,7 +55,6 @@ class HostGroupsManager(surveil_manager.SurveilManager):
         """Delete a hostgroup."""
         resp, body = self.http_client.request(
             HostGroupsManager.base_url + "/" + hostgroup_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

@@ -58,6 +58,6 @@ class ConfigManager(surveil_manager.SurveilManager):
         resp, body = self.http_client.json_request(
             self.base_url + '/reload_config',
             'POST',
-            body=''  # Must send empty body
+            data=''  # Must send empty body
         )
         return body

@@ -14,131 +14,118 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestRealms(clienttest.ClientTest):
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/realms",
-            body='['
-                 '{'
-                 '"realm_name": "World",'
-                 '"realm_members": "Europe,America,Asia",'
-                 '"default": 0'
-                 '},'
-                 '{'
-                 '"realm_name": "Anti-world",'
-                 '"realm_members": "void,black-hole",'
-                 '"default": 1'
-                 '}'
-                 ']'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/realms",
+                   text='['
+                        '{'
+                        '"realm_name": "World",'
+                        '"realm_members": "Europe,America,Asia",'
+                        '"default": 0'
+                        '},'
+                        '{'
+                        '"realm_name": "Anti-world",'
+                        '"realm_members": "void,black-hole",'
+                        '"default": 1'
+                        '}'
+                        ']')
 
-        realms = self.client.config.realms.list()
+            realms = self.client.config.realms.list()
 
-        self.assertEqual(
-            realms,
-            [
+            self.assertEqual(
+                realms,
+                [
+                    {
+                        'realm_name': 'World',
+                        'realm_members': 'Europe,America,Asia',
+                        'default': 0
+                    },
+                    {
+                        'realm_name': 'Anti-world',
+                        'realm_members': 'void,black-hole',
+                        'default': 1
+                    },
+                ]
+
+            )
+
+    def test_create(self):
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/realms",
+                  text='{"realm_name": "John",'
+                       '"realm_members":"marie,bob,joe",'
+                       '"default":1}')
+
+            self.client.config.realms.create(
+                realm_name='John',
+                realm_members="marie,bob,joe",
+                default=1
+            )
+
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "realm_name": "John",
+                    "realm_members": "marie,bob,joe",
+                    "default": 1
+                }
+            )
+
+    def test_get(self):
+        with requests_mock.mock() as m:
+            m.get('http://localhost:5311/v2/config/realms/bobby',
+                  text='{'
+                       '"realm_name": "World",'
+                       '"realm_members": "Europe,America,Asia",'
+                       '"default": 0'
+                       '}')
+
+            realm = self.client.config.realms.get(
+                realm_name='bobby'
+            )
+
+            self.assertEqual(
+                realm,
                 {
                     'realm_name': 'World',
                     'realm_members': 'Europe,America,Asia',
                     'default': 0
-                },
-                {
-                    'realm_name': 'Anti-world',
-                    'realm_members': 'void,black-hole',
-                    'default': 1
-                },
-            ]
+                }
+            )
 
-        )
-
-    @httpretty.activate
-    def test_create(self):
-        httpretty.register_uri(
-            httpretty.PUT, "http://localhost:5311/v2/config/realms",
-            body='{"realm_name": "John",'
-                 '"realm_members":"marie,bob,joe",'
-                 '"default":1}'
-        )
-
-        self.client.config.realms.create(
-            realm_name='John',
-            realm_members="marie,bob,joe",
-            default=1
-        )
-
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "realm_name": "John",
-                "realm_members": "marie,bob,joe",
-                "default": 1
-            }
-        )
-
-    @httpretty.activate
-    def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET,
-            'http://localhost:5311/v2/config/realms/bobby',
-            body='{'
-                 '"realm_name": "World",'
-                 '"realm_members": "Europe,America,Asia",'
-                 '"default": 0'
-                 '}'
-        )
-
-        realm = self.client.config.realms.get(
-            realm_name='bobby'
-        )
-
-        self.assertEqual(
-            realm,
-            {
-                'realm_name': 'World',
-                'realm_members': 'Europe,America,Asia',
-                'default': 0
-            }
-        )
-
-    @httpretty.activate
     def test_update(self):
-        httpretty.register_uri(
-            httpretty.PUT,
-            'http://localhost:5311/v2/config/realms/World',
-            body='{"test": "test"}'
-        )
+        with requests_mock.mock() as m:
+            m.put('http://localhost:5311/v2/config/realms/World',
+                  text='{"test": "test"}')
 
-        self.client.config.realms.update(
-            realm_name="World",
-            realm={"realm_members": "updated"}
-        )
+            self.client.config.realms.update(
+                realm_name="World",
+                realm={"realm_members": "updated"}
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "realm_members": u"updated"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "realm_members": u"updated"
+                }
+            )
 
-    @httpretty.activate
     def test_delete(self):
-        httpretty.register_uri(
-            httpretty.DELETE,
-            "http://localhost:5311/v2/config/realms/bob",
-            body="body"
-        )
+        with requests_mock.mock() as m:
+            m.delete("http://localhost:5311/v2/config/realms/bob",
+                     text="body")
 
-        body = self.client.config.realms.delete(
-            realm_name="bob",
-        )
+            body = self.client.config.realms.delete(
+                realm_name="bob",
+            )
 
-        self.assertEqual(
-            body,
-            "body"
-        )
+            self.assertEqual(
+                body,
+                "body"
+            )

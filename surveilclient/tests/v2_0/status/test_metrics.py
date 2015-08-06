@@ -12,101 +12,99 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestMetrics(clienttest.ClientTest):
 
-    @httpretty.activate
     def test_list_host_metrics(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/status/"
-                            "hosts/localhost/metrics/load1",
-            body='[{"min": "2", "warning": "15", "value": "3"},'
-                 '{"min": "5", "warning": "200", "value": "150"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/status/"
+                   "hosts/localhost/metrics/load1",
+                   text='[{"min": "2", "warning": "15", "value": "3"},'
+                        '{"min": "5", "warning": "200", "value": "150"}]'
+                   )
 
-        metrics = self.client.status.hosts.metrics.list(
-            'localhost',
-            'load1'
-        )
+            metrics = self.client.status.hosts.metrics.list(
+                'localhost',
+                'load1'
+            )
 
-        self.assertEqual(
-            metrics,
-            [{"min": "2", "warning": "15", "value": "3"},
-             {"min": "5", "warning": "200", "value": "150"}]
-        )
+            self.assertEqual(
+                metrics,
+                [{"min": "2", "warning": "15", "value": "3"},
+                 {"min": "5", "warning": "200", "value": "150"}]
+            )
 
-    @httpretty.activate
     def test_list_host_metrics_service(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/status/hosts/localhost"
-                            "/services/load/metrics/load1",
-            body='[{"min": "2", "warning": "15", "value": "3"},'
-                 '{"min": "5", "warning": "200", "value": "150"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/status/hosts/localhost"
+                   "/services/load/metrics/load1",
+                   text='[{"min": "2", "warning": "15", "value": "3"},'
+                        '{"min": "5", "warning": "200", "value": "150"}]'
+                   )
 
-        live_query = ('{"time_interval": { "start_time": '
-                      '"2015-05-22T13:38:08Z",'
-                      '"end_time": "2015-05-22T13:38:08Z"}}')
+            live_query = ('{"time_interval": { "start_time": '
+                          '"2015-05-22T13:38:08Z",'
+                          '"end_time": "2015-05-22T13:38:08Z"}}')
 
-        metrics = self.client.status.hosts.metrics.list('localhost', 'load1',
-                                                        'load',
-                                                        query=live_query
-                                                        )
+            metrics = self.client.status.hosts.metrics.list('localhost',
+                                                            'load1',
+                                                            'load',
+                                                            query=live_query
+                                                            )
 
-        self.assertEqual(
-            metrics,
-            [{"min": "2", "warning": "15", "value": "3"},
-             {"min": "5", "warning": "200", "value": "150"}]
-        )
+            self.assertEqual(
+                metrics,
+                [{"min": "2", "warning": "15", "value": "3"},
+                 {"min": "5", "warning": "200", "value": "150"}]
+            )
 
-    @httpretty.activate
     def test_show_host_metrics(self):
-        httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/status/hosts/localhost"
-                           "/metrics/load1",
-            body='{"min": "2", "warning": "15", "value": "3"}'
-        )
+        with requests_mock.mock() as m:
+            m.get("http://localhost:5311/v2/status/hosts/localhost"
+                  "/metrics/load1",
+                  text='{"min": "2", "warning": "15", "value": "3"}'
+                  )
 
-        metrics = self.client.status.hosts.metrics.get('localhost', 'load1')
+            metrics = self.client.status.hosts.metrics.get('localhost',
+                                                           'load1')
 
-        self.assertEqual(
-            metrics,
-            {"min": "2", "warning": "15", "value": "3"}
-        )
+            self.assertEqual(
+                metrics,
+                {"min": "2", "warning": "15", "value": "3"}
+            )
 
-    @httpretty.activate
     def test_show_host_service_metrics(self):
-        httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/status/hosts/localhost"
-                           "/services/load/metrics/load1",
-            body='{"value": "3"}'
-        )
+        with requests_mock.mock() as m:
+            m.get("http://localhost:5311/v2/status/hosts/localhost"
+                  "/services/load/metrics/load1",
+                  text='{"value": "3"}'
+                  )
 
-        metrics = self.client.status.hosts.metrics.get('localhost', 'load1',
-                                                       'load')
+            metrics = self.client.status.hosts.metrics.get('localhost',
+                                                           'load1',
+                                                           'load')
 
-        self.assertEqual(
-            metrics,
-            {"value": "3"}
-        )
+            self.assertEqual(
+                metrics,
+                {"value": "3"}
+            )
 
-    @httpretty.activate
     def test_show_host_service(self):
-        httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/status/hosts/localhost"
-                           "/services/load/metrics",
-            body='[{"metric_name": "load1"},{"metric_name": "load5"}]'
-        )
+        with requests_mock.mock() as m:
+            m.get("http://localhost:5311/v2/status/hosts/localhost"
+                  "/services/load/metrics",
+                  text='[{"metric_name": "load1"},{"metric_name": "load5"}]'
+                  )
 
-        metrics = self.client.status.hosts.metrics.get(
-            'localhost',
-            service_description='load')
+            metrics = self.client.status.hosts.metrics.get(
+                'localhost',
+                service_description='load')
 
-        self.assertEqual(
-            metrics,
-            [{"metric_name": "load1"}, {"metric_name": "load5"}]
-        )
+            self.assertEqual(
+                metrics,
+                [{"metric_name": "load1"}, {"metric_name": "load5"}]
+            )

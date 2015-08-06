@@ -14,96 +14,84 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestServices(clienttest.ClientTest):
 
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/services",
-            body='[{"service_name": "service1"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/services",
+                   text='[{"service_name": "service1"}]')
 
-        services = self.client.config.services.list()
+            services = self.client.config.services.list()
 
-        self.assertEqual(
-            services,
-            [{"service_name": "service1"}]
-        )
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "filters": '{"isnot": {"register": ["0"]}}'
-            }
-        )
+            self.assertEqual(
+                services,
+                [{"service_name": "service1"}]
+            )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "filters": '{"isnot": {"register": ["0"]}}'
+                }
+            )
 
-    @httpretty.activate
     def test_list_templates(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/services",
-            body='[{"service_name": "service1"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/services",
+                   text='[{"service_name": "service1"}]')
 
-        self.client.config.services.list(templates=True)
-        self.assertEqual(
-            httpretty.last_request().path,
-            '/v2/config/services?'
-        )
+            self.client.config.services.list(templates=True)
+            self.assertEqual(
+                m.last_request.path,
+                '/v2/config/services'
+            )
 
-    @httpretty.activate
     def test_create(self):
-        httpretty.register_uri(
-            httpretty.PUT, "http://localhost:5311/v2/config/services",
-            body='{"service_name": "new_service"}'
-        )
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/services",
+                  text='{"service_name": "new_service"}')
 
-        self.client.config.services.create(
-            service_name="new_service"
-        )
+            self.client.config.services.create(
+                service_name="new_service"
+            )
 
-        self.assertEqual(
-            httpretty.last_request().body.decode(),
-            '{"service_name": "new_service"}'
-        )
+            self.assertEqual(
+                m.last_request.body,
+                '{"service_name": "new_service"}'
+            )
 
-    @httpretty.activate
     def test_delete(self):
-        httpretty.register_uri(
-            httpretty.DELETE,
-            "http://localhost:5311/v2/config/hosts/host_name/" +
-            "services/service_description",
-            body="body"
-        )
+        with requests_mock.mock() as m:
+            m.delete("http://localhost:5311/v2/config/hosts/host_name/" +
+                     "services/service_description",
+                     text="body")
 
-        body = self.client.config.services.delete(
-            host_name="host_name",
-            service_description="service_description"
-        )
+            body = self.client.config.services.delete(
+                host_name="host_name",
+                service_description="service_description"
+            )
 
         self.assertEqual(
             body,
             "body"
         )
 
-    @httpretty.activate
     def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET,
-            "http://localhost:5311/v2/config/hosts/host_name/" +
-            "services/service_description",
-            body="{}"
-        )
+        with requests_mock.mock() as m:
+            m.get("http://localhost:5311/v2/config/hosts/host_name/" +
+                  "services/service_description",
+                  text="{}")
 
-        body = self.client.config.services.get(
-            host_name="host_name",
-            service_description="service_description"
-        )
+            body = self.client.config.services.get(
+                host_name="host_name",
+                service_description="service_description"
+            )
 
-        self.assertEqual(
-            body,
-            {}
-        )
+            self.assertEqual(
+                body,
+                {}
+            )

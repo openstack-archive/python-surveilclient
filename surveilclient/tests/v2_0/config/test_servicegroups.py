@@ -14,116 +14,105 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestServiceGroups(clienttest.ClientTest):
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/servicegroups",
-            body='[{"servicegroup_name": "dbservices",'
-                 '"members": "ms1,SQL Server,ms1,'
-                 'SQL Serverc Agent,ms1,SQL DTC"},'
-                 '{"servicegroup_name": "otherservices",'
-                 '"members": "some,other,member"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/servicegroups",
+                   text='[{"servicegroup_name": "dbservices",'
+                        '"members": "ms1,SQL Server,ms1,'
+                        'SQL Serverc Agent,ms1,SQL DTC"},'
+                        '{"servicegroup_name": "otherservices",'
+                        '"members": "some,other,member"}]')
 
-        servicegroups = self.client.config.servicegroups.list()
+            servicegroups = self.client.config.servicegroups.list()
 
-        self.assertEqual(
-            servicegroups,
-            [
+            self.assertEqual(
+                servicegroups,
+                [
+                    {
+                        'servicegroup_name': 'dbservices',
+                        'members': 'ms1,SQL Server,ms1,'
+                                   'SQL Serverc Agent,ms1,SQL DTC',
+                    },
+                    {
+                        'servicegroup_name': 'otherservices',
+                        'members': 'some,other,member',
+                    },
+                ]
+            )
+
+    def test_create(self):
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/servicegroups",
+                  text='{"servicegroup_name": "John",'
+                       '"members": "marie,bob,joe"}')
+
+            self.client.config.servicegroups.create(
+                servicegroup_name='John',
+                members="marie,bob,joe"
+            )
+
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "servicegroup_name": "John",
+                    "members": "marie,bob,joe"
+                }
+            )
+
+    def test_get(self):
+        with requests_mock.mock() as m:
+            m.get('http://localhost:5311/v2/config/servicegroups/dbservices',
+                  text='{"servicegroup_name": "dbservices",'
+                       '"members": "ms1,SQL Server,ms1,'
+                       'SQL Serverc Agent,ms1,SQL DTC"}')
+
+            servicegroup = self.client.config.servicegroups.get(
+                servicegroup_name='dbservices'
+            )
+
+            self.assertEqual(
+                servicegroup,
                 {
                     'servicegroup_name': 'dbservices',
                     'members': 'ms1,SQL Server,ms1,'
-                               'SQL Serverc Agent,ms1,SQL DTC',
-                },
-                {
-                    'servicegroup_name': 'otherservices',
-                    'members': 'some,other,member',
-                },
-            ]
-        )
+                               'SQL Serverc Agent,ms1,SQL DTC'
+                }
+            )
 
-    @httpretty.activate
-    def test_create(self):
-        httpretty.register_uri(
-            httpretty.PUT, "http://localhost:5311/v2/config/servicegroups",
-            body='{"servicegroup_name": "John",'
-                 '"members": "marie,bob,joe"}'
-        )
-
-        self.client.config.servicegroups.create(
-            servicegroup_name='John',
-            members="marie,bob,joe"
-        )
-
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "servicegroup_name": "John",
-                "members": "marie,bob,joe"
-            }
-        )
-
-    @httpretty.activate
-    def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET,
-            'http://localhost:5311/v2/config/servicegroups/dbservices',
-            body='{"servicegroup_name": "dbservices",'
-                 '"members": "ms1,SQL Server,ms1,'
-                 'SQL Serverc Agent,ms1,SQL DTC"}'
-        )
-
-        servicegroup = self.client.config.servicegroups.get(
-            servicegroup_name='dbservices'
-        )
-
-        self.assertEqual(
-            servicegroup,
-            {
-                'servicegroup_name': 'dbservices',
-                'members': 'ms1,SQL Server,ms1,SQL Serverc Agent,ms1,SQL DTC'
-            }
-        )
-
-    @httpretty.activate
     def test_update(self):
-        httpretty.register_uri(
-            httpretty.PUT,
-            'http://localhost:5311/v2/config/servicegroups/dbservices',
-            body='{"test": "test"}'
-        )
+        with requests_mock.mock() as m:
+            m.put('http://localhost:5311/v2/config/servicegroups/dbservices',
+                  text='{"test": "test"}')
 
-        self.client.config.servicegroups.update(
-            servicegroup_name="dbservices",
-            servicegroup={"members": "updated"}
-        )
+            self.client.config.servicegroups.update(
+                servicegroup_name="dbservices",
+                servicegroup={"members": "updated"}
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "members": u"updated"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "members": u"updated"
+                }
+            )
 
-    @httpretty.activate
     def test_delete(self):
-        httpretty.register_uri(
-            httpretty.DELETE,
-            "http://localhost:5311/v2/config/servicegroups/dbservices",
-            body="body"
-        )
+        with requests_mock.mock() as m:
+            m.delete("http://localhost:5311/v2/config/"
+                     "servicegroups/dbservices",
+                     text="body")
 
-        body = self.client.config.servicegroups.delete(
-            servicegroup_name="dbservices",
-        )
+            body = self.client.config.servicegroups.delete(
+                servicegroup_name="dbservices",
+            )
 
-        self.assertEqual(
-            body,
-            "body"
-        )
+            self.assertEqual(
+                body,
+                "body"
+            )

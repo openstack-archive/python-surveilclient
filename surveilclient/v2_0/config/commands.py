@@ -55,7 +55,6 @@ class CommandsManager(surveil_manager.SurveilManager):
         """Delete a command."""
         resp, body = self.http_client.request(
             CommandsManager.base_url + "/" + command_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

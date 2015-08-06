@@ -67,7 +67,6 @@ class HostsManager(surveil_manager.SurveilManager):
     def delete(self, host_name):
         """Delete a host."""
         resp, body = self.http_client.request(
-            HostsManager.base_url + '/' + host_name, 'DELETE',
-            body=''
+            HostsManager.base_url + '/' + host_name, 'DELETE'
         )
         return body

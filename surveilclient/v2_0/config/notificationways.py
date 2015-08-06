@@ -57,7 +57,6 @@ class NotificationWaysManager(surveil_manager.SurveilManager):
         """Delete a command."""
         resp, body = self.http_client.request(
             NotificationWaysManager.base_url + "/" + notificationway_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

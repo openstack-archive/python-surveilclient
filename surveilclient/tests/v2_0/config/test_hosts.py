@@ -52,7 +52,7 @@ class TestHosts(clienttest.ClientTest):
         self.client.config.hosts.list(templates=True)
         self.assertEqual(
             httpretty.last_request().path,
-            '/v2/config/hosts?'
+            '/v2/config/hosts'
         )
 
     @httpretty.activate

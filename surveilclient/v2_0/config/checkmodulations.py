@@ -56,7 +56,6 @@ class CheckModulationsManager(surveil_manager.SurveilManager):
         """Delete a checkmodulation."""
         resp, body = self.http_client.request(
             CheckModulationsManager.base_url+"/" + checkmodulation_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

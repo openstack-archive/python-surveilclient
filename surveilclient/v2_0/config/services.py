@@ -53,7 +53,6 @@ class ServicesManager(surveil_manager.SurveilManager):
         resp, body = self.http_client.request(
             '/config/hosts' + '/'
             + host_name + '/services/' + service_description,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

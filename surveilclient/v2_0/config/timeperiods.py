@@ -55,7 +55,6 @@ class TimePeriodsManager(surveil_manager.SurveilManager):
         """Delete a timeperiod."""
         resp, body = self.http_client.request(
             TimePeriodsManager.base_url + "/" + timeperiod_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

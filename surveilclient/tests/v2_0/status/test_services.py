@@ -47,10 +47,10 @@ class TestServices(clienttest.ClientTest):
         self.client.status.services.submit_check_result(
             "localhost",
             'testservice',
-            output="someoutputt"
+            output="someoutput"
         )
 
         self.assertEqual(
             json.loads(httpretty.last_request().body.decode()),
-            {"output": u"someoutputt"}
+            {"output": u"someoutput"}
         )

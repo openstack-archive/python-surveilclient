@@ -55,7 +55,6 @@ class ContactGroupsManager(surveil_manager.SurveilManager):
         """Delete a contactgroup."""
         resp, body = self.http_client.request(
             ContactGroupsManager.base_url + "/" + contactgroup_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

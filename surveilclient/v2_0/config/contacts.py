@@ -54,7 +54,6 @@ class ContactsManager(surveil_manager.SurveilManager):
         """Delete a contact."""
         resp, body = self.http_client.request(
             ContactsManager.base_url + "/" + contact_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

@@ -23,7 +23,7 @@ class NotificationWaysManager(surveil_manager.SurveilManager):
         query = query or {}
         resp, body = self.http_client.json_request(
             NotificationWaysManager.base_url, 'POST',
-            body=query
+            data=query
         )
         return body
 
@@ -31,7 +31,7 @@ class NotificationWaysManager(surveil_manager.SurveilManager):
         """Create a new notificationway."""
         resp, body = self.http_client.json_request(
             NotificationWaysManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
@@ -39,8 +39,7 @@ class NotificationWaysManager(surveil_manager.SurveilManager):
         """Get a new notificationway."""
         resp, body = self.http_client.json_request(
             NotificationWaysManager.base_url + '/' +
-            notificationway_name, 'GET',
-            body=''
+            notificationway_name, 'GET'
         )
         return body
 
@@ -49,7 +48,7 @@ class NotificationWaysManager(surveil_manager.SurveilManager):
         resp, body = self.http_client.json_request(
             NotificationWaysManager.base_url + '/' +
             notificationway_name, 'PUT',
-            body=notificationway
+            data=notificationway
         )
         return body
 
@@ -57,7 +56,6 @@ class NotificationWaysManager(surveil_manager.SurveilManager):
         """Delete a command."""
         resp, body = self.http_client.request(
             NotificationWaysManager.base_url + "/" + notificationway_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

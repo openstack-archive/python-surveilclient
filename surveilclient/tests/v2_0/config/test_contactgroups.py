@@ -14,108 +14,102 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestContactGroups(clienttest.ClientTest):
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/contactgroups",
-            body='[{"contactgroup_name": "novell-admins",'
-                 '"members": "jdoe,rtobert,tzach"},'
-                 '{"contactgroup_name": "linux-adminx",'
-                 '"members": "linus,richard"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/contactgroups",
+                   text='[{"contactgroup_name": "novell-admins",'
+                        '"members": "jdoe,rtobert,tzach"},'
+                        '{"contactgroup_name": "linux-adminx",'
+                        '"members": "linus,richard"}]'
+                   )
 
-        contactgroups = self.client.config.contactgroups.list()
+            contactgroups = self.client.config.contactgroups.list()
 
-        self.assertEqual(
-            contactgroups,
-            [{"contactgroup_name": "novell-admins",
-              "members": "jdoe,rtobert,tzach"},
-             {"contactgroup_name": "linux-adminx",
-              "members": "linus,richard"},
-             ]
-        )
+            self.assertEqual(
+                contactgroups,
+                [{"contactgroup_name": "novell-admins",
+                  "members": "jdoe,rtobert,tzach"},
+                 {"contactgroup_name": "linux-adminx",
+                  "members": "linus,richard"},
+                 ]
+            )
 
-    @httpretty.activate
     def test_create(self):
-        httpretty.register_uri(
-            httpretty.PUT, "http://localhost:5311/v2/config/contactgroups",
-            body='{"contactgroup_name": "John",'
-                 '"members": "marie,bob,joe"}'
-        )
+        with requests_mock.mock() as m:
+            m.put("http://localhost:5311/v2/config/contactgroups",
+                  text='{"contactgroup_name": "John",'
+                       '"members": "marie,bob,joe"}'
+                  )
 
-        self.client.config.contactgroups.create(
-            contactgroup_name='John',
-            members="marie,bob,joe"
-        )
+            self.client.config.contactgroups.create(
+                contactgroup_name='John',
+                members="marie,bob,joe"
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "contactgroup_name": "John",
-                "members": "marie,bob,joe"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "contactgroup_name": "John",
+                    "members": "marie,bob,joe"
+                }
+            )
 
-    @httpretty.activate
     def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET,
-            'http://localhost:5311/v2/config/contactgroups/novell-admins',
-            body='{"contactgroup_name": "novell-admins",'
-                 '"members": "jdoe,rtobert,tzach"}'
-        )
+        with requests_mock.mock() as m:
+            m.get('http://localhost:5311/v2/config/contactgroups/novell-admins',
+                  text='{"contactgroup_name": "novell-admins",'
+                       '"members": "jdoe,rtobert,tzach"}'
+                  )
 
-        contactgroup = self.client.config.contactgroups.get(
-            contactgroup_name='novell-admins'
-        )
+            contactgroup = self.client.config.contactgroups.get(
+                contactgroup_name='novell-admins'
+            )
 
-        self.assertEqual(
-            contactgroup,
-            {
-                'contactgroup_name': 'novell-admins',
-                'members': 'jdoe,rtobert,tzach'
-            }
-        )
+            self.assertEqual(
+                contactgroup,
+                {
+                    'contactgroup_name': 'novell-admins',
+                    'members': 'jdoe,rtobert,tzach'
+                }
+            )
 
-    @httpretty.activate
     def test_update(self):
-        httpretty.register_uri(
-            httpretty.PUT,
-            'http://localhost:5311/v2/config/contactgroups/novell-admins',
-            body='{"test": "test"}'
-        )
+        with requests_mock.mock() as m:
+            m.put('http://localhost:5311/v2/config/contactgroups/'
+                  'novell-admins',
+                  text='{"test": "test"}'
+                  )
 
-        self.client.config.contactgroups.update(
-            contactgroup_name="novell-admins",
-            contactgroup={"members": "updated"}
-        )
+            self.client.config.contactgroups.update(
+                contactgroup_name="novell-admins",
+                contactgroup={"members": "updated"}
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {
-                "members": u"updated"
-            }
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {
+                    "members": u"updated"
+                }
+            )
 
-    @httpretty.activate
     def test_delete(self):
-        httpretty.register_uri(
-            httpretty.DELETE,
-            "http://localhost:5311/v2/config/contactgroups/novell-admins",
-            body="body"
-        )
+        with requests_mock.mock() as m:
+            m.delete("http://localhost:5311/v2/config/contactgroups/"
+                     "novell-admins",
+                     text="body"
+                     )
 
-        body = self.client.config.contactgroups.delete(
-            contactgroup_name="novell-admins",
-        )
+            body = self.client.config.contactgroups.delete(
+                contactgroup_name="novell-admins",
+            )
 
-        self.assertEqual(
-            body,
-            "body"
-        )
+            self.assertEqual(
+                body,
+                "body"
+            )

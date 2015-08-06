@@ -34,7 +34,7 @@ class MetricsManager(surveil_manager.SurveilManager):
         query = query or {}
         resp, body = self.http_client.json_request(
             self._create_url(host_name, service_description, metric_name),
-            'POST', body=query)
+            'POST', data=query)
 
         return body
 

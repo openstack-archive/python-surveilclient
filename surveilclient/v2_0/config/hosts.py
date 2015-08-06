@@ -36,7 +36,7 @@ class HostsManager(surveil_manager.SurveilManager):
 
         resp, body = self.http_client.json_request(
             HostsManager.base_url, 'POST',
-            body=query
+            data=query
         )
         return body
 
@@ -44,7 +44,7 @@ class HostsManager(surveil_manager.SurveilManager):
         """Create a new host."""
         resp, body = self.http_client.json_request(
             HostsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
@@ -52,7 +52,7 @@ class HostsManager(surveil_manager.SurveilManager):
         """Get a new host."""
         resp, body = self.http_client.json_request(
             HostsManager.base_url + '/' + host_name, 'GET',
-            body=''
+            data=''
         )
         return body
 
@@ -60,14 +60,13 @@ class HostsManager(surveil_manager.SurveilManager):
         """Update a host."""
         resp, body = self.http_client.json_request(
             HostsManager.base_url + '/' + host_name, 'PUT',
-            body=host
+            data=host
         )
         return body
 
     def delete(self, host_name):
         """Delete a host."""
         resp, body = self.http_client.request(
-            HostsManager.base_url + '/' + host_name, 'DELETE',
-            body=''
+            HostsManager.base_url + '/' + host_name, 'DELETE'
         )
         return body

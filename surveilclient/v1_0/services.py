@@ -29,6 +29,6 @@ class ServicesManager(surveil_manager.SurveilManager):
         """Create a new host."""
         resp, body = self.http_client.json_request(
             ServicesManager.base_url, 'POST',
-            body=kwargs
+            data=kwargs
         )
         return body

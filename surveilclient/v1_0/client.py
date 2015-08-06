@@ -33,6 +33,6 @@ class Client(object):
         resp, body = self.http_client.json_request(
             '/reload_config',
             'POST',
-            body=''  # Must send empty body
+            data=''  # Must send empty body
         )
         return body

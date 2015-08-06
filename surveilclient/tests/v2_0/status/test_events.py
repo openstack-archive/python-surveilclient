@@ -12,28 +12,26 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestEvents(clienttest.ClientTest):
 
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/status/events",
-            body='[{"host_name": "sfl.com", "service_description": "cpu", '
-                 '"event_type": "ALERT", "output": "Ok"},'
-                 '{"host_name": "sfl.com", "service_description": "cpu", '
-                 '"event_type": "ALERT", "output": "Not Ok"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/status/events",
+                   text='[{"host_name": "sfl.com", "service_description": "cpu", '
+                        '"event_type": "ALERT", "output": "Ok"},'
+                        '{"host_name": "sfl.com", "service_description": "cpu", '
+                        '"event_type": "ALERT", "output": "Not Ok"}]')
 
-        events = self.client.status.events.list()
-        self.assertEqual(
-            events,
-            [{"host_name": "sfl.com", "service_description": "cpu",
-              "event_type": "ALERT", "output": "Ok"},
-             {"host_name": "sfl.com", "service_description": "cpu",
-              "event_type": "ALERT", "output": "Not Ok"}]
-        )
+            events = self.client.status.events.list()
+            self.assertEqual(
+                events,
+                [{"host_name": "sfl.com", "service_description": "cpu",
+                  "event_type": "ALERT", "output": "Ok"},
+                 {"host_name": "sfl.com", "service_description": "cpu",
+                  "event_type": "ALERT", "output": "Not Ok"}]
+            )

@@ -14,54 +14,48 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestHosts(clienttest.ClientTest):
 
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/status/hosts",
-            body='[{"host_name": "host1"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/status/hosts",
+                   text='[{"host_name": "host1"}]')
 
-        hosts = self.client.status.hosts.list()
+            hosts = self.client.status.hosts.list()
 
-        self.assertEqual(
-            hosts,
-            [{"host_name": "host1"}]
-        )
+            self.assertEqual(
+                hosts,
+                [{"host_name": "host1"}]
+            )
 
-    @httpretty.activate
     def test_get(self):
-        httpretty.register_uri(
-            httpretty.GET, "http://localhost:5311/v2/status/hosts/hostname",
-            body='{"host_name": "host1"}'
-        )
+        with requests_mock.mock() as m:
+            m.get("http://localhost:5311/v2/status/hosts/hostname",
+                  text='{"host_name": "host1"}')
 
-        host = self.client.status.hosts.get("hostname")
+            host = self.client.status.hosts.get("hostname")
 
-        self.assertEqual(
-            host,
-            {"host_name": "host1"}
-        )
+            self.assertEqual(
+                host,
+                {"host_name": "host1"}
+            )
 
-    @httpretty.activate
     def test_submit_host_check_result(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/status/hosts/localhost"
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/status/hosts/localhost"
                             "/results",
-            body=''
-        )
+                   text='')
 
-        self.client.status.hosts.submit_check_result(
-            "localhost", output="someoutput"
-        )
+            self.client.status.hosts.submit_check_result(
+                "localhost", output="someoutput"
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {"output": u"someoutput"}
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {"output": u"someoutput"}
+            )

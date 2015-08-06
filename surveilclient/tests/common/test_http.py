@@ -15,7 +15,7 @@
 import json
 import unittest
 
-import httpretty
+import requests_mock
 
 from surveilclient.common import http
 
@@ -26,18 +26,17 @@ class TestHttp(unittest.TestCase):
         self.surveil_url = 'http://surveil:5311/v1'
         self.client = http.HTTPClient(self.surveil_url, authenticated=False)
 
-    @httpretty.activate
     def test_json_request_get(self):
-        example_result = {'hello': 'surveil'}
-        httpretty.register_uri(httpretty.GET,
-                               self.surveil_url + "/test",
-                               body=json.dumps(example_result))
+        with requests_mock.mock() as m:
+            example_result = {'hello': 'surveil'}
+            m.get(self.surveil_url + "/test",
+                  text=json.dumps(example_result))
 
-        resp, body = self.client.json_request('/test', 'GET')
-        self.assertEqual(httpretty.last_request().method, 'GET')
-        self.assertEqual(body, example_result)
+            resp, body = self.client.json_request('/test', 'GET')
+            self.assertEqual(m.last_request.method, 'GET')
+            self.assertEqual(body, example_result)
 
-        self.assertEqual(
-            httpretty.last_request().headers['Content-Type'],
-            'application/json'
-        )
+            self.assertEqual(
+                m.last_request.headers['Content-Type'],
+                'application/json'
+            )

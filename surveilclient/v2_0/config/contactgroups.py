@@ -23,7 +23,7 @@ class ContactGroupsManager(surveil_manager.SurveilManager):
         query = query or {}
         resp, body = self.http_client.json_request(
             ContactGroupsManager.base_url, 'POST',
-            body=query
+            data=query
         )
         return body
 
@@ -31,7 +31,7 @@ class ContactGroupsManager(surveil_manager.SurveilManager):
         """Create a new contactgroup."""
         resp, body = self.http_client.json_request(
             ContactGroupsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
@@ -39,7 +39,7 @@ class ContactGroupsManager(surveil_manager.SurveilManager):
         """Get a new contactgroup."""
         resp, body = self.http_client.json_request(
             ContactGroupsManager.base_url + '/' + contactgroup_name, 'GET',
-            body=''
+            data=''
         )
         return body
 
@@ -47,7 +47,7 @@ class ContactGroupsManager(surveil_manager.SurveilManager):
         """Update a contactgroup."""
         resp, body = self.http_client.json_request(
             ContactGroupsManager.base_url + '/' + contactgroup_name, 'PUT',
-            body=contactgroup
+            data=contactgroup
         )
         return body
 
@@ -55,7 +55,6 @@ class ContactGroupsManager(surveil_manager.SurveilManager):
         """Delete a contactgroup."""
         resp, body = self.http_client.request(
             ContactGroupsManager.base_url + "/" + contactgroup_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

@@ -15,7 +15,6 @@
 
 import requests
 import requests.exceptions
-from six.moves import http_client as httplib
 
 from surveilclient import exc
 from surveilclient.openstack.common.py3kcompat import urlutils
@@ -79,18 +78,15 @@ class HTTPClient(object):
         self.auth_token = access['access']['token']
         return self.auth_token['id']
 
-    def get_connection(self):
+    def get_url(self, url):
         # TODO(aviau): https
-        con = httplib.HTTPConnection(
-            self.endpoint_hostname,
-            self.endpoint_port
-        )
-        return con
+        return ('http://' + self.endpoint_hostname + ":"
+                + str(self.endpoint_port) + self.endpoint_path + url)
 
     def _http_request(self, url, method, **kwargs):
         """Send an http request with the specified characteristics.
 
-        Wrapper around httplib.HTTP(S)Connection.request to handle tasks such
+        Wrapper around requests to handle tasks such
         as setting headers and error handling.
         """
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
@@ -99,34 +95,29 @@ class HTTPClient(object):
         if self.authenticated:
             kwargs['headers']['X-Auth-Token'] = self._get_auth_token()
 
-        conn = self.get_connection()
-
-        request_params = urlutils.urlencode(
-            kwargs.pop("params", {})
-        )
-
-        request_url = self.endpoint_path + url + '?' + request_params
-
+        url = self.get_url(url)
         for attempt in range(3):
             try:
-                conn.request(method, request_url, **kwargs)
+                resp = getattr(requests, method.lower())(
+                    url,
+                    headers=kwargs['headers'],
+                    params=kwargs.pop("params", {}),
+                    data=kwargs.pop("body", {}))
                 break
             except (
-                    httplib.BadStatusLine,
-                    httplib.IncompleteRead
+                    requests.Timeout,
+                    requests.ConnectionError
             ) as exp:
                 if attempt == 2:
                     raise exp
                 time.sleep(1)
 
-        resp = conn.getresponse()
+        body_str = resp.content
 
-        body_str = resp.read()
-
-        if 400 <= resp.status < 600:
+        if 400 <= resp.status_code < 600:
             raise exc.from_response(
                 response=resp, body=body_str, method=method, url=url)
-        elif resp.status == 300:
+        elif resp.status_code == 300:
             raise exc.from_response(
                 response=resp, body=body_str, method=method, url=url)
 

@@ -55,7 +55,6 @@ class ServiceGroupsManager(surveil_manager.SurveilManager):
         """Delete a servicegroup."""
         resp, body = self.http_client.request(
             ServiceGroupsManager.base_url + "/" + servicegroup_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

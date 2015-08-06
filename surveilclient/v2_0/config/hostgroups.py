@@ -55,7 +55,6 @@ class HostGroupsManager(surveil_manager.SurveilManager):
         """Delete a hostgroup."""
         resp, body = self.http_client.request(
             HostGroupsManager.base_url + "/" + hostgroup_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

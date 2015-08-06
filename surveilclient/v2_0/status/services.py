@@ -32,6 +32,6 @@ class ServicesManager(surveil_manager.SurveilManager):
             '/status/hosts/%s/services/%s/results' % (host_name,
                                                       service_description),
             'POST',
-            body=kwargs
+            data=kwargs
         )
         return body

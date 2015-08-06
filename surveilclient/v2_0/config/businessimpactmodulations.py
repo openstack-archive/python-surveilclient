@@ -56,9 +56,8 @@ class BusinessImpactModulationsManager(surveil_manager.SurveilManager):
     def delete(self, businessimpactmodulation_name):
         """Delete a businessimpactmodulation."""
         resp, body = self.http_client.request(
-            BusinessImpactModulationsManager.base_url+"/" +
+            BusinessImpactModulationsManager.base_url + "/" +
             businessimpactmodulation_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

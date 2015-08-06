@@ -55,7 +55,6 @@ class RealmsManager(surveil_manager.SurveilManager):
         """Delete a realm."""
         resp, body = self.http_client.request(
             RealmsManager.base_url + "/" + realm_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

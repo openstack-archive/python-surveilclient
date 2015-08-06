@@ -27,7 +27,7 @@ class HostsManager(surveil_manager.SurveilManager):
         """Get a list of hosts."""
         query = query or {}
         resp, body = self.http_client.json_request(
-            HostsManager.base_url, 'POST', body=query
+            HostsManager.base_url, 'POST', data=query
         )
         return body
 
@@ -42,6 +42,6 @@ class HostsManager(surveil_manager.SurveilManager):
         """Submit a check result."""
         resp, body = self.http_client.json_request(
             HostsManager.base_url + '/' + host_name + '/results', 'POST',
-            body=kwargs
+            data=kwargs
         )
         return body

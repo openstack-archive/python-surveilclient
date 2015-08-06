@@ -15,7 +15,6 @@
 
 import requests
 import requests.exceptions
-from six.moves import http_client as httplib
 
 from surveilclient import exc
 from surveilclient.openstack.common.py3kcompat import urlutils
@@ -79,18 +78,15 @@ class HTTPClient(object):
         self.auth_token = access['access']['token']
         return self.auth_token['id']
 
-    def get_connection(self):
+    def _create_complete_url(self, url):
         # TODO(aviau): https
-        con = httplib.HTTPConnection(
-            self.endpoint_hostname,
-            self.endpoint_port
-        )
-        return con
+        return ('http://' + self.endpoint_hostname + ":"
+                + str(self.endpoint_port) + self.endpoint_path + url)
 
     def _http_request(self, url, method, **kwargs):
         """Send an http request with the specified characteristics.
 
-        Wrapper around httplib.HTTP(S)Connection.request to handle tasks such
+        Wrapper around requests to handle tasks such
         as setting headers and error handling.
         """
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
@@ -99,38 +95,27 @@ class HTTPClient(object):
         if self.authenticated:
             kwargs['headers']['X-Auth-Token'] = self._get_auth_token()
 
-        conn = self.get_connection()
-
-        request_params = urlutils.urlencode(
-            kwargs.pop("params", {})
-        )
-
-        request_url = self.endpoint_path + url + '?' + request_params
-
+        url = self._create_complete_url(url)
         for attempt in range(3):
             try:
-                conn.request(method, request_url, **kwargs)
+                resp = getattr(requests, method.lower())(url, **kwargs)
                 break
             except (
-                    httplib.BadStatusLine,
-                    httplib.IncompleteRead
+                    requests.Timeout,
+                    requests.ConnectionError
             ) as exp:
                 if attempt == 2:
                     raise exp
                 time.sleep(1)
 
-        resp = conn.getresponse()
-
-        body_str = resp.read()
-
-        if 400 <= resp.status < 600:
+        if 400 <= resp.status_code < 600:
             raise exc.from_response(
-                response=resp, body=body_str, method=method, url=url)
-        elif resp.status == 300:
+                response=resp, body=resp.content, method=method, url=url)
+        elif resp.status_code == 300:
             raise exc.from_response(
-                response=resp, body=body_str, method=method, url=url)
+                response=resp, body=resp.content, method=method, url=url)
 
-        return resp, body_str
+        return resp
 
     def json_request(self, url, method, **kwargs):
         """Send an http request with the specified characteristics.
@@ -140,13 +125,11 @@ class HTTPClient(object):
         kwargs['headers'].setdefault('Content-Type', 'application/json')
 
         if 'body' in kwargs:
-            kwargs['body'] = json.dumps(kwargs['body'])
+            kwargs['data'] = json.dumps(kwargs['body'])
+            kwargs.pop('body')
 
-        resp, body = self.request(url, method, **kwargs)
-        if body != "":
-            body = json.loads(body)
-
-        return resp, body
+        resp, content = self.request(url, method, **kwargs)
+        return resp, resp.json() if content != '' else ''
 
     def request(self, url, method, **kwargs):
         """Send an http request with the specified characteristics.
@@ -154,5 +137,5 @@ class HTTPClient(object):
         """
         kwargs['headers'] = copy.deepcopy(kwargs.get('headers', {}))
 
-        resp, body = self._http_request(url, method, **kwargs)
-        return resp, body.decode()
+        resp = self._http_request(url, method, **kwargs)
+        return resp, resp.content.decode()

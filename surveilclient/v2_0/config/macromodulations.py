@@ -57,7 +57,6 @@ class MacroModulationsManager(surveil_manager.SurveilManager):
         """Delete a macromodulation."""
         resp, body = self.http_client.request(
             MacroModulationsManager.base_url + "/" + macromodulation_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

@@ -51,7 +51,7 @@ class TestServices(clienttest.ClientTest):
         self.client.config.services.list(templates=True)
         self.assertEqual(
             httpretty.last_request().path,
-            '/v2/config/services?'
+            '/v2/config/services'
         )
 
     @httpretty.activate

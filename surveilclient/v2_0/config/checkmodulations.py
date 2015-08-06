@@ -22,7 +22,7 @@ class CheckModulationsManager(surveil_manager.SurveilManager):
         """Get a list of checkmodulations."""
         query = query or {}
         resp, body = self.http_client.json_request(
-            CheckModulationsManager.base_url, 'POST', body=query
+            CheckModulationsManager.base_url, 'POST', data=query
         )
         return body
 
@@ -30,7 +30,7 @@ class CheckModulationsManager(surveil_manager.SurveilManager):
         """Create a new checkmodulation."""
         resp, body = self.http_client.json_request(
             CheckModulationsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
@@ -39,7 +39,7 @@ class CheckModulationsManager(surveil_manager.SurveilManager):
         resp, body = self.http_client.json_request(
             CheckModulationsManager.base_url + '/' +
             checkmodulation_name, 'GET',
-            body=''
+            data=''
         )
         return body
 
@@ -48,7 +48,7 @@ class CheckModulationsManager(surveil_manager.SurveilManager):
         resp, body = self.http_client.json_request(
             CheckModulationsManager.base_url + '/' +
             checkmodulation_name, 'PUT',
-            body=checkmodulation
+            data=checkmodulation
         )
         return body
 
@@ -56,7 +56,6 @@ class CheckModulationsManager(surveil_manager.SurveilManager):
         """Delete a checkmodulation."""
         resp, body = self.http_client.request(
             CheckModulationsManager.base_url+"/" + checkmodulation_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

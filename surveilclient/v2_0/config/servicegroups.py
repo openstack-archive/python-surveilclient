@@ -23,7 +23,7 @@ class ServiceGroupsManager(surveil_manager.SurveilManager):
         query = query or {}
         resp, body = self.http_client.json_request(
             ServiceGroupsManager.base_url, 'POST',
-            body=query
+            data=query
         )
         return body
 
@@ -31,15 +31,14 @@ class ServiceGroupsManager(surveil_manager.SurveilManager):
         """Create a new servicegroup."""
         resp, body = self.http_client.json_request(
             ServiceGroupsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
     def get(self, servicegroup_name):
         """Get a new servicegroup."""
         resp, body = self.http_client.json_request(
-            ServiceGroupsManager.base_url + '/' + servicegroup_name, 'GET',
-            body=''
+            ServiceGroupsManager.base_url + '/' + servicegroup_name, 'GET'
         )
         return body
 
@@ -47,7 +46,7 @@ class ServiceGroupsManager(surveil_manager.SurveilManager):
         """Update a servicegroup."""
         resp, body = self.http_client.json_request(
             ServiceGroupsManager.base_url + '/' + servicegroup_name, 'PUT',
-            body=servicegroup
+            data=servicegroup
         )
         return body
 
@@ -55,7 +54,6 @@ class ServiceGroupsManager(surveil_manager.SurveilManager):
         """Delete a servicegroup."""
         resp, body = self.http_client.request(
             ServiceGroupsManager.base_url + "/" + servicegroup_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

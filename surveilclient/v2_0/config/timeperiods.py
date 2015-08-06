@@ -23,7 +23,7 @@ class TimePeriodsManager(surveil_manager.SurveilManager):
         query = query or {}
         resp, body = self.http_client.json_request(
             TimePeriodsManager.base_url, 'POST',
-            body=query
+            data=query
         )
         return body
 
@@ -31,15 +31,14 @@ class TimePeriodsManager(surveil_manager.SurveilManager):
         """Create a new timeperiod."""
         resp, body = self.http_client.json_request(
             TimePeriodsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
     def get(self, timeperiod_name):
         """Get a new timeperiod."""
         resp, body = self.http_client.json_request(
-            TimePeriodsManager.base_url + '/' + timeperiod_name, 'GET',
-            body=''
+            TimePeriodsManager.base_url + '/' + timeperiod_name, 'GET'
         )
         return body
 
@@ -47,7 +46,7 @@ class TimePeriodsManager(surveil_manager.SurveilManager):
         """Update a timeperiod."""
         resp, body = self.http_client.json_request(
             TimePeriodsManager.base_url + '/' + timeperiod_name, 'PUT',
-            body=timeperiod
+            data=timeperiod
         )
         return body
 
@@ -55,7 +54,6 @@ class TimePeriodsManager(surveil_manager.SurveilManager):
         """Delete a timeperiod."""
         resp, body = self.http_client.request(
             TimePeriodsManager.base_url + "/" + timeperiod_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

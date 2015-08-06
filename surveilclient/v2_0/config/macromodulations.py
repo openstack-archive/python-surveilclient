@@ -23,7 +23,7 @@ class MacroModulationsManager(surveil_manager.SurveilManager):
         query = query or {}
         resp, body = self.http_client.json_request(
             MacroModulationsManager.base_url, 'POST',
-            body=query
+            data=query
         )
         return body
 
@@ -31,7 +31,7 @@ class MacroModulationsManager(surveil_manager.SurveilManager):
         """Create a new macromodulation."""
         resp, body = self.http_client.json_request(
             MacroModulationsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
@@ -40,7 +40,7 @@ class MacroModulationsManager(surveil_manager.SurveilManager):
         resp, body = self.http_client.json_request(
             MacroModulationsManager.base_url + '/' +
             macromodulation_name, 'GET',
-            body=''
+            data=''
         )
         return body
 
@@ -49,7 +49,7 @@ class MacroModulationsManager(surveil_manager.SurveilManager):
         resp, body = self.http_client.json_request(
             MacroModulationsManager.base_url + '/' +
             macromodulation_name, 'PUT',
-            body=macromodulation
+            data=macromodulation
         )
         return body
 
@@ -57,7 +57,6 @@ class MacroModulationsManager(surveil_manager.SurveilManager):
         """Delete a macromodulation."""
         resp, body = self.http_client.request(
             MacroModulationsManager.base_url + "/" + macromodulation_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

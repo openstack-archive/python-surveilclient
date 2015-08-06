@@ -22,7 +22,7 @@ class ContactsManager(surveil_manager.SurveilManager):
         """Get a list of contacts."""
         query = query or {}
         resp, body = self.http_client.json_request(
-            ContactsManager.base_url, 'POST', body=query
+            ContactsManager.base_url, 'POST', data=query
         )
         return body
 
@@ -30,7 +30,7 @@ class ContactsManager(surveil_manager.SurveilManager):
         """Create a new contact."""
         resp, body = self.http_client.json_request(
             ContactsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
@@ -38,7 +38,7 @@ class ContactsManager(surveil_manager.SurveilManager):
         """Get a new contact."""
         resp, body = self.http_client.json_request(
             ContactsManager.base_url + '/' + contact_name, 'GET',
-            body=''
+            data=''
         )
         return body
 
@@ -46,7 +46,7 @@ class ContactsManager(surveil_manager.SurveilManager):
         """Update a contact."""
         resp, body = self.http_client.json_request(
             ContactsManager.base_url + '/' + contact_name, 'PUT',
-            body=contact
+            data=contact
         )
         return body
 
@@ -54,7 +54,6 @@ class ContactsManager(surveil_manager.SurveilManager):
         """Delete a contact."""
         resp, body = self.http_client.request(
             ContactsManager.base_url + "/" + contact_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

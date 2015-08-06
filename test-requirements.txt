@@ -5,3 +5,4 @@ oslosphinx
 testrepository
 mox3>=0.7.0
 httpretty==0.8.3
+request_mock

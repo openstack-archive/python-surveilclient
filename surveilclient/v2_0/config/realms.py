@@ -23,7 +23,7 @@ class RealmsManager(surveil_manager.SurveilManager):
         query = query or {}
         resp, body = self.http_client.json_request(
             RealmsManager.base_url, 'POST',
-            body=query
+            data=query
         )
         return body
 
@@ -31,7 +31,7 @@ class RealmsManager(surveil_manager.SurveilManager):
         """Create a new realm."""
         resp, body = self.http_client.json_request(
             RealmsManager.base_url, 'PUT',
-            body=kwargs
+            data=kwargs
         )
         return body
 
@@ -39,7 +39,7 @@ class RealmsManager(surveil_manager.SurveilManager):
         """Get a new realm."""
         resp, body = self.http_client.json_request(
             RealmsManager.base_url + '/' + realm_name, 'GET',
-            body=''
+            data=''
         )
         return body
 
@@ -47,7 +47,7 @@ class RealmsManager(surveil_manager.SurveilManager):
         """Update a realm."""
         resp, body = self.http_client.json_request(
             RealmsManager.base_url + '/' + realm_name, 'PUT',
-            body=realm
+            data=realm
         )
         return body
 
@@ -55,7 +55,6 @@ class RealmsManager(surveil_manager.SurveilManager):
         """Delete a realm."""
         resp, body = self.http_client.request(
             RealmsManager.base_url + "/" + realm_name,
-            'DELETE',
-            body=''
+            'DELETE'
         )
         return body

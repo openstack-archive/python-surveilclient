@@ -14,43 +14,38 @@
 
 import json
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestServices(clienttest.ClientTest):
 
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/status/services",
-            body='[{"service_name": "service1"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/status/services",
+                   text='[{"service_name": "service1"}]')
 
-        services = self.client.status.services.list()
+            services = self.client.status.services.list()
 
-        self.assertEqual(
-            services,
-            [{"service_name": "service1"}]
-        )
+            self.assertEqual(
+                services,
+                [{"service_name": "service1"}]
+            )
 
-    @httpretty.activate
     def test_submit_service_check_result(self):
-        httpretty.register_uri(
-            httpretty.POST,
-            "http://localhost:5311/v2/status/hosts/localhost"
-            "/services/testservice/results",
-            body=''
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/status/hosts/localhost/"
+                   + "services/testservice/results",
+                   text='')
 
-        self.client.status.services.submit_check_result(
-            "localhost",
-            'testservice',
-            output="someoutputt"
-        )
+            self.client.status.services.submit_check_result(
+                "localhost",
+                'testservice',
+                output="someoutput"
+            )
 
-        self.assertEqual(
-            json.loads(httpretty.last_request().body.decode()),
-            {"output": u"someoutputt"}
-        )
+            self.assertEqual(
+                json.loads(m.last_request.body),
+                {"output": u"someoutput"}
+            )

@@ -12,23 +12,22 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import httpretty
+import requests_mock
 
 from surveilclient.tests.v2_0 import clienttest
 
 
 class TestDowntime(clienttest.ClientTest):
 
-    @httpretty.activate
     def test_create(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/actions/downtime",
-            body='{"message": "Ack received!"}')
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/actions/downtime",
+                   text='{"message": "Ack received!"}')
 
-        self.client.actions.downtime.create(
-            host_name="somehost"
-        )
-        self.assertEqual(
-            httpretty.last_request().body.decode(),
-            u'{"host_name": "somehost"}'
-        )
+            self.client.actions.downtime.create(
+                host_name="somehost"
+            )
+            self.assertEqual(
+                m.last_request.body,
+                u'{"host_name": "somehost"}'
+            )

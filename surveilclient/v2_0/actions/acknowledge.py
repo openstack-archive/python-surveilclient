@@ -22,6 +22,6 @@ class AcknowledgeManager(surveil_manager.SurveilManager):
         resp, body = self.http_client.json_request(
             self.base_url,
             'POST',
-            body=kwargs,
+            data=kwargs,
         )
         return body

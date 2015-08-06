@@ -20,15 +20,14 @@ from surveilclient.tests.v2_0 import clienttest
 
 
 class TestHostGroups(clienttest.ClientTest):
-    @httpretty.activate
     def test_list(self):
-        httpretty.register_uri(
-            httpretty.POST, "http://localhost:5311/v2/config/hostgroups",
-            body='[{"hostgroup_name": "novell-servers",'
-                 '"members": "netware1,netware2,netware3,netware4"},'
-                 '{"hostgroup_name": "otherservers",'
-                 '"members": "googul,sfl"}]'
-        )
+        with requests_mock.mock() as m:
+            m.post("http://localhost:5311/v2/config/hostgroups",
+                   body='[{"hostgroup_name": "novell-servers",'
+                        '"members": "netware1,netware2,netware3,netware4"},'
+                        '{"hostgroup_name": "otherservers",'
+                        '"members": "googul,sfl"}]'
+                   )
 
         hostgroups = self.client.config.hostgroups.list()
 

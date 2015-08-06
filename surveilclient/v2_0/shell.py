@@ -1437,6 +1437,28 @@ def do_config_service_delete(sc, args):
                               args.service_description)
 
 
+@cliutils.arg("--host_name", help="Name of the host")
+@cliutils.arg("--service_description", help="The service_description")
+def do_config_service_show(sc, args):
+    """Show a config service."""
+    service = sc.config.services.get(args.host_name, args.service_description)
+    if args.json:
+        print(utils.json_formatter(service))
+    elif service:
+        # Specify the shown order and all the properties to display
+        service_properties = [
+            'service_description',
+            'use',
+            'host_name',
+            'contacts',
+            'register',
+            'name',
+            'passive_checks_enabled',
+        ]
+
+        utils.print_item(service, service_properties)
+
+
 @cliutils.arg("--timeperiod_name", help="New name of the timeperiod")
 @cliutils.arg("--exclude")
 @cliutils.arg("--periods", nargs='+')

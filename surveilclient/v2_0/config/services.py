@@ -57,3 +57,13 @@ class ServicesManager(surveil_manager.SurveilManager):
             body=''
         )
         return body
+
+    def get(self, host_name, service_description):
+        """Get a service."""
+        resp, body = self.http_client.json_request(
+            '/config/hosts/' + host_name +
+            '/services/' + service_description,
+            'GET',
+            body=''
+        )
+        return body

@@ -88,3 +88,22 @@ class TestServices(clienttest.ClientTest):
             body,
             "body"
         )
+
+    @httpretty.activate
+    def test_get(self):
+        httpretty.register_uri(
+            httpretty.GET,
+            "http://localhost:5311/v2/config/hosts/host_name/" +
+            "services/service_description",
+            body="{}"
+        )
+
+        body = self.client.config.services.get(
+            host_name="host_name",
+            service_description="service_description"
+        )
+
+        self.assertEqual(
+            body,
+            {}
+        )

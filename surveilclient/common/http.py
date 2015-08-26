@@ -62,7 +62,15 @@ class HTTPClient(object):
             return self.auth_token['id']
 
         auth_url = self.auth_url + '/tokens'
-        credentials = {}
+
+        credentials = {
+            "auth": {
+                "tenantName": self.tenant_name,
+                "passwordCredentials": {
+                    "username":  self.auth_username,
+                    "password":  self.auth_password                }
+            }
+        }
 
         resp = None
         for attempt in range(3):
